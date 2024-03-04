@@ -25,9 +25,14 @@ Use `drycc volumes` to mount a volume for a deployed application's processes.
 
 ## Create a volume for the application
 
-You can create a volume with the `drycc volumes:create` command
+You can create a csi volume with the `drycc volumes:create` command.
 
     $ drycc volumes:create myvolume 200M
+    Creating myvolumes to scenic-icehouse... done
+
+Or use an existing nfs server
+
+    $ drycc volumes:create myvolume 200M -t nfs --nfs-server=nfs.drycc.com --nfs-path=/
     Creating myvolumes to scenic-icehouse... done
 
 ## List volumes in the application
