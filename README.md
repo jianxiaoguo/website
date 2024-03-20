@@ -34,3 +34,4 @@ To learn how to deploy your site, see the [hosting and deployment](https://gohug
 To serve documenation run: `hugo serve`.
 
 Then view the documentation on [http://localhost:1313](http://localhost:1313).
+

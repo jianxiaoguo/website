@@ -37,7 +37,7 @@ Core values
 
 Native to Kubernetes, Drycc is the Container as a Service(CaaS) suite available on every public cloud, every Kubernetes distribution, the private cloud and the edge.
 
-###contribution-guidelines We value each other
+### We value each other
 
 We recognize we come from a variety of backgrounds and have a variety of beliefs and values. We embrace each other as people, respect our differences, and are committed to working together to achieve our shared objectives.
 
