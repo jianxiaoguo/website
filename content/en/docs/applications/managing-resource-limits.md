@@ -5,6 +5,7 @@ description: Drycc Workflow supports restricting memory and CPU shares of each p
 weight: 12
 ---
 
+## 
 
 ## Managing Application Resource Limits
 
@@ -18,32 +19,20 @@ By default, Kubernetes will set <requests\> equal to <limit\> if we don't explic
 If you set a requests/limits that is out of range for your cluster, Kubernetes will be unable to schedule your application
 processes into the cluster!
 
-Available units for memory are:
-
-| Unit | Amount           |
-| ---  | ---              |
-| B    | Bytes            |
-| K    | KiB (Power of 2) |
-| M    | MiB (Power of 2) |
-| G    | GiB (Power of 2) |
-
-Available units for CPU are:
-
-| Unit  | Amount                            |
-| ---   | ---                               |
-| 1000m | 1000 milli-cores == 100% CPU core |
-| 500m  | 500 milli-cores == 50% CPU core   |
-| 250m  | 250 milli-cores == 25% CPU core   |
-| 100m  | 100 milli-cores == 10% CPU core   |
-
-Use `drycc limits:set <type>=<value>` to restrict memory by process type, where value can be <limit\> or <request\>/<limit\> format :
-
 ```
-$ drycc limits:set --cpu cmd=1 -m web=256M
-Applying limits... done
+$ drycc limits:plans
 
-UUID                                    OWNER    TYPE       DEVICE    QUOTA
-a0ae9c17-ed27-4a61-80b9-35eb924aee5c    dev      web        MEM       256M
-a0ae9c17-ed27-4a61-80b9-35eb924aee5c    dev      web        CPU       1
+ID                    SPEC    CPU            VCPUS    MEMORY     FEATURES                      
+std1.large.c1m1       std1    Unknown CPU    1        1 GiB      Unknown Integrated GPU shared    
+std1.large.c1m2       std1    Unknown CPU    1        2 GiB      Unknown Integrated GPU shared    
+std1.large.c1m4       std1    Unknown CPU    1        4 GiB      Unknown Integrated GPU shared    
+std1.large.c1m8       std1    Unknown CPU    1        8 GiB      Unknown Integrated GPU shared    
+std1.large.c2m2       std1    Unknown CPU    2        2 GiB      Unknown Integrated GPU shared    
+std1.large.c2m4       std1    Unknown CPU    2        4 GiB      Unknown Integrated GPU shared    
+std1.large.c2m8       std1    Unknown CPU    2        8 GiB      Unknown Integrated GPU shared    
+std1.large.c2m16      std1    Unknown CPU    2        16 GiB     Unknown Integrated GPU shared    
+
+$ drycc limits:set web=std1.large.c1m1
+Applying limits... done
 ```
 

@@ -1,6 +1,6 @@
 ---
 title: Using Dockerfiles
-linkTitle: Dockerfiles
+linkTitle: Deploying with Dockerfiles
 description: Drycc Container Registry allows you to deploy your Docker-based app to Drycc. Both Common Runtime and Private Spaces are supported.
 weight: 3
 ---
