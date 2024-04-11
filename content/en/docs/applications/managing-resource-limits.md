@@ -22,15 +22,15 @@ processes into the cluster!
 ```
 $ drycc limits:plans
 
-ID                    SPEC    CPU            VCPUS    MEMORY     FEATURES                      
-std1.large.c1m1       std1    Unknown CPU    1        1 GiB      Unknown Integrated GPU shared    
-std1.large.c1m2       std1    Unknown CPU    1        2 GiB      Unknown Integrated GPU shared    
-std1.large.c1m4       std1    Unknown CPU    1        4 GiB      Unknown Integrated GPU shared    
-std1.large.c1m8       std1    Unknown CPU    1        8 GiB      Unknown Integrated GPU shared    
-std1.large.c2m2       std1    Unknown CPU    2        2 GiB      Unknown Integrated GPU shared    
-std1.large.c2m4       std1    Unknown CPU    2        4 GiB      Unknown Integrated GPU shared    
-std1.large.c2m8       std1    Unknown CPU    2        8 GiB      Unknown Integrated GPU shared    
-std1.large.c2m16      std1    Unknown CPU    2        16 GiB     Unknown Integrated GPU shared    
+ID                    SPEC    CPU              VCPUS    MEMORY     FEATURES                      
+std1.large.c1m1       std1    Universal CPU    1        1 GiB      Integrated GPU shared    
+std1.large.c1m2       std1    Universal CPU    1        2 GiB      Integrated GPU shared    
+std1.large.c1m4       std1    Universal CPU    1        4 GiB      Integrated GPU shared    
+std1.large.c1m8       std1    Universal CPU    1        8 GiB      Integrated GPU shared    
+std1.large.c2m2       std1    Universal CPU    2        2 GiB      Integrated GPU shared    
+std1.large.c2m4       std1    Universal CPU    2        4 GiB      Integrated GPU shared    
+std1.large.c2m8       std1    Universal CPU    2        8 GiB      Integrated GPU shared    
+std1.large.c2m16      std1    Universal CPU    2        16 GiB     Integrated GPU shared    
 
 $ drycc limits:set web=std1.large.c1m1
 Applying limits... done
