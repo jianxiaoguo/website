@@ -1,5 +1,5 @@
 ---
-title: Building Docker Images with drycc.yaml
+title: Using drycc.yaml
 linkTitle: Deploying with drycc.yaml
 description: Drycc Container Registry allows you to deploy your Docker-based app to Drycc. Both Common Runtime and Private Spaces are supported.
 weight: 15
@@ -11,7 +11,7 @@ The Drycc stack is intended for advanced use cases only. Unless you have a speci
 
 A manifest has three top-level sections.
 
-- build – Specifies the to buildDockerfile
+- build – Specifies the to build Dockerfile
 - run – Specifies the release phase tasks to execute
 - deploy  – Specifies process types and the commands to run for each type
 
@@ -23,8 +23,10 @@ build:
     web: Dockerfile
     worker: worker/Dockerfile
   config:
-    RAILS_ENV: development
-    FOO: bar
+    web:
+      FOO: bar
+    worker:
+      RAILS_ENV: development
 run:
   command:
   - ./deployment-tasks.sh
