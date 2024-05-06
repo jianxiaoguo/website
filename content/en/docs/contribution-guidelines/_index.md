@@ -2,6 +2,6 @@
 title: Contribution Guidelines
 linkTitle: Contributing
 description: >
-   A Open, Unified, Lightweight, Simpler Containers as a Service (CaaS).
+   This HowTo is for project maintainers who need a Contributing Guide for their project.
 weight: 9
 ---

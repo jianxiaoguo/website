@@ -1,6 +1,6 @@
 ---
 title: Troubleshooting
 description: >
-   A Open, Unified, Lightweight, Simpler Containers as a Service (CaaS).
+   Troubleshooting is systematic approach to problem-solving.
 weight: 7
 ---

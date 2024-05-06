@@ -1,6 +1,6 @@
 ---
 title: Users
 description: >
-   A Open, Unified, Lightweight, Simpler Containers as a Service (CaaS).
+   In this tutorial, you'll learn how to manage users.
 weight: 4
 ---

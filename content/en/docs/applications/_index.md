@@ -1,6 +1,6 @@
 ---
 title: Applications
 description: >
-  A Open, Unified, Lightweight, Simpler Containers as a Service (CaaS).
+  A simple and scalable cloud platform for all developer needs.
 weight: 5
 ---

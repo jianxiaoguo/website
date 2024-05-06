@@ -2,6 +2,6 @@
 title: Reference Guide
 linkTitle: Reference Guide
 description: >
-   A Open, Unified, Lightweight, Simpler Containers as a Service (CaaS).
+   Reference gxwuide definition and meaning.
 weight: 10
 ---

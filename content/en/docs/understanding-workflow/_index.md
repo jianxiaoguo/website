@@ -1,6 +1,6 @@
 ---
 title: Understanding Workflow
 description: >
-   A Open, Unified, Lightweight, Simpler Containers as a Service (CaaS).
+   Understanding the architecture design of workflow.
 weight: 2
 ---

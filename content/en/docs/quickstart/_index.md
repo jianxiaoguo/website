@@ -1,7 +1,7 @@
 ---
 title: Quick Start
 description: >
-   A Open, Unified, Lightweight, Simpler Containers as a Service (CaaS).
+   Step-by-step guides for deploying your first app and mastering the basics of Drycc.
 weight: 1
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: Roadmap
 description: >
-   A Open, Unified, Lightweight, Simpler Containers as a Service (CaaS).
+   Browse the ever-growing list of up-to-date, community driven roadmaps.
 weight: 8
 ---
