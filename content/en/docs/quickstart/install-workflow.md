@@ -157,7 +157,7 @@ ENVIRONMENT VARIABLE                            | DESCRIPTION
 PLATFORM_DOMAIN                                 | Required item, specify drycc's domain name
 DRYCC_ADMIN_USERNAME                            | Required item, specify drycc's admin username
 DRYCC_ADMIN_PASSWORD                            | Required item, specify drycc's admin password
-CERT_MANAGER_ENABLED                            | Whether to use automatic certificate. It is `true` by default
+CERT_MANAGER_ENABLED                            | Whether to use automatic certificate. It is `false` by default
 CHANNEL                                         | By default, `stable` channel will be installed. You can also specify `testing`
 CONTAINERD_FILE                                 | The `config.yaml` file path used by containerd
 KUBERNETES_SERVICE_HOST                         | Set with the HOST of the loadbalancer that was in front of kube-apiserver
