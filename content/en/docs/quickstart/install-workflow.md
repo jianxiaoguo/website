@@ -159,7 +159,7 @@ DRYCC_ADMIN_USERNAME                            | Required item, specify drycc's
 DRYCC_ADMIN_PASSWORD                            | Required item, specify drycc's admin password
 CERT_MANAGER_ENABLED                            | Whether to use automatic certificate. It is `false` by default
 CHANNEL                                         | By default, `stable` channel will be installed. You can also specify `testing`
-CONTAINERD_FILE                                 | The `config.yaml` file path used by containerd
+REGISTRY_FILE                                 | The `config.yaml` file path used by k3s containers registry
 KUBERNETES_SERVICE_HOST                         | Set with the HOST of the loadbalancer that was in front of kube-apiserver
 KUBERNETES_SERVICE_PORT                         | Set with the PORT of the loadbalancer that was in front of kube-apiserver
 METALLB_CONFIG_FILE                             | The metallb config file path, layer 2 network is used by default

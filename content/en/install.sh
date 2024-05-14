@@ -28,7 +28,7 @@ init_arch() {
 function clean_before_exit {
     # delay before exiting, so stdout/stderr flushes through the logging system
     rm -rf /tmp/drycc-values.yaml 
-    configure_containerd runtime
+    configure_registry runtime
     sleep 3
 }
 trap clean_before_exit EXIT
@@ -107,97 +107,61 @@ function configure_os {
   echo -e "\\033[32m---> Configuring kernel parameters finish\\033[0m"
 }
 
-function configure_registries {
-  if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]]; then
-    if [[ "$1" == "runtime" ]] ; then
-      cat << EOF >> "/var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl"
-[plugins.cri.registry.mirrors]
-[plugins.cri.registry.mirrors."docker.io"]
-  endpoint = ["https://docker-mirror.drycc.cc", "https://registry-1.docker.io"]
-EOF
-    else
-      cat << EOF >> "/var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl"
-[plugins.cri.registry.mirrors]
-[plugins.cri.registry.mirrors."docker.io"]
-  endpoint = ["https://docker-mirror.drycc.cc", "https://registry-1.docker.io"]
-[plugins.cri.registry.mirrors."quay.io"]
-  endpoint = ["https://quay-mirror.drycc.cc", "https://quay.io"]
-[plugins.cri.registry.mirrors."gcr.io"]
-  endpoint = ["https://quay-mirror.drycc.cc", "https://gcr.io"]
-[plugins.cri.registry.mirrors."k8s.gcr.io"]
-  endpoint = ["https://k8s-mirror.drycc.cc", "https://registry.k8s.io"]
-[plugins.cri.registry.mirrors."registry.k8s.io"]
-  endpoint = ["https://k8s-mirror.drycc.cc", "https://registry.k8s.io"]
-EOF
-    fi
-  fi
-}
-
-function download_runtime {
-  # download crun
-  if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]] ; then
-    crun_base_url="https://drycc-mirrors.drycc.cc/containers"
-  else
-    crun_base_url="https://github.com/containers"
-  fi
-  crun_version=$(curl -Ls ${crun_base_url}/crun/releases|grep /containers/crun/releases/tag/ | sed -E 's/.*\/containers\/crun\/releases\/tag\/([0-9\.]{1,}(-rc.[0-9]{1,})?)".*/\1/g' | head -1)
-  crun_download_url=${crun_base_url}/crun/releases/download/${crun_version}/crun-${crun_version}-linux-${ARCH}
-  curl -sfL "${crun_download_url}" -o /usr/local/bin/crun
-  chmod a+rx /usr/local/bin/crun
-
+function install_runsc {
   # download runsc
   gvisor_download_url=https://storage.googleapis.com/gvisor/releases/release/latest/$(uname -m)
   curl -sfL "${gvisor_download_url}/runsc" -o /usr/local/bin/runsc
   curl -sfL "${gvisor_download_url}/containerd-shim-runsc-v1" -o /usr/local/bin/containerd-shim-runsc-v1
   chmod a+rx /usr/local/bin/runsc /usr/local/bin/containerd-shim-runsc-v1
+cat << EOF > "/etc/crio/crio.conf.d/10-runsc.conf"
+[crio.runtime.runtimes.runsc]
+runtime_path = "/usr/local/bin/runsc"
+monitor_path = "/usr/local/bin/crio-conmon"
+EOF
+  systemctl reload crio
 }
 
-function configure_runtime {
-  cat << EOF > "/var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl"
-[plugins.cri.containerd]
-  snapshotter = "overlayfs"
-  default_runtime_name = "crun"
-  disable_snapshot_annotations = true
-
-[plugins.cri.containerd.runtimes.crun]
-  runtime_type = "io.containerd.runc.v2"
-
-[plugins.cri.containerd.runtimes.crun.options]
-  SystemdCgroup = true
-
-[plugins.cri.containerd.runtimes.runc]
-  runtime_type = "io.containerd.runc.v2"
-
-[plugins.cri.containerd.runtimes.runc.options]
-	SystemdCgroup = true
-
-[plugins.cri.containerd.runtimes.runsc]
-  runtime_type = "io.containerd.runsc.v1"
-
-[plugins.cri.containerd.runtimes.runsc.options]
-  SystemdCgroup = true
-  TypeUrl = "io.containerd.runsc.v1.options"
-  ConfigPath = "/var/lib/rancher/k3s/agent/etc/containerd/runsc.toml"
-EOF
-  cat << EOF > "/var/lib/rancher/k3s/agent/etc/containerd/runsc.toml"
-[runsc_config]
-network = "host"
-EOF
-}
-
-function configure_containerd {
-  mkdir -p /var/lib/rancher/k3s/agent/etc/containerd
-  if [[ -f  "${CONTAINERD_FILE}" ]]; then
-    cat "${CONTAINERD_FILE}" > /var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl
+function configure_registry {
+  if [[ -f  "${REGISTRY_FILE}" ]]; then
+    cat "${REGISTRY_FILE}" > /etc/containers/registries.conf.d/drycc.conf
   else
-    configure_runtime
-    configure_registries $1
+    if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]]; then
+      if [[ "$1" == "runtime" ]] ; then
+        cat << EOF > "/etc/containers/registries.conf.d/drycc.conf"
+[[registry]]
+location = "docker.io"
+[[registry.mirror]]
+location = "docker-mirror.drycc.cc"
+EOF
+      else
+        cat << EOF > "/etc/containers/registries.conf.d/drycc.conf"
+unqualified-search-registries = ["docker.io", "quay.io"]
+[[registry]]
+location = "docker.io"
+[[registry.mirror]]
+location = "docker-mirror.drycc.cc"
+[[registry]]
+location = "quay.io"
+[[registry.mirror]]
+location = "quay-mirror.drycc.cc"
+[[registry]]
+location = "gcr.io"
+[[registry.mirror]]
+location = "gcr-mirror.drycc.cc"
+[[registry]]
+location = "registry.k8s.io"
+[[registry.mirror]]
+location = "k8s-mirror.drycc.cc"
+EOF
+      fi
+    fi
   fi
+  systemctl reload crio
 }
 
 function configure_mirrors {
   echo -e "\\033[32m---> Start configuring mirrors\\033[0m"
-  configure_containerd
+  configure_registry
   if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]] ; then
     INSTALL_K3S_MIRROR="${INSTALL_DRYCC_MIRROR}"
     k3s_install_url="https://get-k3s.drycc.cc"
@@ -216,9 +180,21 @@ function configure_mirrors {
   echo -e "\\033[32m---> Configuring mirrors finish\\033[0m"
 }
 
+function install_crio {
+  curl -SL https://drycc-mirrors.drycc.cc/jqlang/jq/releases/download/jq-1.7.1/jq-linux-amd64 -o /usr/local/bin/jq
+  chmod +x /usr/local/bin/jq
+  curl -SL https://get-cri-o.drycc.cc | bash -s
+  systemctl daemon-reload
+  systemctl start crio
+  systemctl enable crio
+  INSTALL_K3S_EXEC="${INSTALL_K3S_EXEC} --container-runtime-endpoint unix:///var/run/crio/crio.sock --kubelet-arg cgroup-driver=systemd"
+  export INSTALL_K3S_EXEC
+}
+
 function install_k3s_server {
   configure_os
-  download_runtime
+  install_crio
+  install_runsc
   configure_mirrors
   INSTALL_K3S_EXEC="server ${INSTALL_K3S_EXEC} --flannel-backend=none  --disable-network-policy --disable=traefik --disable=servicelb --disable-kube-proxy --cluster-cidr=${CLUSTER_CIDR} --cluster-domain=${CLUSTER_DOMAIN}"
   if [[ -n "${K3S_DATA_DIR}" ]] ; then
@@ -253,7 +229,8 @@ EOF
 
 function install_k3s_agent {
   configure_os
-  download_runtime
+  install_crio
+  install_runsc
   configure_mirrors
   if [[ -n "${K3S_DATA_DIR}" ]] ; then
     INSTALL_K3S_EXEC="$INSTALL_K3S_EXEC --data-dir=${K3S_DATA_DIR}/rancher/k3s"
