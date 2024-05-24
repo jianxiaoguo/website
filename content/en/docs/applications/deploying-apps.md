@@ -33,6 +33,12 @@ Waiting for login... .o.Logged in as admin
 Configuration file written to /root/.drycc/client.json
 ```
 
+Or you can login with username and password
+```
+$ drycc login http://drycc.example.com --username=demo --password=demo
+Configuration file written to /root/.drycc/client.json
+```
+
 ## Select a Build Process
 
 Drycc Workflow supports three different ways of building applications:

@@ -16,6 +16,10 @@ If you already have an account, use `drycc login` to authenticate against the Dr
     Waiting for login... .o.Logged in as drycc
     Configuration file written to /root/.drycc/client.json
 
+Or you can login with username and password
+    $ drycc login http://drycc.example.com --username=demo --password=demo
+    Configuration file written to /root/.drycc/client.json
+
 ## Logout from Workflow
 
 Logout of an existing controller session using `drycc logout`.
