@@ -45,6 +45,9 @@ or with `drycc config:push` and a local .env file.
     BAR: baz
     TIDE: high
 
+It can also modify environment variables for a process type of application.
+
+    $ drycc config:set FOO=1 BAR=baz  --type=web
 
 ## Attach to Backing Services
 

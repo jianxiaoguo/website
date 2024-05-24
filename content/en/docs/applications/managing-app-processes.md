@@ -96,9 +96,9 @@ $ drycc scale sleeper=1 -a steely-mainsail
 Scaling processes... but first, coffee!
 done in 0s
 
-NAME                                        RELEASE    STATE    TYPE       STARTED
-steely-mainsail-sleeper-76c45b967c-4qm6w    v3         up       sleeper    2023-12-08T02:25:00UTC
-steely-mainsail-web-c4f44c4b4-7p7dh         v3         up       web        2023-12-08T02:25:00UTC
+NAME                                        RELEASE    STATE    PTYPE      READY    RESTARTS     STARTED
+steely-mainsail-sleeper-76c45b967c-4qm6w    v3         up       sleeper    1/1      0            2023-12-08T02:25:00UTC
+steely-mainsail-web-c4f44c4b4-7p7dh         v3         up       web        1/1      0            2023-12-08T02:25:00UTC
 ```
 
 !!! note
@@ -112,8 +112,8 @@ $ drycc scale sleeper=0 -a steely-mainsail
 Scaling processes... but first, coffee!
 done in 3s
 
-NAME                                        RELEASE    STATE    TYPE       STARTED
-steely-mainsail-web-c4f44c4b4-7p7dh         v3         up       web        2023-12-08T02:25:00UTC
+NAME                                        RELEASE    STATE    PTYPE      READY    RESTARTS     STARTED
+steely-mainsail-web-c4f44c4b4-7p7dh         v3         up       web        1/1      0            2023-12-08T02:25:00UTC
 ```
 
 ## Scaling Processes
@@ -126,12 +126,12 @@ $ drycc scale web=5 -a iciest-waggoner
 Scaling processes... but first, coffee!
 done in 3s
 
-NAME                                        RELEASE    STATE    TYPE       STARTED
-iciest-waggoner-web-c4f44c4b4-7p7dh         v3         up       web        2023-12-08T02:25:00UTC
-iciest-waggoner-web-c4f44c4b4-8p7dh         v3         up       web        2023-12-08T02:25:00UTC
-iciest-waggoner-web-c4f44c4b4-9p7dh         v3         up       web        2023-12-08T02:25:00UTC
-iciest-waggoner-web-c4f44c4b4-1p7dh         v3         up       web        2023-12-08T02:25:00UTC
-iciest-waggoner-web-c4f44c4b4-2p7dh         v3         up       web        2023-12-08T02:25:00UTC
+NAME                                        RELEASE    STATE    PTYPE      READY    RESTARTS     STARTED
+iciest-waggoner-web-c4f44c4b4-7p7dh         v3         up       web        1/1      0            2023-12-08T02:25:00UTC
+iciest-waggoner-web-c4f44c4b4-8p7dh         v3         up       web        1/1      0            2023-12-08T02:25:00UTC
+iciest-waggoner-web-c4f44c4b4-9p7dh         v3         up       web        1/1      0            2023-12-08T02:25:00UTC
+iciest-waggoner-web-c4f44c4b4-1p7dh         v3         up       web        1/1      0            2023-12-08T02:25:00UTC
+iciest-waggoner-web-c4f44c4b4-2p7dh         v3         up       web        1/1      0            2023-12-08T02:25:00UTC
 ```
 
 If you have multiple process types for your application you may scale the process count for each type separately. For
@@ -145,14 +145,14 @@ $ drycc scale web=5
 Scaling processes... but first, coffee!
 done in 4s
 
-NAME                                                RELEASE    STATE    TYPE       STARTED
-scenic-icehouse-web-3291896318-7lord                v3         up       web        2023-12-08T02:25:00UTC
-scenic-icehouse-web-3291896318-jn957                v3         up       web        2023-12-08T02:25:00UTC
-scenic-icehouse-web-3291896318-rsekj                v3         up       web        2023-12-08T02:25:00UTC
-scenic-icehouse-web-3291896318-vwhnh                v3         up       web        2023-12-08T02:25:00UTC
-scenic-icehouse-web-3291896318-vokg7                v3         up       web        2023-12-08T02:25:00UTC
-scenic-icehouse-web-3291896318-vokg7                v3         up       web        2023-12-08T02:25:00UTC
-scenic-icehouse-background-3291896318-yf8kh         v3         up       web        2023-12-08T02:25:00UTC
+NAME                                                RELEASE    STATE    PTYPE      READY    RESTARTS     STARTED
+scenic-icehouse-web-3291896318-7lord                v3         up       web        1/1      0            2023-12-08T02:25:00UTC
+scenic-icehouse-web-3291896318-jn957                v3         up       web        1/1      0            2023-12-08T02:25:00UTC
+scenic-icehouse-web-3291896318-rsekj                v3         up       web        1/1      0            2023-12-08T02:25:00UTC
+scenic-icehouse-web-3291896318-vwhnh                v3         up       web        1/1      0            2023-12-08T02:25:00UTC
+scenic-icehouse-web-3291896318-vokg7                v3         up       web        1/1      0            2023-12-08T02:25:00UTC
+scenic-icehouse-web-3291896318-vokg7                v3         up       web        1/1      0            2023-12-08T02:25:00UTC
+scenic-icehouse-background-3291896318-yf8kh         v3         up       web        1/1      0            2023-12-08T02:25:00UTC
 ```
 
 Scaling a process down, by reducing the process count, sends a `TERM` signal to the processes, followed by a `SIGKILL`
@@ -166,47 +166,12 @@ $ drycc scale web=3
 Scaling processes... but first, coffee!
 done in 1s
 
-NAME                                                RELEASE    STATE    TYPE       STARTED
-scenic-icehouse-web-3291896318-vwhnh                v2         up       web        2023-12-08T02:25:00UTC
-scenic-icehouse-web-3291896318-vokg7                v2         up       web        2023-12-08T02:25:00UTC
-scenic-icehouse-web-3291896318-vokg9                v2         up       web        2023-12-08T02:25:00UTC
-scenic-icehouse-background-3291896318-yf8kh         v2         up       web        2023-12-08T02:25:00UTC
+NAME                                                RELEASE    STATE    PTYPE     READY    RESTARTS     STARTED
+scenic-icehouse-web-3291896318-vwhnh                v2         up       web       1/1      0            2023-12-08T02:25:00UTC
+scenic-icehouse-web-3291896318-vokg7                v2         up       web       1/1      0            2023-12-08T02:25:00UTC
+scenic-icehouse-web-3291896318-vokg9                v2         up       web       1/1      0            2023-12-08T02:25:00UTC
+scenic-icehouse-background-3291896318-yf8kh         v2         up       web       1/1      0            2023-12-08T02:25:00UTC
 ```
-
-## Get a Shell to a Running Container
-
-Verify that the container is running:
-
-```
-# drycc ps
-NAME                                                RELEASE    STATE    TYPE       STARTED
-python-getting-started-web-69b7d4bfdc-kl4xf         v2         up       web        2023-12-08T02:25:00UTC
-
-=== python-getting-started Processes
---- web:
-python-getting-started-web-69b7d4bfdc-kl4xf up (v2)
-```
-
-Get a shell to the running container:
-
-```
-# drycc ps:exec python-getting-started-web-69b7d4bfdc-kl4xf -it -- bash
-```
-
-In your shell, list the root directory:
-
-```
-# Run this inside the container
-ls /
-```
-
-Running individual commands in a container
-
-```
-# drycc ps:exec python-getting-started-web-69b7d4bfdc-kl4xf -- date
-```
-
-Use "drycc ps --help" for a list of global command-line (applies to all commands).
 
 ## Autoscale
 
@@ -241,6 +206,87 @@ For autoscaling to work CPU requests have to be specified on each application Po
 
 Scale up can only happen if there was no rescaling within the last 3 minutes. Scale down will wait for 5 minutes from the last rescaling. That information and more can be found at [HPA algorithm page][autoscale-algo].
 
+## Fetch a container logs of the application
+List the containers:
+
+```
+# drycc ps
+NAME                                                RELEASE    STATE    PTYPEE     READY    RESTARTS     STARTED
+python-getting-started-web-69b7d4bfdc-kl4xf         v2         up       web        1/1      0             2023-12-08T02:25:00UTC
+
+=== python-getting-started Processes
+--- web:
+python-getting-started-web-69b7d4bfdc-kl4xf up (v2)
+```
+
+fetch the container logs:
+```
+# drycc ps:logs -f python-getting-started-web-69b7d4bfdc-kl4xf
+[2024-05-24 07:14:39 +0000] [1] [INFO] Starting gunicorn 20.1.0
+[2024-05-24 07:14:39 +0000] [1] [INFO] Listening at: http://0.0.0.0:8000 (1)
+[2024-05-24 07:14:39 +0000] [1] [INFO] Using worker: gevent
+[2024-05-24 07:14:39 +0000] [8] [INFO] Booting worker with pid: 8
+[2024-05-24 07:14:39 +0000] [9] [INFO] Booting worker with pid: 9
+[2024-05-24 07:14:39 +0000] [10] [INFO] Booting worker with pid: 10
+[2024-05-24 07:14:39 +0000] [11] [INFO] Booting worker with pid: 11
+
+```
+
+## Get a container info of the application
+List the containers:
+
+```
+# drycc ps:describe python-getting-started-web-69b7d4bfdc-kl4xf
+Container:        python-getting-started-web                   
+Image:            drycc/python-getting-started:latest          
+Command:          
+Args:             
+                  - gunicorn                                   
+                  - -c                                         
+                  - gunicorn_config.py                         
+                  - helloworld.wsgi:application                
+State:            running                                      
+  startedAt:      "2024-05-24T07:14:39Z"                       
+Ready:            true                                         
+Restart Count:    0                 
+
+```
+
+## Get a Shell to a Running Container
+
+Verify that the container is running:
+
+```
+# drycc ps
+NAME                                                RELEASE    STATE    PTYPEE     READY    RESTARTS     STARTED
+python-getting-started-web-69b7d4bfdc-kl4xf         v2         up       web        1/1      0             2023-12-08T02:25:00UTC
+
+=== python-getting-started Processes
+--- web:
+python-getting-started-web-69b7d4bfdc-kl4xf up (v2)
+```
+
+Get a shell to the running container:
+
+```
+# drycc ps:exec python-getting-started-web-69b7d4bfdc-kl4xf -it -- bash
+```
+
+In your shell, list the root directory:
+
+```
+# Run this inside the container
+ls /
+```
+
+Running individual commands in a container
+
+```
+# drycc ps:exec python-getting-started-web-69b7d4bfdc-kl4xf -- date
+```
+
+Use "drycc ps --help" for a list of global command-line (applies to all commands).
+
 ## Restarting an Application Processes
 
 If you need to restart an application process, you may use `drycc ps:restart`. Behind the scenes, Drycc Workflow instructs
@@ -248,18 +294,18 @@ Kubernetes to terminate the old process and launch a new one in its place.
 
 ```
 $ drycc ps
-NAME                                               RELEASE    STATE       TYPE       STARTED
-scenic-icehouse-web-3291896318-vokg7               v2         up          web        2023-12-08T02:25:00UTC
-scenic-icehouse-web-3291896318-rsekj               v2         up          web        2023-12-08T02:50:21UTC
-scenic-icehouse-web-3291896318-vokg7               v2         up          web        2023-12-08T02:25:00UTC
-scenic-icehouse-background-3291896318-yf8kh        v2         up          web        2023-12-08T02:25:00UTC
+NAME                                               RELEASE    STATE       PTYPE      READY    RESTARTS     STARTED
+scenic-icehouse-web-3291896318-vokg7               v2         up          web        1/1      0            2023-12-08T02:25:00UTC
+scenic-icehouse-web-3291896318-rsekj               v2         up          web        1/1      0            2023-12-08T02:50:21UTC
+scenic-icehouse-web-3291896318-vokg7               v2         up          web        1/1      0            2023-12-08T02:25:00UTC
+scenic-icehouse-background-3291896318-yf8kh        v2         up          web        1/1      0            2023-12-08T02:25:00UTC
 
-$ drycc ps:restart scenic-icehouse-background-3291896318-yf8kh
-NAME                                               RELEASE    STATE       TYPE       STARTED
-scenic-icehouse-web-3291896318-vokg7               v2         up          web        2023-12-08T02:25:00UTC
-scenic-icehouse-web-3291896318-rsekj               v2         up          web        2023-12-08T02:50:21UTC
-scenic-icehouse-web-3291896318-vokg7               v2         up          web        2023-12-08T02:25:00UTC
-scenic-icehouse-background-3291896318-yf8kh        v2         starting    web        2023-12-08T02:25:00UTC
+$ drycc ps:restart scenic-icehouse-background
+NAME                                               RELEASE    STATE       PTYPE      READY    RESTARTS    STARTED
+scenic-icehouse-web-3291896318-vokg7               v2         up          web        1/1      0           2023-12-08T02:25:00UTC
+scenic-icehouse-web-3291896318-rsekj               v2         up          web        1/1      0           2023-12-08T02:50:21UTC
+scenic-icehouse-web-3291896318-vokg7               v2         up          web        1/1      0           2023-12-08T02:25:00UTC
+scenic-icehouse-background-3291896318-yf8kh        v2         starting    web        1/1      0           2023-12-08T02:25:00UTC
 ```
 
 Notice that the process name has changed from `scenic-icehouse-background-3291896318-yf8kh` to

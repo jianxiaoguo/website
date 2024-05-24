@@ -43,7 +43,7 @@ Once the SSL certificate is provisioned and your cert is confirmed, you must rou
 your domain through Drycc. Unless you've already done so, add the domain specified when generating
 the CSR to your app with:
 
-    $ drycc domains:add www.example.com -a foo
+    $ drycc domains:add www.example.com --type==web -a foo
     Adding www.example.com to foo... done
 
 
