@@ -346,7 +346,7 @@ function install_cert_manager() {
     --create-namespace \
     --set clusterResourceNamespace=drycc \
     --set "extraArgs={--feature-gates=ExperimentalGatewayAPISupport=true}" \
-    --set installCRDs=true --wait
+    --set crds.enabled=true --wait
   echo -e "\\033[32m---> Cert-manager installed!\\033[0m"
 }
 

@@ -18,6 +18,7 @@ Use `drycc volumes` to mount a volume for a deployed application's processes.
     volumes:create           create a volume for the application
     volumes:list             list volumes in the application
     volumes:delete           delete a volume from the application
+    volumes:client           the client used to manage volume files
     volumes:mount            mount a volume to process of the application
     volumes:unmount          unmount a volume from process of the application
 
@@ -66,3 +67,21 @@ Before deleting volume, the volume has to be unmounted.
 
     $ drycc volumes:delete myvolumes
     Deleting myvolumes from scenic-icehouse... done
+
+## Use volume client
+
+The client used to manage volume files.
+
+Usage: drycc volumes:client <cmd> [options] -- <args>...
+
+Arguments:
+  <cmd>
+    ls         list volume files
+    cp         copy volume files
+    rm         remove volume files
+  <args>
+    arguments for running commands
+
+Options:
+  -a --app=<app>
+    the uniquely identifiable name for the application.
