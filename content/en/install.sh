@@ -246,9 +246,10 @@ function check_metallb {
 }
 
 function install_network() {
-  echo -e "\\033[32m---> Start installing network...\\033[0m"
+  command=${1:-"install"}
+  echo -e "\\033[32m---> Start $command network...\\033[0m"
   kubernetes_service_host=(`ip -o route get to 8.8.8.8 | sed -n 's/.*src \([0-9.]\+\).*/\1/p'`)
-  helm install cilium $CHARTS_URL/cilium \
+  helm $command cilium $CHARTS_URL/cilium \
     --set endpointHealthChecking.enabled=false \
     --set healthChecking=false \
     --set operator.replicas=1 \
@@ -263,13 +264,14 @@ function install_network() {
     --set prometheus.enabled=true \
     --set operator.prometheus.enabled=true \
     --namespace kube-system --wait
-  echo -e "\\033[32m---> Network installed!\\033[0m"
+  echo -e "\\033[32m---> Network $command completed!\\033[0m"
 }
 
 function install_metallb() {
   check_metallb
-  echo -e "\\033[32m---> Start installing metallb...\\033[0m"
-  helm install metallb $CHARTS_URL/metallb \
+  command=${1:-"install"}
+  echo -e "\\033[32m---> Start $command metallb...\\033[0m"
+  helm $command metallb $CHARTS_URL/metallb \
     --set speaker.frr.enabled=true \
     --namespace metallb \
     --create-namespace
@@ -317,12 +319,12 @@ EOF
   else
     kubectl apply -n metallb -f ${METALLB_CONFIG_FILE}
   fi
-  echo -e "\\033[32m---> Metallb installed!\\033[0m"
+  echo -e "\\033[32m---> Metallb $command completed!\\033[0m"
 }
 
 function install_gateway() {
-  echo -e "\\033[32m---> Start installing gateway...\\033[0m"
-
+  command=${1:-"install"}
+  echo -e "\\033[32m---> Start $command gateway...\\033[0m"
   if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]] ; then
     gateway_api_url=https://drycc-mirrors.drycc.cc/kubernetes-sigs/gateway-api
   else
@@ -333,31 +335,33 @@ function install_gateway() {
   helm repo add istio https://drycc-mirrors.drycc.cc/istio-charts
   helm repo update
   kubectl apply -f $gateway_api_url/releases/download/${version}/experimental-install.yaml
-  helm install istio-base istio/base -n istio-system --set defaultRevision=default --create-namespace --wait
-  helm install istio-istiod istio/istiod -n istio-system --set pilot.env.PILOT_ENABLE_ALPHA_GATEWAY_API=true --wait
-  helm install istio-gateway istio/gateway -n istio-gateway --create-namespace --wait
-  echo -e "\\033[32m---> Gateway installed!\\033[0m"
+  helm $command istio-base istio/base -n istio-system --set defaultRevision=default --create-namespace --wait
+  helm $command istio-istiod istio/istiod -n istio-system --set pilot.env.PILOT_ENABLE_ALPHA_GATEWAY_API=true --wait
+  helm $command istio-gateway istio/gateway -n istio-gateway --create-namespace --wait
+  echo -e "\\033[32m---> Gateway $command completed!\\033[0m"
 }
 
 function install_cert_manager() {
-  echo -e "\\033[32m---> Start installing cert-manager...\\033[0m"
-  helm install cert-manager $CHARTS_URL/cert-manager \
+  command=${1:-"install"}
+  echo -e "\\033[32m---> Start $command cert-manager...\\033[0m"
+  helm $command cert-manager $CHARTS_URL/cert-manager \
     --namespace cert-manager \
     --create-namespace \
     --set clusterResourceNamespace=drycc \
     --set "extraArgs={--feature-gates=ExperimentalGatewayAPISupport=true}" \
     --set crds.enabled=true --wait
-  echo -e "\\033[32m---> Cert-manager installed!\\033[0m"
+  echo -e "\\033[32m---> Cert-manager $command completed!\\033[0m"
 }
 
 function install_catalog() {
-  echo -e "\\033[32m---> Start installing catalog...\\033[0m"
-  helm install catalog $CHARTS_URL/catalog \
+  command=${1:-"install"}
+  echo -e "\\033[32m---> Start $command catalog...\\033[0m"
+  helm $command catalog $CHARTS_URL/catalog \
     --set asyncBindingOperationsEnabled=true \
     --set image=registry.drycc.cc/drycc-addons/service-catalog:canary \
     --namespace catalog \
     --create-namespace --wait
-  echo -e "\\033[32m---> Catalog installed!\\033[0m"
+  echo -e "\\033[32m---> Catalog $command completed!\\033[0m"
 }
 
 function install_components {
@@ -392,9 +396,10 @@ function check_drycc {
 
 function install_drycc {
   check_drycc
-  echo -e "\\033[32m---> Start installing workflow...\\033[0m"
-  RABBITMQ_USERNAME=$(cat /proc/sys/kernel/random/uuid)
-  RABBITMQ_PASSWORD=$(cat /proc/sys/kernel/random/uuid)
+  command=${1:-"install"}
+  echo -e "\\033[32m---> Start $command workflow...\\033[0m"
+  RABBITMQ_USERNAME=${RABBITMQ_USERNAME:-$(cat /proc/sys/kernel/random/uuid)}
+  RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-$(cat /proc/sys/kernel/random/uuid)}
 
 cat << EOF > "/tmp/drycc-values.yaml"
 global:
@@ -565,13 +570,14 @@ imagebuilder:
 EOF
   fi
 
-  helm install drycc $CHARTS_URL/workflow \
+  helm $command drycc $CHARTS_URL/workflow \
     --namespace drycc \
     --values /tmp/drycc-values.yaml \
     --values /tmp/drycc-mirror-values.yaml \
     --create-namespace --wait --timeout 30m0s
   echo -e "\\033[32m---> Rabbitmq username: $RABBITMQ_USERNAME\\033[0m"
   echo -e "\\033[32m---> Rabbitmq password: $RABBITMQ_PASSWORD\\033[0m"
+  echo -e "\\033[32m---> Workflow $command completed!\\033[0m"
 }
 
 function install_helmbroker {
@@ -580,12 +586,13 @@ function install_helmbroker {
   else
     addons_url="https://github.com/drycc-addons/addons/releases/download/latest/index.yaml"
   fi
-  HELMBROKER_USERNAME=$(cat /proc/sys/kernel/random/uuid)
-  HELMBROKER_PASSWORD=$(cat /proc/sys/kernel/random/uuid)
+  command=${1:-"install"}
+  HELMBROKER_USERNAME=${HELMBROKER_USERNAME:-$(cat /proc/sys/kernel/random/uuid)}
+  HELMBROKER_PASSWORD=${HELMBROKER_PASSWORD:-$(cat /proc/sys/kernel/random/uuid)}
 
-  echo -e "\\033[32m---> Start installing helmbroker...\\033[0m"
+  echo -e "\\033[32m---> Start $command helmbroker...\\033[0m"
 
-  helm install helmbroker $CHARTS_URL/helmbroker \
+  helm $command helmbroker $CHARTS_URL/helmbroker \
     --set global.rabbitmqLocation="off-cluster" \
     --set global.gatewayClass=${GATEWAY_CLASS} \
     --set global.clusterDomain=${CLUSTER_DOMAIN} \
@@ -623,6 +630,22 @@ EOF
 
   echo -e "\\033[32m---> Helmbroker username: $HELMBROKER_USERNAME\\033[0m"
   echo -e "\\033[32m---> Helmbroker password: $HELMBROKER_PASSWORD\\033[0m"
+  echo -e "\\033[32m---> Helmbroker $command completed!\\033[0m"
+}
+
+function upgrade {
+  RABBITMQ_USERNAME=$(kubectl get secrets -n drycc rabbitmq-creds -o jsonpath="{.data.username}"| base64 -d)
+  RABBITMQ_PASSWORD=$(kubectl get secrets -n drycc rabbitmq-creds -o jsonpath="{.data.password}"| base64 -d)
+  export RABBITMQ_USERNAME RABBITMQ_PASSWORD
+
+  install_network upgrade
+  install_metallb upgrade
+  install_gateway upgrade
+  install_cert_manager upgrade
+  install_catalog upgrade
+  install_drycc upgrade
+  install_helmbroker upgrade
+  echo -e "\\033[32m---> Upgrade complete, enjoy life...\\033[0m"
 }
 
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
