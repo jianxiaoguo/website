@@ -247,6 +247,7 @@ function check_metallb {
 
 function install_network() {
   command=${1:-"install"}
+  options=${2:-""}
   echo -e "\\033[32m---> Start $command network...\\033[0m"
   kubernetes_service_host=(`ip -o route get to 8.8.8.8 | sed -n 's/.*src \([0-9.]\+\).*/\1/p'`)
   helm $command cilium $CHARTS_URL/cilium \
@@ -263,18 +264,19 @@ function install_network() {
     --set k8sServicePort=${KUBERNETES_SERVICE_PORT:-6443} \
     --set prometheus.enabled=true \
     --set operator.prometheus.enabled=true \
-    --namespace kube-system --wait
+    --namespace kube-system $options --wait
   echo -e "\\033[32m---> Network $command completed!\\033[0m"
 }
 
 function install_metallb() {
   check_metallb
   command=${1:-"install"}
+  options=${2:-""}
   echo -e "\\033[32m---> Start $command metallb...\\033[0m"
   helm $command metallb $CHARTS_URL/metallb \
     --set speaker.frr.enabled=true \
     --namespace metallb \
-    --create-namespace
+    --create-namespace $options
 
   echo -e "\\033[32m---> Waiting metallb pods ready...\\033[0m"
   kubectl wait pods -n metallb --all  --for condition=Ready --timeout=600s
@@ -324,6 +326,7 @@ EOF
 
 function install_gateway() {
   command=${1:-"install"}
+  options=${2:-""}
   echo -e "\\033[32m---> Start $command gateway...\\033[0m"
   if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]] ; then
     gateway_api_url=https://drycc-mirrors.drycc.cc/kubernetes-sigs/gateway-api
@@ -335,32 +338,34 @@ function install_gateway() {
   helm repo add istio https://drycc-mirrors.drycc.cc/istio-charts
   helm repo update
   kubectl apply -f $gateway_api_url/releases/download/${version}/experimental-install.yaml
-  helm $command istio-base istio/base -n istio-system --set defaultRevision=default --create-namespace --wait
-  helm $command istio-istiod istio/istiod -n istio-system --set pilot.env.PILOT_ENABLE_ALPHA_GATEWAY_API=true --wait
-  helm $command istio-gateway istio/gateway -n istio-gateway --create-namespace --wait
+  helm $command istio-base istio/base -n istio-system --set defaultRevision=default --create-namespace --wait $options
+  helm $command istio-istiod istio/istiod -n istio-system --set pilot.env.PILOT_ENABLE_ALPHA_GATEWAY_API=true --wait $options
+  helm $command istio-gateway istio/gateway -n istio-gateway --create-namespace --wait $options
   echo -e "\\033[32m---> Gateway $command completed!\\033[0m"
 }
 
 function install_cert_manager() {
   command=${1:-"install"}
+  options=${2:-""}
   echo -e "\\033[32m---> Start $command cert-manager...\\033[0m"
   helm $command cert-manager $CHARTS_URL/cert-manager \
     --namespace cert-manager \
     --create-namespace \
     --set clusterResourceNamespace=drycc \
     --set "extraArgs={--feature-gates=ExperimentalGatewayAPISupport=true}" \
-    --set crds.enabled=true --wait
+    --set crds.enabled=true --wait $options
   echo -e "\\033[32m---> Cert-manager $command completed!\\033[0m"
 }
 
 function install_catalog() {
   command=${1:-"install"}
+  options=${2:-""}
   echo -e "\\033[32m---> Start $command catalog...\\033[0m"
   helm $command catalog $CHARTS_URL/catalog \
     --set asyncBindingOperationsEnabled=true \
     --set image=registry.drycc.cc/drycc-addons/service-catalog:canary \
     --namespace catalog \
-    --create-namespace --wait
+    --create-namespace --wait $options
   echo -e "\\033[32m---> Catalog $command completed!\\033[0m"
 }
 
@@ -397,9 +402,22 @@ function check_drycc {
 function install_drycc {
   check_drycc
   command=${1:-"install"}
+  options=${2:-""}
   echo -e "\\033[32m---> Start $command workflow...\\033[0m"
   RABBITMQ_USERNAME=${RABBITMQ_USERNAME:-$(cat /proc/sys/kernel/random/uuid)}
   RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-$(cat /proc/sys/kernel/random/uuid)}
+  if [[ "$CHANNEL" == "stable" ]]; then
+    if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]] ; then
+      FILER_VERSION=$(curl -Ls https://drycc-mirrors.drycc.cc/drycc/filer/releases|grep /drycc/filer/releases/tag/ | sed -E 's/.*\/drycc\/filer\/releases\/tag\/(v[0-9\.]{1,}(-rc.[0-9]{1,})?)".*/\1/g' | head -1)
+    else
+      FILER_VERSION=$(curl -Ls https://github.com/drycc/filer/releases|grep /drycc/filer/releases/tag/ | sed -E 's/.*\/drycc\/filer\/releases\/tag\/(v[0-9\.]{1,}(-rc.[0-9]{1,})?)".*/\1/g' | head -1)
+    fi
+    FILER_IMAGE=${DRYCC_REGISTRY}/drycc/filer:$(sed 's#v##' <<< $FILER_VERSION)
+    FILER_IMAGE_PULL_POLICY="IfNotPresent"
+  else
+    FILER_IMAGE=${DRYCC_REGISTRY}/drycc/filer:canary
+    FILER_IMAGE_PULL_POLICY="Always"
+  fi
 
 cat << EOF > "/tmp/drycc-values.yaml"
 global:
@@ -442,6 +460,8 @@ controller:
   imageRegistry: ${DRYCC_REGISTRY}
   appRuntimeClass: ${CONTROLLER_APP_RUNTIME_CLASS:-""}
   appStorageClass: ${CONTROLLER_APP_STORAGE_CLASS:-"drycc-storage"}
+  filerImage: ${FILER_IMAGE}
+  filerImagePullPolicy: ${FILER_IMAGE_PULL_POLICY}
 
 redis:
   replicas: ${REDIS_REPLICAS:-1}
@@ -574,7 +594,7 @@ EOF
     --namespace drycc \
     --values /tmp/drycc-values.yaml \
     --values /tmp/drycc-mirror-values.yaml \
-    --create-namespace --wait --timeout 30m0s
+    --create-namespace --wait --timeout 30m0s $options
   echo -e "\\033[32m---> Rabbitmq username: $RABBITMQ_USERNAME\\033[0m"
   echo -e "\\033[32m---> Rabbitmq password: $RABBITMQ_PASSWORD\\033[0m"
   echo -e "\\033[32m---> Workflow $command completed!\\033[0m"
@@ -587,6 +607,7 @@ function install_helmbroker {
     addons_url="https://github.com/drycc-addons/addons/releases/download/latest/index.yaml"
   fi
   command=${1:-"install"}
+  options=${2:-""}
   HELMBROKER_USERNAME=${HELMBROKER_USERNAME:-$(cat /proc/sys/kernel/random/uuid)}
   HELMBROKER_PASSWORD=${HELMBROKER_PASSWORD:-$(cat /proc/sys/kernel/random/uuid)}
 
@@ -605,7 +626,7 @@ function install_helmbroker {
     --set replicas=${HELMBROKER_REPLICAS} \
     --set celeryReplicas=${HELMBROKER_CELERY_REPLICAS} \
     --set rabbitmqUrl="amqp://${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}@drycc-rabbitmq.drycc.svc.${CLUSTER_DOMAIN}:5672/drycc" \
-    --namespace drycc-helmbroker --create-namespace --wait -f - <<EOF
+    --namespace drycc-helmbroker --create-namespace $options --wait -f - <<EOF
 repositories:
 - name: drycc-helmbroker
   url: ${addons_url}
@@ -638,13 +659,13 @@ function upgrade {
   RABBITMQ_PASSWORD=$(kubectl get secrets -n drycc rabbitmq-creds -o jsonpath="{.data.password}"| base64 -d)
   export RABBITMQ_USERNAME RABBITMQ_PASSWORD
 
-  install_network upgrade
-  install_metallb upgrade
-  install_gateway upgrade
-  install_cert_manager upgrade
-  install_catalog upgrade
-  install_drycc upgrade
-  install_helmbroker upgrade
+  install_network upgrade --reuse-values
+  install_metallb upgrade --reuse-values
+  install_gateway upgrade --reuse-values
+  install_cert_manager upgrade --reuse-values
+  install_catalog upgrade --reuse-values
+  install_drycc upgrade --reuse-values
+  install_helmbroker upgrade --reuse-values
   echo -e "\\033[32m---> Upgrade complete, enjoy life...\\033[0m"
 }
 
