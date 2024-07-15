@@ -254,6 +254,7 @@ function install_network() {
     --set endpointHealthChecking.enabled=false \
     --set healthChecking=false \
     --set operator.replicas=1 \
+    --set sysctlfix.enabled=true \
     --set bpf.masquerade=true \
     --set bandwidthManager.enabled=true \
     --set bandwidthManager.bbr=true \
