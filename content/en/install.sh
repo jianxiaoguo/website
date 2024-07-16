@@ -660,13 +660,13 @@ function upgrade {
   RABBITMQ_PASSWORD=$(kubectl get secrets -n drycc rabbitmq-creds -o jsonpath="{.data.password}"| base64 -d)
   export RABBITMQ_USERNAME RABBITMQ_PASSWORD
 
-  install_network upgrade --reuse-values
-  install_metallb upgrade --reuse-values
-  install_gateway upgrade --reuse-values
-  install_cert_manager upgrade --reuse-values
-  install_catalog upgrade --reuse-values
-  install_drycc upgrade --reuse-values
-  install_helmbroker upgrade --reuse-values
+  install_network upgrade --reuse-values --reset-then-reuse-values
+  install_metallb upgrade --reuse-values --reset-then-reuse-values
+  install_gateway upgrade --reuse-values --reset-then-reuse-values
+  install_cert_manager upgrade --reuse-values --reset-then-reuse-values
+  install_catalog upgrade --reuse-values --reset-then-reuse-values
+  install_drycc upgrade --reuse-values --reset-then-reuse-values
+  install_helmbroker upgrade --reuse-values --reset-then-reuse-values
   echo -e "\\033[32m---> Upgrade complete, enjoy life...\\033[0m"
 }
 
