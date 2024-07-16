@@ -434,7 +434,7 @@ builder:
 database:
   replicas: ${DATABASE_REPLICAS:-2}
   imageRegistry: ${DRYCC_REGISTRY}
-  limitsMemory: "256Mi"
+  limitsMemory: "512Mi"
   limitsHugepages2Mi: "256Mi"
   persistence:
     enabled: true
@@ -444,7 +444,7 @@ database:
 timeseries:
   replicas: ${TIMESERIES_REPLICAS:-1}
   imageRegistry: ${DRYCC_REGISTRY}
-  limitsMemory: "256Mi"
+  limitsMemory: "512Mi"
   limitsHugepages2Mi: "256Mi"
   persistence:
     enabled: true
