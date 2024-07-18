@@ -31,6 +31,13 @@ run:
   command:
   - ./deployment-tasks.sh
   image: worker
+  # If the field is empty, it means it will be executed forever
+  when:
+    ptypes:
+    - web
+    - webbbsbs
+  # Maximum execution time
+  timeout: 100
 deploy:
   web:
     command:
