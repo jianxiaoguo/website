@@ -80,6 +80,10 @@ function configure_os {
     iptables -F -t nat
     iptables -X -t nat
     iptables -P FORWARD ACCEPT
+  else
+    # Kube hostport depends on iptables
+    echo -e "\\033[33m---> The iptables does not exist...\\033[0m"
+    exit 1
   fi
   swapoff -a
   sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab

@@ -72,7 +72,7 @@ Before deleting volume, the volume has to be unmounted.
 
 The client used to manage volume files.
 
-Usage: drycc volumes:client <cmd> [options] -- <args>...
+Usage: drycc volumes:client <cmd> <args>... [options]
 
 Arguments:
   <cmd>
