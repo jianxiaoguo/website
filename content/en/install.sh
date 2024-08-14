@@ -168,7 +168,7 @@ function configure_mirrors {
   configure_registry
   if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]] ; then
     INSTALL_K3S_MIRROR="${INSTALL_DRYCC_MIRROR}"
-    k3s_install_url="https://get-k3s.drycc.cc"
+    k3s_install_url="https://drycc-mirrors.drycc.cc/get-k3s/"
     K3S_RELEASE_URL=https://drycc-mirrors.drycc.cc/k3s-io/k3s/releases
     export INSTALL_K3S_MIRROR
   else
@@ -187,7 +187,7 @@ function configure_mirrors {
 function install_crio {
   curl -SL https://drycc-mirrors.drycc.cc/jqlang/jq/releases/download/jq-1.7.1/jq-linux-amd64 -o /usr/local/bin/jq
   chmod +x /usr/local/bin/jq
-  curl -SL https://get-cri-o.drycc.cc | bash -s
+  curl -SL https://drycc-mirrors.drycc.cc/get-cri-o/ | bash -s
   systemctl daemon-reload
   systemctl start crio
   systemctl enable crio
