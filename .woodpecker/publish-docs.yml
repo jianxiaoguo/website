@@ -8,20 +8,25 @@ steps:
   commands:
   - make build
   - cd public && git init
+  - |
+    for download_url in $(curl -SsL $(curl -SsL https://api.github.com/repos/drycc/workflow-cli/releases|jq -r '.[0].assets_url') | jq -r '.[].browser_download_url'); do
+      echo $(echo $download_url | sed s#https://github.com#https://drycc-mirrors.drycc.cc#g) >> workflow-cli.txt
+    done
   secrets:
   - drycc_registry
   when:
     event:
     - tag
     - push
+    - cron
 
 - name: publish-docs
   image: bash
   commands:
   - chown -R root:root public
   - podman run --rm
-      -e DRONE_COMMIT_AUTHOR="$CI_COMMIT_AUTHOR"
-      -e DRONE_COMMIT_AUTHOR_EMAIL="$CI_COMMIT_AUTHOR_EMAIL"
+      -e DRONE_COMMIT_AUTHOR="${CI_COMMIT_AUTHOR:-drycc}"
+      -e DRONE_COMMIT_AUTHOR_EMAIL="${CI_COMMIT_AUTHOR_EMAIL:-team@drycc.cc}"
       -e PLUGIN_SSH_KEY="$SSH_DEPLOY_KEY"
       -e PLUGIN_BRANCH=main
       -e PLUGIN_REMOTE=git@github.com:drycc/www.drycc.cc.git
@@ -38,3 +43,4 @@ steps:
     event:
     - tag
     - push
+    - cron

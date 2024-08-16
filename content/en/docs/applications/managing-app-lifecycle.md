@@ -79,7 +79,7 @@ Use `drycc run` to execute commands on the deployed application.
 Use `drycc perms:create` to allow another Drycc user to collaborate on your application.
 
 ```
-$ drycc perms:create otheruser
+$ drycc perms:create otheruser perm_code uniqueid
 Adding otheruser to peachy-waxworks collaborators... done
 ```
 
