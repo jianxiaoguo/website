@@ -28,7 +28,7 @@ Adding gateway python-getting-started to python-getting-started... done
 
 ## Create service for an Application
 
-Service is a way of exposing services internally, creating a service generates an internal DNS that can access `procfile_type`.
+Service is a way of exposing services internally, creating a service generates an internal DNS that can access `ptype`.
 the web process type has been created, for others types, you should add as needed.
 
 List the services:
@@ -41,7 +41,7 @@ web        80      TCP         8000           python-getting-started.python-gett
 Add a new service for process type
 ```
 # drycc services:add --help
-# drycc services:add --type=sleep --protocol=TCP --port=8001:8001
+# drycc services:add sleep 8001:8001
 ```
 
 ## Create Route for an Application

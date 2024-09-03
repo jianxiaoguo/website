@@ -28,7 +28,7 @@ build:
     worker:
       RAILS_ENV: development
 run:
-  command:
+- command:
   - ./deployment-tasks.sh
   image: worker
   # If the field is empty, it means it will be executed forever
