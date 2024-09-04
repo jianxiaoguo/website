@@ -344,7 +344,10 @@ function install_gateway() {
   helm repo update
   kubectl apply -f $gateway_api_url/releases/download/${version}/experimental-install.yaml
   helm $command istio-base istio/base -n istio-system --set defaultRevision=default --create-namespace --wait $options
-  helm $command istio-istiod istio/istiod -n istio-system --set pilot.env.PILOT_ENABLE_ALPHA_GATEWAY_API=true --wait $options
+  helm $command istio-istiod istio/istiod -n istio-system \
+    --set pilot.env.PILOT_ENABLE_ALPHA_GATEWAY_API=true \
+    --set pilot.env.PILOT_ENABLE_QUIC_LISTENERS=true \
+    --wait $options
   helm $command istio-gateway istio/gateway -n istio-gateway --create-namespace --wait $options
   echo -e "\\033[32m---> Gateway $command completed!\\033[0m"
 }
