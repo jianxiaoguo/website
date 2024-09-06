@@ -269,7 +269,15 @@ function install_network() {
     --set k8sServicePort=${KUBERNETES_SERVICE_PORT:-6443} \
     --set prometheus.enabled=true \
     --set operator.prometheus.enabled=true \
-    --namespace kube-system $options --wait
+    --set envoy.enabled=false \
+    --namespace kube-system $options --wait  -f - <<EOF
+imagePullSecrets: []
+clustermesh:
+  apiserver:
+    service:
+      externalTrafficPolicy: Cluster
+      internalTrafficPolicy: Cluster
+EOF
   echo -e "\\033[32m---> Network $command completed!\\033[0m"
 }
 
