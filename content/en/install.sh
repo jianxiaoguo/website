@@ -161,9 +161,7 @@ EOF
 [plugins.cri.registry.mirrors."quay.io"]
   endpoint = ["https://quay-mirror.drycc.cc", "https://quay.io"]
 [plugins.cri.registry.mirrors."gcr.io"]
-  endpoint = ["https://quay-mirror.drycc.cc", "https://gcr.io"]
-[plugins.cri.registry.mirrors."k8s.gcr.io"]
-  endpoint = ["https://k8s-mirror.drycc.cc", "https://registry.k8s.io"]
+  endpoint = ["https://gcr-mirror.drycc.cc", "https://gcr.io"]
 [plugins.cri.registry.mirrors."registry.k8s.io"]
   endpoint = ["https://k8s-mirror.drycc.cc", "https://registry.k8s.io"]
 EOF
