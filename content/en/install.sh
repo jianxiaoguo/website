@@ -29,7 +29,7 @@ init_arch() {
 function clean_before_exit {
     # delay before exiting, so stdout/stderr flushes through the logging system
     rm -rf /tmp/drycc-values.yaml 
-    configure_registry runtime
+    configure_containerd runtime
     sleep 3
 }
 trap clean_before_exit EXIT
@@ -113,7 +113,6 @@ function configure_os {
 }
 
 function install_runtime {
-  mkdir -p /var/lib/rancher/k3s/agent/etc/containerd
   # download crun
   if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]] ; then
     crun_base_url="https://drycc-mirrors.drycc.cc/containers"
@@ -124,8 +123,16 @@ function install_runtime {
   crun_download_url=${crun_base_url}/crun/releases/download/${crun_version}/crun-${crun_version}-linux-${ARCH}
   curl -sfL "${crun_download_url}" -o /usr/local/bin/crun
   chmod a+rx /usr/local/bin/crun
-  # configure
-  cat << EOF > "/var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl"
+}
+
+function configure_containerd {
+  CONTAINERD_ETC_PATH="/var/lib/rancher/k3s/agent/etc/containerd"
+  CONTAINERD_CONFIG_FILE="${CONTAINERD_ETC_PATH}/config.toml.tmpl"
+  mkdir -p "${CONTAINERD_ETC_PATH}"
+  if [[ -f  "${REGISTRY_FILE}" ]]; then
+    cat "${REGISTRY_FILE}" > "${CONTAINERD_CONFIG_FILE}"
+  else
+    cat << EOF > "${CONTAINERD_CONFIG_FILE}"
 [plugins.cri.containerd]
   snapshotter = "overlayfs"
   default_runtime_name = "crun"
@@ -137,24 +144,17 @@ function install_runtime {
 [plugins.cri.containerd.runtimes.runc]
   runtime_type = "io.containerd.runc.v2"
 [plugins.cri.containerd.runtimes.runc.options]
-	SystemdCgroup = true
+  SystemdCgroup = true
 EOF
-
-}
-
-function configure_registry {
-  if [[ -f  "${REGISTRY_FILE}" ]]; then
-    cat "${REGISTRY_FILE}" > /var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl
-  else
     if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]]; then
       if [[ "$1" == "runtime" ]] ; then
-        cat << EOF > "/var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl"
+        cat << EOF >> "${CONTAINERD_CONFIG_FILE}"
 [plugins.cri.registry.mirrors]
 [plugins.cri.registry.mirrors."docker.io"]
   endpoint = ["https://docker-mirror.drycc.cc", "https://registry-1.docker.io"]
 EOF
       else
-        cat << EOF > "/var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl"
+        cat << EOF >> "${CONTAINERD_CONFIG_FILE}"
 [plugins.cri.registry.mirrors]
 [plugins.cri.registry.mirrors."docker.io"]
   endpoint = ["https://docker-mirror.drycc.cc", "https://registry-1.docker.io"]
@@ -172,7 +172,6 @@ EOF
 
 function configure_mirrors {
   echo -e "\\033[32m---> Start configuring mirrors\\033[0m"
-  configure_registry
   if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]] ; then
     INSTALL_K3S_MIRROR="${INSTALL_DRYCC_MIRROR}"
     k3s_install_url="https://drycc-mirrors.drycc.cc/get-k3s/"
@@ -195,7 +194,8 @@ function install_k3s_server {
   configure_os
   install_runtime
   configure_mirrors
-  INSTALL_K3S_EXEC="server ${INSTALL_K3S_EXEC} --flannel-backend=none  --disable-network-policy --disable=traefik --disable=servicelb --disable-kube-proxy --cluster-cidr=${CLUSTER_CIDR} --service-cidr=${SERVICE_CIDR} --cluster-domain=${CLUSTER_DOMAIN}"
+  configure_containerd
+  INSTALL_K3S_EXEC="server ${INSTALL_K3S_EXEC} --embedded-registry --flannel-backend=none  --disable-network-policy --disable=traefik --disable=servicelb --disable-kube-proxy --cluster-cidr=${CLUSTER_CIDR} --service-cidr=${SERVICE_CIDR} --cluster-domain=${CLUSTER_DOMAIN}"
   if [[ -n "${K3S_DATA_DIR}" ]] ; then
     INSTALL_K3S_EXEC="$INSTALL_K3S_EXEC --data-dir=${K3S_DATA_DIR}/rancher/k3s"
   fi
@@ -224,8 +224,9 @@ function install_k3s_agent {
   configure_os
   install_runtime
   configure_mirrors
+  configure_containerd
   if [[ -n "${K3S_DATA_DIR}" ]] ; then
-    INSTALL_K3S_EXEC="$INSTALL_K3S_EXEC --data-dir=${K3S_DATA_DIR}/rancher/k3s"
+    INSTALL_K3S_EXEC="$INSTALL_K3S_EXEC --embedded-registry --data-dir=${K3S_DATA_DIR}/rancher/k3s"
   fi
   curl -sfL "${k3s_install_url}" |INSTALL_K3S_EXEC="$INSTALL_K3S_EXEC" sh -s -
 }
