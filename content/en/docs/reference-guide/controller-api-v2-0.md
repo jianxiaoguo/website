@@ -926,7 +926,7 @@ DRYCC_PLATFORM_VERSION: 2.1.0
 Example Request:
 
 ```
-GET /v2/apps/example-go/builds/ HTTP/1.1
+GET /v2/apps/example-go/build/ HTTP/1.1
 Host: drycc.example.com
 Authorization: token abc123
 ```
@@ -940,24 +940,17 @@ DRYCC_PLATFORM_VERSION: 2.1.0
 Content-Type: application/json
 
 {
-    "count": 1,
-    "next": null,
-    "previous": null,
-    "results": [
-        {
-            "app": "example-go",
-            "created": "2014-01-01T00:00:00UTC",
-            "dockerfile": "FROM drycc/slugrunner RUN mkdir -p /app WORKDIR /app ENTRYPOINT [\"/runner/init\"] ADD slug.tgz /app ENV GIT_SHA 060da68f654e75fac06dbedd1995d5f8ad9084db",
-            "image": "example-go",
-            "owner": "test",
-            "procfile": {
-                "web": "example-go"
-            },
-            "sha": "060da68f",
-            "updated": "2014-01-01T00:00:00UTC",
-            "uuid": "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75"
-        }
-    ]
+    "app": "example-go",
+    "created": "2014-01-01T00:00:00UTC",
+    "dockerfile": "FROM drycc/slugrunner RUN mkdir -p /app WORKDIR /app ENTRYPOINT [\"/runner/init\"] ADD slug.tgz /app ENV GIT_SHA 060da68f654e75fac06dbedd1995d5f8ad9084db",
+    "image": "example-go",
+    "owner": "test",
+    "procfile": {
+        "web": "example-go"
+    },
+    "sha": "060da68f",
+    "updated": "2014-01-01T00:00:00UTC",
+    "uuid": "de1bf5b5-4a72-4f94-a10c-d2a3741cdf75"
 }
 ```
 
@@ -966,7 +959,7 @@ Content-Type: application/json
 Example Request:
 
 ```
-POST /v2/apps/example-go/builds/ HTTP/1.1
+POST /v2/apps/example-go/build/ HTTP/1.1
 Host: drycc.example.com
 Content-Type: application/json
 Authorization: token abc123
