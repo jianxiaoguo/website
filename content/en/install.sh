@@ -7,9 +7,14 @@ GATEWAY_CLASS="istio"
 CLUSTER_CIDR=${CLUSTER_CIDR:-"10.42.0.0/16"}
 SERVICE_CIDR=${SERVICE_CIDR:-"10.43.0.0/16"}
 CLUSTER_DOMAIN=${CLUSTER_DOMAIN:-"cluster.local"}
-CERT_MANAGER_ENABLED="${CERT_MANAGER_ENABLED:false}"
+CERT_MANAGER_ENABLED="${CERT_MANAGER_ENABLED:-false}"
 DRYCC_REGISTRY="${DRYCC_REGISTRY:-registry.drycc.cc}"
 CHARTS_URL=oci://registry.drycc.cc/$([ "$CHANNEL" == "stable" ] && echo charts || echo charts-testing)
+CONTAINERD_RUNTIMES="${CONTAINERD_RUNTIMES:-runc}"
+CONTAINERD_CONFIG_PATH="${CONTAINERD_CONFIG_PATH:-/var/lib/rancher/k3s/agent/etc/containerd}"
+mkdir -p "${CONTAINERD_CONFIG_PATH}"
+CONTAINERD_CONFIG_FILE="${CONTAINERD_CONFIG_PATH}/config.toml.tmpl"
+
 
 # initArch discovers the architecture for this system.
 init_arch() {
@@ -28,8 +33,7 @@ init_arch() {
 
 function clean_before_exit {
     # delay before exiting, so stdout/stderr flushes through the logging system
-    rm -rf /tmp/drycc-values.yaml 
-    configure_containerd runtime
+    rm -rf /tmp/drycc-values.yaml
     sleep 3
 }
 trap clean_before_exit EXIT
@@ -112,8 +116,8 @@ function configure_os {
   echo -e "\\033[32m---> Configuring kernel parameters finish\\033[0m"
 }
 
-function install_runtime {
-  # download crun
+function install_crun_runtime {
+  echo -e "\\033[32m---> Start install crun runtime\\033[0m"
   if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]] ; then
     crun_base_url="https://drycc-mirrors.drycc.cc/containers"
   else
@@ -123,38 +127,74 @@ function install_runtime {
   crun_download_url=${crun_base_url}/crun/releases/download/${crun_version}/crun-${crun_version}-linux-${ARCH}
   curl -sfL "${crun_download_url}" -o /usr/local/bin/crun
   chmod a+rx /usr/local/bin/crun
+  echo -e "\\033[32m---> crun runtime install completed!\\033[0m"
 }
 
-function configure_containerd {
-  CONTAINERD_ETC_PATH="/var/lib/rancher/k3s/agent/etc/containerd"
-  CONTAINERD_CONFIG_FILE="${CONTAINERD_ETC_PATH}/config.toml.tmpl"
-  mkdir -p "${CONTAINERD_ETC_PATH}"
-  if [[ -f  "${REGISTRY_FILE}" ]]; then
-    cat "${REGISTRY_FILE}" > "${CONTAINERD_CONFIG_FILE}"
+function install_kata_runtime {
+  echo -e "\\033[32m---> Start install kata runtime\\033[0m"
+  if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]] ; then
+    kata_base_url="https://drycc-mirrors.drycc.cc/kata-containers"
   else
-    cat << EOF > "${CONTAINERD_CONFIG_FILE}"
+    kata_base_url="https://github.com/kata-containers"
+  fi
+
+  kata_version=$(curl -Ls ${kata_base_url}/kata-containers/releases|grep /kata-containers/kata-containers/releases/tag/ | sed -E 's/.*\/kata-containers\/kata-containers\/releases\/tag\/([0-9\.]{1,}(-rc.[0-9]{1,})?)".*/\1/g' | head -1)
+  kata_package=kata-static-${kata_version}-${ARCH}.tar.xz
+  kata_download_url=${kata_base_url}/kata-containers/releases/download/${kata_version}/${kata_package}
+
+  curl -sfL "${kata_download_url}" -o ${kata_package}
+  tar xvf ${kata_package} -C /
+  ln -s /opt/kata/bin/containerd-shim-kata-v2 /usr/local/bin/containerd-shim-kata-v2
+  ln -s /opt/kata/bin/kata-collect-data.sh /usr/local/bin/kata-collect-data.sh
+  ln -s /opt/kata/bin/kata-runtime /usr/local/bin/kata-runtime
+  rm -rf ${kata_package}
+  echo -e "\\033[32m---> Kata runtime install completed!\\033[0m"
+}
+
+function install_runtime {
+  readarray -d , -t containerd_runtimes <<<"$CONTAINERD_RUNTIMES"
+  if [[ "$CONTAINERD_RUNTIMES" =~ "crun" ]]; then
+    containerd_default_runtime="crun"
+  else
+    containerd_default_runtime="runc"
+  fi
+  cat << EOF > "${CONTAINERD_CONFIG_FILE}"
 [plugins.cri.containerd]
   snapshotter = "overlayfs"
-  default_runtime_name = "crun"
+  default_runtime_name = "${containerd_default_runtime}"
   disable_snapshot_annotations = true
+EOF
+
+  for (( n=0; n < ${#containerd_runtimes[*]}; n++ ))
+  do
+    if [[ "${containerd_runtimes[n]}" == "kata" ]]; then
+      install_kata_runtime
+      cat << EOF >> "${CONTAINERD_CONFIG_FILE}"
+[plugins.cri.containerd.runtimes.kata]
+  runtime_type = "io.containerd.kata.v2"
+EOF
+    elif [[ "${containerd_runtimes[n]}" == "crun" ]]; then
+      install_crun_runtime
+      cat << EOF >> "${CONTAINERD_CONFIG_FILE}"
 [plugins.cri.containerd.runtimes.crun]
   runtime_type = "io.containerd.runc.v2"
 [plugins.cri.containerd.runtimes.crun.options]
   SystemdCgroup = true
+EOF
+    else
+      cat << EOF >> "${CONTAINERD_CONFIG_FILE}"
 [plugins.cri.containerd.runtimes.runc]
   runtime_type = "io.containerd.runc.v2"
 [plugins.cri.containerd.runtimes.runc.options]
   SystemdCgroup = true
 EOF
-    if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]]; then
-      if [[ "$1" == "runtime" ]] ; then
-        cat << EOF >> "${CONTAINERD_CONFIG_FILE}"
-[plugins.cri.registry.mirrors]
-[plugins.cri.registry.mirrors."docker.io"]
-  endpoint = ["https://docker-mirror.drycc.cc", "https://registry-1.docker.io"]
-EOF
-      else
-        cat << EOF >> "${CONTAINERD_CONFIG_FILE}"
+    fi
+  done
+}
+
+function configure_registry {
+  if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]]; then
+    cat << EOF >> "${CONTAINERD_CONFIG_FILE}"
 [plugins.cri.registry.mirrors]
 [plugins.cri.registry.mirrors."docker.io"]
   endpoint = ["https://docker-mirror.drycc.cc", "https://registry-1.docker.io"]
@@ -165,13 +205,11 @@ EOF
 [plugins.cri.registry.mirrors."registry.k8s.io"]
   endpoint = ["https://k8s-mirror.drycc.cc", "https://registry.k8s.io"]
 EOF
-      fi
-    fi
   fi
 }
 
-function configure_mirrors {
-  echo -e "\\033[32m---> Start configuring mirrors\\033[0m"
+function configure_k3s_mirrors {
+  echo -e "\\033[32m---> Start configuring k3s mirrors\\033[0m"
   if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]] ; then
     INSTALL_K3S_MIRROR="${INSTALL_DRYCC_MIRROR}"
     k3s_install_url="https://drycc-mirrors.drycc.cc/get-k3s/"
@@ -187,14 +225,14 @@ function configure_mirrors {
     INSTALL_K3S_VERSION=$(urlencode "$INSTALL_K3S_VERSION")
   fi
   export INSTALL_K3S_VERSION
-  echo -e "\\033[32m---> Configuring mirrors finish\\033[0m"
+  echo -e "\\033[32m---> Configuring k3s mirrors finish\\033[0m"
 }
 
 function install_k3s_server {
   configure_os
   install_runtime
-  configure_mirrors
-  configure_containerd
+  configure_registry
+  configure_k3s_mirrors
   INSTALL_K3S_EXEC="server ${INSTALL_K3S_EXEC} --embedded-registry --flannel-backend=none  --disable-network-policy --disable=traefik --disable=servicelb --disable-kube-proxy --cluster-cidr=${CLUSTER_CIDR} --service-cidr=${SERVICE_CIDR} --cluster-domain=${CLUSTER_DOMAIN}"
   if [[ -n "${K3S_DATA_DIR}" ]] ; then
     INSTALL_K3S_EXEC="$INSTALL_K3S_EXEC --data-dir=${K3S_DATA_DIR}/rancher/k3s"
@@ -203,28 +241,25 @@ function install_k3s_server {
     INSTALL_K3S_EXEC="$INSTALL_K3S_EXEC --cluster-init"
   fi
   curl -sfL "${k3s_install_url}" |INSTALL_K3S_EXEC="$INSTALL_K3S_EXEC" sh -s -
-  kubectl apply -f - <<EOF
----
+
+  readarray -d , -t containerd_runtimes <<<"$CONTAINERD_RUNTIMES"
+  for (( n=0; n < ${#containerd_runtimes[*]}; n++ ))
+  do
+    kubectl apply -f - <<EOF
 apiVersion: node.k8s.io/v1
 kind: RuntimeClass
 metadata:
-  name: crun
-handler: crun
----
-apiVersion: node.k8s.io/v1
-kind: RuntimeClass
-metadata:
-  name: runc
-handler: runc
----
+  name: ${containerd_runtimes[n]}
+handler: ${containerd_runtimes[n]}
 EOF
+  done
 }
 
 function install_k3s_agent {
   configure_os
   install_runtime
-  configure_mirrors
-  configure_containerd
+  configure_registry
+  configure_k3s_mirrors
   if [[ -n "${K3S_DATA_DIR}" ]] ; then
     INSTALL_K3S_EXEC="$INSTALL_K3S_EXEC --embedded-registry --data-dir=${K3S_DATA_DIR}/rancher/k3s"
   fi
@@ -271,12 +306,7 @@ function install_metallb() {
   helm $command metallb $CHARTS_URL/metallb \
     --set speaker.frr.enabled=true \
     --namespace metallb \
-    --create-namespace $options
-
-  echo -e "\\033[32m---> Waiting metallb pods ready...\\033[0m"
-  kubectl wait pods -n metallb --all  --for condition=Ready --timeout=600s
-  echo -e "\\033[32m---> Waiting metallb webhook ready...\\033[0m"
-  sleep 30s
+    --create-namespace $options --wait
 
   if [[ -z "${METALLB_CONFIG_FILE}" ]] ; then
     echo -e "\\033[32m---> Metallb using the default configuration.\\033[0m"

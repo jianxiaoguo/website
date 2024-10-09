@@ -10,7 +10,9 @@ ip link delete nodelocaldns > /dev/null 2>&1 || true
 iptables-save | grep -iv cilium | iptables-restore || true
 ip6tables-save | grep -iv cilium | ip6tables-restore || true
 
-/usr/local/bin/k3s-killall.sh
+if [[ -x /usr/local/bin/k3s-killall.sh ]] ; then
+    /usr/local/bin/k3s-killall.sh
+fi
 
 if [[ -x /usr/local/bin/k3s-uninstall.sh ]] ; then
     /usr/local/bin/k3s-uninstall.sh
@@ -26,8 +28,10 @@ fi
 
 iptables -F && iptables -X && iptables -F -t nat && iptables -X -t nat && iptables -P FORWARD ACCEPT
 
+rm -rf /etc/cni
 rm -rf /etc/rancher
-rm -rf /etc/cni/net.d/*
-rm -rf /var/lib/rancher/
-rm -rf /usr/local/bin/*runsc* /usr/local/bin/crun
+rm -rf /var/lib/rancher
+rm -rf /usr/local/bin/crun
 rm -rf /usr/local/bin/helm ~/.config/helm
+
+rm -rf /opt/kata /usr/local/bin/containerd-shim-kata-v2 /usr/local/bin/kata-collect-data.sh /usr/local/bin/kata-runtime
