@@ -169,9 +169,15 @@ EOF
   do
     if [[ "${containerd_runtimes[n]}" == "kata" ]]; then
       install_kata_runtime
+      sed -i s/sandbox_cgroup_only=false/sandbox_cgroup_only=true/g /opt/kata/share/defaults/kata-containers/configuration.toml
       cat << EOF >> "${CONTAINERD_CONFIG_FILE}"
 [plugins.cri.containerd.runtimes.kata]
   runtime_type = "io.containerd.kata.v2"
+  privileged_without_host_devices = true
+  pod_annotations = ["io.katacontainers.*"]
+  container_annotations = ["io.katacontainers.*"]
+[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.kata.options]
+  ConfigPath = "/opt/kata/share/defaults/kata-containers/configuration.toml"
 EOF
     elif [[ "${containerd_runtimes[n]}" == "crun" ]]; then
       install_crun_runtime
