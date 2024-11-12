@@ -11,9 +11,10 @@ The Drycc stack is intended for advanced use cases only. Unless you have a speci
 
 A manifest has three top-level sections.
 
-- build – Specifies the to build Dockerfile
-- run – Specifies the release phase tasks to execute
-- deploy  – Specifies process types and the commands to run for each type
+- build – Specifies the to build Dockerfile.
+- run – Specifies the release phase tasks to execute.
+- config -  Specifies config group, global group automatic reference.
+- deploy  – Specifies process types and the commands to run for each type.
 
 Here’s an example that illustrates using a manifest to build Docker images.
 
@@ -27,6 +28,13 @@ build:
       FOO: bar
     worker:
       RAILS_ENV: development
+config:
+  global:
+  - name: DEBUG
+    value: "true"
+  jvm-config:
+  - name: JAVA_OPTIONS
+    value: -Xms512m -Xmx1024m -XX:PermSize=128m
 run:
 - command:
   - ./deployment-tasks.sh
@@ -45,6 +53,20 @@ deploy:
     - -ec
     args:
     - bundle exec puma -C config/puma.rb
+    config:
+      env:
+      - name: PORT
+        value: 5000
+      ref:
+      - jvm-config
+    # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+    healthcheck:
+      livenessProbe:
+        httpGet:
+          path: /healthz
+          port: 8080
+        initialDelaySeconds: 3
+        periodSeconds: 3
   worker:
     command:
     - bash

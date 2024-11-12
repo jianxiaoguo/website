@@ -328,10 +328,19 @@ Use "drycc pts --help" for a list of pts command-line (process types info).
 
 ```
 $ drycc pts
-NAME          RELEASE    READY    UP-TO-DATE    AVAILABLE    STARTED                   
-web           v2         3/3      1             1            2023-12-08T02:25:00UTC    
-background    v2         1/1      1             1            2023-12-08T02:25:00UTC    
+NAME          RELEASE    READY    UP-TO-DATE    AVAILABLE    GARBAGE    STARTED                   
+web           v2         3/3      1             1            true       2023-12-08T02:25:00UTC    
+background    v2         1/1      1             1            false      2023-12-08T02:25:00UTC    
 ```
+
+## Clean a Process Types
+
+Clean up non-existent ptypes, it is usually executed automatically when autodeploy is set to `true`.
+
+```
+$ drycc pts:clean background
+```
+
 
 ## Get deployment info of the application process type
 

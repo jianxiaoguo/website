@@ -23,6 +23,8 @@ Use `drycc config` to modify environment variables for a deployed application.
     config:unset       unset environment variables for an app
     config:pull        extract environment variables to .env
     config:push        set environment variables from .env
+    config:attach      attach config group top a ptype for an app
+    config:detach      detach config group top a ptype for an app
 
     Use `drycc help [command]` to learn more.
 
