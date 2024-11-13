@@ -208,6 +208,8 @@ function configure_registry {
   endpoint = ["https://quay-mirror.drycc.cc", "https://quay.io"]
 [plugins.cri.registry.mirrors."gcr.io"]
   endpoint = ["https://gcr-mirror.drycc.cc", "https://gcr.io"]
+[plugins.cri.registry.mirrors."ghcr.io"]
+  endpoint = ["https://ghcr-mirror.drycc.cc", "https://ghcr.io"]
 [plugins.cri.registry.mirrors."registry.k8s.io"]
   endpoint = ["https://k8s-mirror.drycc.cc", "https://registry.k8s.io"]
 EOF
