@@ -440,8 +440,8 @@ function install_drycc {
   command=${1:-"install"}
   options=${2:-""}
   echo -e "\\033[32m---> Start $command workflow...\\033[0m"
-  RABBITMQ_USERNAME=${RABBITMQ_USERNAME:-$(cat /proc/sys/kernel/random/uuid)}
-  RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-$(cat /proc/sys/kernel/random/uuid)}
+  local RABBITMQ_USERNAME=${RABBITMQ_USERNAME:-$(tr -dc a-z </dev/urandom | head -c 16)}
+  local RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-$(tr -dc A-Za-z0-9 </dev/urandom | head -c 32)}
   if [[ "$CHANNEL" == "stable" ]]; then
     if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]] ; then
       FILER_VERSION=$(curl -Ls https://drycc-mirrors.drycc.cc/drycc/filer/releases|grep /drycc/filer/releases/tag/ | sed -E 's/.*\/drycc\/filer\/releases\/tag\/(v[0-9\.]{1,}(-rc.[0-9]{1,})?)".*/\1/g' | head -1)
@@ -644,8 +644,10 @@ function install_helmbroker {
   fi
   command=${1:-"install"}
   options=${2:-""}
-  HELMBROKER_USERNAME=${HELMBROKER_USERNAME:-$(cat /proc/sys/kernel/random/uuid)}
-  HELMBROKER_PASSWORD=${HELMBROKER_PASSWORD:-$(cat /proc/sys/kernel/random/uuid)}
+  local RABBITMQ_USERNAME=$(kubectl get secrets -n drycc rabbitmq-creds -o jsonpath="{.data.username}"| base64 -d)
+  local RABBITMQ_PASSWORD=$(kubectl get secrets -n drycc rabbitmq-creds -o jsonpath="{.data.password}"| base64 -d)
+  local HELMBROKER_USERNAME=${HELMBROKER_USERNAME:-$(cat /proc/sys/kernel/random/uuid)}
+  local HELMBROKER_PASSWORD=${HELMBROKER_PASSWORD:-$(cat /proc/sys/kernel/random/uuid)}
 
   echo -e "\\033[32m---> Start $command helmbroker...\\033[0m"
 
@@ -691,10 +693,6 @@ EOF
 }
 
 function upgrade {
-  RABBITMQ_USERNAME=$(kubectl get secrets -n drycc rabbitmq-creds -o jsonpath="{.data.username}"| base64 -d)
-  RABBITMQ_PASSWORD=$(kubectl get secrets -n drycc rabbitmq-creds -o jsonpath="{.data.password}"| base64 -d)
-  export RABBITMQ_USERNAME RABBITMQ_PASSWORD
-
   install_network upgrade --reset-then-reuse-values
   install_metallb upgrade --reset-then-reuse-values
   install_gateway upgrade --reset-then-reuse-values
