@@ -57,18 +57,13 @@ drycc-logger-fluentbit-45h7j              1/1       Running   0          5m
 drycc-logger-fluentbit-4z7lw              1/1       Running   0          5m
 drycc-logger-fluentbit-k2wsw              1/1       Running   0          5m
 drycc-logger-fluentbit-skdw4              1/1       Running   0          5m
-drycc-redis-8nazu                         1/1       Running   0          5m
-drycc-monitor-grafana-tm266               1/1       Running   0          5m
-drycc-monitor-telegraf-51zel              1/1       Running   1          5m
-drycc-monitor-telegraf-cdasg              1/1       Running   0          5m
-drycc-monitor-telegraf-hea6x              1/1       Running   0          5m
-drycc-monitor-telegraf-r7lsg              1/1       Running   0          5m
+drycc-valkey-8nazu                        1/1       Running   0          5m
+drycc-grafana-tm266                       1/1       Running   0          5m
 drycc-registry-1814324048-yomz5           1/1       Running   0          5m
 drycc-registry-proxy-4m3o4                1/1       Running   0          5m
 drycc-registry-proxy-no3r1                1/1       Running   0          5m
 drycc-registry-proxy-ou8is                1/1       Running   0          5m
 drycc-registry-proxy-zyajl                1/1       Running   0          5m
-drycc-rabbitmq-0                          1/1       Running   0          5m
 ```
 
 ### Step 3: Upgrade the Drycc Client

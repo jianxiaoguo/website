@@ -134,16 +134,9 @@ Prometheus stores all metrics data as time series, i.e metrics information is st
 timestamp at which it was recorded, optional key-value pairs called as labels can also be stored along
 with metrics.
 
-## Rabbitmq
-
-**Project Location:** [drycc/rabbitmq](https://github.com/drycc/rabbitmq)
-
-RabbitMQ is the most widely deployed open source message broker.
-Controller use celery with rabbitMQ to execute the asynchronous task.
-
 ## HelmBroker
 
-**Project Location:** [drycc/rabbitmq](https://github.com/drycc/helmbroker)
+**Project Location:** [drycc-addons/helmbroker](https://github.com/drycc-addons/helmbroker)
 
 Helm Broker is a Service Broker that exposes Helm charts as Service Classes in Service Catalog.
 To do so, Helm Broker uses the concept of addons. An addon is an abstraction layer over a Helm chart
@@ -151,7 +144,7 @@ which provides all information required to convert the chart into a Service Clas
 
 ## Prometheus
 
-**Project Location:** [drycc/rabbitmq](https://github.com/drycc/prometheus)
+**Project Location:** [drycc/prometheus](https://github.com/drycc/prometheus)
 
 Prometheus is an open-source systemsmonitoring and alerting toolkit originally built atSoundCloud.
 

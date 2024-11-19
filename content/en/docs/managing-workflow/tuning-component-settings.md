@@ -136,7 +136,7 @@ The following environment variables are tunable for the [Logger][] component:
 
 Setting           | Description
 ----------------- | ---------------------------------
-STORAGE_ADAPTER   | How to store logs that are sent to the logger. Legal values are "file", "memory", and "redis". (default: "redis")
+STORAGE_ADAPTER   | How to store logs that are sent to the logger. Legal values are "file", "memory", and "valkey". (default: "valkey")
 NUMBER_OF_LINES   | How many lines to store in the ring buffer (default: 1000)
 
 ## Customizing the Monitor

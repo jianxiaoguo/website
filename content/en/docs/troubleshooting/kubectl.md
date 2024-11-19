@@ -25,7 +25,6 @@ running, run:
 	drycc-monitor-grafana-9ccur    0/1       Pending             0          3s
 	drycc-monitor-telegraf-dc3y3   0/1       Pending             0          2s
 	drycc-registry-5bor6           0/1       Pending             0          3s
-	drycc-rabbitmq-0               0/1       ContainerCreating   0          3s
 
 !!! tip
 	To save precious keystrokes, alias `kubectl --namespace=drycc` to `kd` so it is easier to type

@@ -440,8 +440,6 @@ function install_drycc {
   command=${1:-"install"}
   options=${2:-""}
   echo -e "\\033[32m---> Start $command workflow...\\033[0m"
-  local RABBITMQ_USERNAME=${RABBITMQ_USERNAME:-$(tr -dc a-z </dev/urandom | head -c 16)}
-  local RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-$(tr -dc A-Za-z0-9 </dev/urandom | head -c 32)}
   if [[ "$CHANNEL" == "stable" ]]; then
     if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]] ; then
       FILER_VERSION=$(curl -Ls https://drycc-mirrors.drycc.cc/drycc/filer/releases|grep /drycc/filer/releases/tag/ | sed -E 's/.*\/drycc\/filer\/releases\/tag\/(v[0-9\.]{1,}(-rc.[0-9]{1,})?)".*/\1/g' | head -1)
@@ -467,7 +465,6 @@ builder:
   imageRegistry: ${DRYCC_REGISTRY}
 
 database:
-  replicas: ${DATABASE_REPLICAS:-2}
   imageRegistry: ${DRYCC_REGISTRY}
   limitsMemory: "512Mi"
   limitsHugepages2Mi: "256Mi"
@@ -475,16 +472,6 @@ database:
     enabled: true
     size: ${DATABASE_PERSISTENCE_SIZE:-5Gi}
     storageClass: ${DATABASE_PERSISTENCE_STORAGE_CLASS:-""}
-
-timeseries:
-  replicas: ${TIMESERIES_REPLICAS:-1}
-  imageRegistry: ${DRYCC_REGISTRY}
-  limitsMemory: "512Mi"
-  limitsHugepages2Mi: "256Mi"
-  persistence:
-    enabled: true
-    size: ${TIMESERIES_PERSISTENCE_SIZE:-5Gi}
-    storageClass: ${TIMESERIES_PERSISTENCE_STORAGE_CLASS:-""}
 
 fluentbit:
   imageRegistry: ${DRYCC_REGISTRY}
@@ -499,13 +486,12 @@ controller:
   filerImage: ${FILER_IMAGE}
   filerImagePullPolicy: ${FILER_IMAGE_PULL_POLICY}
 
-redis:
-  replicas: ${REDIS_REPLICAS:-1}
+valkey:
   imageRegistry: ${DRYCC_REGISTRY}
   persistence:
     enabled: true
-    size: ${REDIS_PERSISTENCE_SIZE:-5Gi}
-    storageClass: ${REDIS_PERSISTENCE_STORAGE_CLASS:-""}
+    size: ${VALKEY_PERSISTENCE_SIZE:-5Gi}
+    storageClass: ${VALKEY_PERSISTENCE_STORAGE_CLASS:-""}
 
 storage:
   csi:
@@ -548,16 +534,6 @@ storage:
         size: ${STORAGE_DATANODE_WEED_PERSISTENCE_SIZE:-10Gi}
         storageClass: "${STORAGE_DATANODE_WEED_PERSISTENCE_STORAGE_CLASS}"
 
-rabbitmq:
-  replicas: ${RABBITMQ_REPLICAS:-1}
-  imageRegistry: ${DRYCC_REGISTRY}
-  username: "${RABBITMQ_USERNAME}"
-  password: "${RABBITMQ_PASSWORD}"
-  persistence:
-    enabled: true
-    size: ${RABBITMQ_PERSISTENCE_SIZE:-5Gi}
-    storageClass: ${RABBITMQ_PERSISTENCE_STORAGE_CLASS:-""}
-
 imagebuilder:
   imageRegistry: ${DRYCC_REGISTRY}
 
@@ -565,15 +541,12 @@ logger:
   replicas: ${LOGGER_REPLICAS:-1}
   imageRegistry: ${DRYCC_REGISTRY}
 
-monitor:
-  grafana:
-    imageRegistry: ${DRYCC_REGISTRY}
-    persistence:
-      enabled: true
-      size: ${MONITOR_GRAFANA_PERSISTENCE_SIZE:-5Gi}
-      storageClass: ${MONITOR_GRAFANA_PERSISTENCE_STORAGE_CLASS:-""}
-  telegraf:
-    imageRegistry: ${DRYCC_REGISTRY}
+grafana:
+  imageRegistry: ${DRYCC_REGISTRY}
+  persistence:
+    enabled: true
+    size: ${MONITOR_GRAFANA_PERSISTENCE_SIZE:-5Gi}
+    storageClass: ${MONITOR_GRAFANA_PERSISTENCE_STORAGE_CLASS:-""}
 
 prometheus:
   prometheus-server:
@@ -631,8 +604,6 @@ EOF
     --values /tmp/drycc-values.yaml \
     --values /tmp/drycc-mirror-values.yaml \
     --create-namespace --wait --timeout 30m0s $options
-  echo -e "\\033[32m---> Rabbitmq username: $RABBITMQ_USERNAME\\033[0m"
-  echo -e "\\033[32m---> Rabbitmq password: $RABBITMQ_PASSWORD\\033[0m"
   echo -e "\\033[32m---> Workflow $command completed!\\033[0m"
 }
 
@@ -644,15 +615,14 @@ function install_helmbroker {
   fi
   command=${1:-"install"}
   options=${2:-""}
-  local RABBITMQ_USERNAME=$(kubectl get secrets -n drycc rabbitmq-creds -o jsonpath="{.data.username}"| base64 -d)
-  local RABBITMQ_PASSWORD=$(kubectl get secrets -n drycc rabbitmq-creds -o jsonpath="{.data.password}"| base64 -d)
+  local VALKEY_PASSWORD=$(kubectl get secrets -n drycc valkey-creds -o jsonpath="{.data.password}"| base64 -d)
   local HELMBROKER_USERNAME=${HELMBROKER_USERNAME:-$(cat /proc/sys/kernel/random/uuid)}
   local HELMBROKER_PASSWORD=${HELMBROKER_PASSWORD:-$(cat /proc/sys/kernel/random/uuid)}
 
   echo -e "\\033[32m---> Start $command helmbroker...\\033[0m"
 
   helm $command helmbroker $CHARTS_URL/helmbroker \
-    --set global.rabbitmqLocation="off-cluster" \
+    --set global.valkeyLocation="off-cluster" \
     --set global.gatewayClass=${GATEWAY_CLASS} \
     --set global.clusterDomain=${CLUSTER_DOMAIN} \
     --set global.platformDomain=${PLATFORM_DOMAIN} \
@@ -662,8 +632,8 @@ function install_helmbroker {
     --set username=${HELMBROKER_USERNAME} \
     --set password=${HELMBROKER_PASSWORD} \
     --set replicas=${HELMBROKER_REPLICAS} \
+    --set valkeyUrl=redis://:${VALKEY_PASSWORD}@drycc-valkey.drycc.svc.${CLUSTER_DOMAIN}:16379/11 \
     --set celeryReplicas=${HELMBROKER_CELERY_REPLICAS} \
-    --set rabbitmqUrl="amqp://${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}@drycc-rabbitmq.drycc.svc.${CLUSTER_DOMAIN}:5672/helmbroker" \
     --namespace drycc-helmbroker --create-namespace $options --wait -f - <<EOF
 repositories:
 - name: drycc-helmbroker

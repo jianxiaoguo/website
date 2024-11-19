@@ -169,9 +169,8 @@ CONTROLLER_CELERY_REPLICAS                      | Number of controller celery re
 CONTROLLER_WEBHOOK_REPLICAS                     | Number of controller webhook replicas to deploy
 CONTROLLER_APP_RUNTIME_CLASS                    | RuntimeClass is a feature for selecting the container runtime configuration.
 CONTROLLER_APP_STORAGE_CLASS                    | StorageClass allocated by `drycc volumes`; default storageClass is used by default
-REDIS_REPLICAS                                  | Number of redis replicas to deploy
-REDIS_PERSISTENCE_SIZE                          | The size of the persistence space allocated to `redis`, which is `5Gi` by default
-REDIS_PERSISTENCE_STORAGE_CLASS                 | StorangeClass of `redis`; default storangeclass is used by default
+VALKEY_PERSISTENCE_SIZE                         | The size of the persistence space allocated to `valkey`, which is `5Gi` by default
+VALKEY_PERSISTENCE_STORAGE_CLASS                | StorangeClass of `valkey`; default storangeclass is used by default
 STORAGE_CSI_STATEFULSET_REPLICAS                | Number of storage csi controller replicas to deploy
 STORAGE_MAINNODE_TIPD_REPLICAS                  | Number of storage mainode tipd replicas to deploy
 STORAGE_MAINNODE_TIPD_PERSISTENCE_SIZE          | The size of the persistence space allocated to `mainnode tipd`, which is `10Gi` by default
@@ -194,10 +193,6 @@ STORAGE_DATANODE_WEED_PERSISTENCE_STORAGE_CLASS | StorangeClass of `datanode wee
 MONITOR_GRAFANA_PERSISTENCE_SIZE                | The size of the persistence space allocated to `monitor.grafana`, which is `5Gi` by default
 MONITOR_GRAFANA_PERSISTENCE_STORAGE_CLASS       | StorangeClass of `monitor` grafana; default storangeclass is used by default
 LOGGER_REPLICAS                                 | Number of logger replicas to deploy
-RABBITMQ_REPLICAS                               | Number of rabbitmq replicas to deploy
-RABBITMQ_PERSISTENCE_SIZE                       | The size of the persistence space allocated to `rabbitmq`, which is `5Gi` by default
-RABBITMQ_PERSISTENCE_STORAGE_CLASS              | StorangeClass of `rabbitmq`; default storangeclass is used by default
-DATABASE_REPLICAS                               | Number of database replicas to deploy
 DATABASE_PERSISTENCE_SIZE                       | The size of the persistence space allocated to `database`, which is `5Gi` by default
 DATABASE_PERSISTENCE_STORAGE_CLASS              | StorangeClass of `database`; default storangeclass is used by default
 TIMESERIES_REPLICAS                             | Number of timeseries replicas to deploy

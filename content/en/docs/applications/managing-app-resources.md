@@ -46,8 +46,7 @@ You can list available resource services with one `drycc resources:services` com
     5975094d-45cc-4e85-8573-f93937d026c7    opensearch            true          
     1db95161-7193-4544-8c76-e5ad5f6c03f6    pmm                   true          
     5cfb0abf-276c-445b-9060-9aa964ede87d    postgresql-cluster    true          
-    b8f70264-eafc-4b2f-848e-2ec0d059032b    prometheus            true          
-    f8186d36-f334-4094-8e02-d21a61da657b    rabbitmq              true          
+    b8f70264-eafc-4b2f-848e-2ec0d059032b    prometheus            true    
     e1fd0d37-9046-4152-a29b-d155c5657c8b    redis                 true          
     7d2b64c6-0b59-4f08-a2f5-7b17cea6e5ee    redis-cluster         true          
     2e6877df-86e7-4bcc-a869-2a9b6847a465    seaweedfs             true          
