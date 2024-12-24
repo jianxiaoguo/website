@@ -25,9 +25,11 @@ build:
     worker: worker/Dockerfile
   config:
     web:
-      FOO: bar
+    - name: FOO
+      value: bar
     worker:
-      RAILS_ENV: development
+    - name: RAILS_ENV
+      value: development
 config:
   global:
   - name: DEBUG

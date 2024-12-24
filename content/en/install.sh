@@ -281,17 +281,16 @@ function check_metallb {
   fi
 }
 
+# Best practices
+#
+# 1. Jumbo frames, change MTU(9000).
+# 2. Big tcp, enableIPv6BIGTCP/enableIPv4BIGTCP.
+# 3. Set `routingMode=native` and `ipv4NativeRoutingCIDR`.
+# 4. Change `loadBalancer.mode` to dsr(requires `routingMode=native`).
+# 5. Set `loadBalancer.acceleration=native`(requires hardware support).
+#
+# The following is a general configuration without optimization.
 function install_network() {
-  # Best practices
-  #
-  # 1. Jumbo frames, change MTU(9000).
-  # 2. Big tcp, enableIPv6BIGTCP/enableIPv4BIGTCP.
-  # 3. Set `routingMode=native` and `ipv4NativeRoutingCIDR`.
-  # 4. Change `loadBalancer.mode` to dsr(requires `routingMode=native`).
-  # 5. Set `loadBalancer.acceleration=native`(requires hardware support).
-  #
-  # The following is a general configuration without optimization.
-
   command=${1:-"install"}
   options=${2:-""}
   echo -e "\\033[32m---> Start $command network...\\033[0m"
