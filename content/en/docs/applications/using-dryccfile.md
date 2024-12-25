@@ -31,23 +31,19 @@ build:
     - name: RAILS_ENV
       value: development
 config:
-  global:
-  - name: DEBUG
-    value: "true"
-  jvm-config:
-  - name: JAVA_OPTIONS
-    value: -Xms512m -Xmx1024m -XX:PermSize=128m
+- name: DEBUG
+  group: "global"
+  value: "true"
+- name: JAVA_OPTIONS
+  group: "jvm-config"
+  value: -Xms512m -Xmx1024m -XX:PermSize=128m
 run:
-- command:
-  - ./deployment-tasks.sh
-  image: worker
-  # If the field is empty, it means it will be executed forever
-  when:
-    ptypes:
-    - web
-    - webbbsbs
-  # Maximum execution time
-  timeout: 100
+  web:
+    command:
+    - ./deployment-tasks.sh
+    image: worker
+    # Maximum execution time
+    timeout: 100
 deploy:
   web:
     command:
