@@ -385,7 +385,7 @@ function install_gateway() {
   else
     gateway_api_url=https://github.com/kubernetes-sigs/gateway-api
   fi
-  version=$(curl -Ls $gateway_api_url/releases|grep /kubernetes-sigs/gateway-api/releases/tag/ | sed -E 's/.*\/kubernetes-sigs\/gateway-api\/releases\/tag\/(v[0-9\.]{1,}(-rc[0-9]{1,})?)".*/\1/g' | head -1)
+  version=$(curl -Ls $gateway_api_url/releases|grep /kubernetes-sigs/gateway-api/releases/tag/ | sed -E 's/.*\/kubernetes-sigs\/gateway-api\/releases\/tag\/(v[0-9\.]{1,}(-rc.[0-9]{1,})?)".*/\1/g' | head -1)
 
   helm repo add istio https://drycc-mirrors.drycc.cc/istio-charts
   helm repo update
