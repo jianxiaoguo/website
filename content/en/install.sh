@@ -208,18 +208,22 @@ function configure_registry {
 mirrors:
   docker.io:
     endpoint:
+    - "https://docker.m.daocloud.io"
     - "https://docker-mirror.drycc.cc"
     - "https://registry-1.docker.io"
   quay.io:
     endpoint:
+    - "https://quay.m.daocloud.io"
     - "https://quay-mirror.drycc.cc"
     - "https://quay.io"
   gcr.io:
     endpoint:
+    - "https://gcr.m.daocloud.io"
     - "https://quay-mirror.drycc.cc"
     - "https://gcr.io"
   registry.k8s.io:
     endpoint:
+    - "https://k8s.m.daocloud.io"
     - "https://k8s-mirror.drycc.cc"
     - "https://registry.k8s.io"
 EOF
@@ -285,6 +289,7 @@ function install_k3s_agent {
 }
 
 function install_longhorn {
+  options=${1:-""}
   helm repo add longhorn https://drycc-mirrors.drycc.cc/longhorn-charts
   helm repo update
   if [[ -z "${LONGHORN_CONFIG_FILE}" ]] ; then
@@ -298,10 +303,30 @@ function install_longhorn {
       --set longhornUI.replicas=1 \
       --set persistence.defaultClassReplicaCount=1 \
       --namespace longhorn-system \
-      --create-namespace --wait
+      --create-namespace $options --wait
   else
     helm upgrade --install longhorn longhorn/longhorn -f "${LONGHORN_CONFIG_FILE}" --wait
   fi
+  echo -e "\\033[32m---> Longhorn install completed!\\033[0m"
+}
+
+function install_mountpoint {
+  options=${1:-""}
+  helm repo add aws-mountpoint-s3-csi-driver https://drycc-mirrors.drycc.cc/mountpoint-charts
+  helm repo update
+
+  if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]] ; then
+    mountpoint_api_url=https://drycc-mirrors.drycc.cc/drycc-addons/mountpoint-s3-csi-driver
+  else
+    mountpoint_api_url=https://github.com/drycc-addons/mountpoint-s3-csi-driver
+  fi
+  version=$(curl -Ls $mountpoint_api_url/releases|grep /drycc-addons/mountpoint-s3-csi-driver/releases/tag/ | sed -E 's/.*\/drycc-addons\/mountpoint-s3-csi-driver\/releases\/tag\/v([0-9\.]{1,}(-rc.[0-9]{1,})?)".*/\1/g' | head -1)
+
+  helm upgrade --install aws-mountpoint-s3-csi-driver aws-mountpoint-s3-csi-driver/aws-mountpoint-s3-csi-driver \
+    --set experimental.podMounter=true \
+    --set image.repository=registry.drycc.cc/drycc-addons/mountpoint-s3-csi-driver \
+    --set image.tag=${version} \
+    --namespace kube-system $options --wait
   echo -e "\\033[32m---> Longhorn install completed!\\033[0m"
 }
 
@@ -671,6 +696,7 @@ function upgrade {
   install_cert_manager --reset-then-reuse-values
   install_catalog --reset-then-reuse-values
   install_longhorn --reset-then-reuse-values
+  install_mountpoint --reset-then-reuse-values
   install_drycc --reset-then-reuse-values
   install_helmbroker --reset-then-reuse-values
   echo -e "\\033[32m---> Upgrade complete, enjoy life...\\033[0m"
@@ -685,6 +711,7 @@ if [[ -z "$@" ]] ; then
   install_helm
   install_components
   install_longhorn
+  install_mountpoint
   install_drycc
   install_helmbroker
   echo -e "\\033[32m---> Installation complete, enjoy life...\\033[0m"
