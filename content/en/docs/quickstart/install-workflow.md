@@ -162,6 +162,7 @@ CHANNEL                                         | By default, `stable` channel w
 KUBERNETES_SERVICE_HOST                         | Set with the HOST of the loadbalancer that was in front of kube-apiserver
 KUBERNETES_SERVICE_PORT                         | Set with the PORT of the loadbalancer that was in front of kube-apiserver
 METALLB_CONFIG_FILE                             | The metallb config file path, layer 2 network is used by default
+LONGHORN_CONFIG_FILE                            | The Longhorn config file path
 INSTALL_DRYCC_MIRROR                            | Specify the accelerated mirror location. Currently, only `cn` is supported
 BUILDER_REPLICAS                                | Number of builder replicas to deploy
 CONTROLLER_API_REPLICAS                         | Number of controller api replicas to deploy
@@ -171,25 +172,8 @@ CONTROLLER_APP_RUNTIME_CLASS                    | RuntimeClass is a feature for 
 CONTROLLER_APP_STORAGE_CLASS                    | StorageClass allocated by `drycc volumes`; default storageClass is used by default
 VALKEY_PERSISTENCE_SIZE                         | The size of the persistence space allocated to `valkey`, which is `5Gi` by default
 VALKEY_PERSISTENCE_STORAGE_CLASS                | StorangeClass of `valkey`; default storangeclass is used by default
-STORAGE_CSI_STATEFULSET_REPLICAS                | Number of storage csi controller replicas to deploy
-STORAGE_MAINNODE_TIPD_REPLICAS                  | Number of storage mainode tipd replicas to deploy
-STORAGE_MAINNODE_TIPD_PERSISTENCE_SIZE          | The size of the persistence space allocated to `mainnode tipd`, which is `10Gi` by default
-STORAGE_MAINNODE_TIPD_PERSISTENCE_STORAGE_CLASS | StorangeClass of `mainnode tipd`; default storangeclass is used by default
-STORAGE_MAINNODE_WEED_REPLICAS                  | Number of storage mainode weed replicas to deploy
-STORAGE_MAINNODE_WEED_PREALLOCATE               | Preallocate disk space for volumes, `false` is used by default
-STORAGE_MAINNODE_WEED_SIZE_LIMIT_MB             | Master stops directing writes to oversized volumes, `30000` is used by default
-STORAGE_MAINNODE_WEED_DEFAULT_REPLICATION       | default replication type if not specified, which is `000` by default
-STORAGE_MAINNODE_WEED_PERSISTENCE_SIZE          | The size of the persistence space allocated to `mainnode weed`, which is `10Gi` by default
-STORAGE_MAINNODE_WEED_PERSISTENCE_STORAGE_CLASS | StorangeClass of `mainnode weed`; default storangeclass is used by default
-STORAGE_METANODE_TIKV_REPLICAS                  | Number of storage metanode tikv replicas to deploy
-STORAGE_METANODE_TIKV_PERSISTENCE_SIZE          | The size of the persistence space allocated to `metanode tikv`, which is `10Gi` by default
-STORAGE_METANODE_TIKV_PERSISTENCE_STORAGE_CLASS | StorangeClass of `mainnode tikv`; default storangeclass is used by default
-STORAGE_METANODE_WEED_REPLICAS                  | Number of storage metanode weed replicas to deploy
-STORAGE_METANODE_WEED_PERSISTENCE_SIZE          | The size of the persistence space allocated to `metanode weed`, which is `10Gi` by default
-STORAGE_METANODE_WEED_PERSISTENCE_STORAGE_CLASS | StorangeClass of `mainnode weed`; default storangeclass is used by default
-STORAGE_DATANODE_WEED_REPLICAS                  | Number of storage datanode weed replicas to deploy
-STORAGE_DATANODE_WEED_PERSISTENCE_SIZE          | The size of the persistence space allocated to `datanode weed`, which is `20Gi` by default
-STORAGE_DATANODE_WEED_PERSISTENCE_STORAGE_CLASS | StorangeClass of `datanode weed`; default storangeclass is used by default
+STORAGE_PERSISTENCE_SIZE                        | The size of the persistence space allocated to `storage`, which is `5Gi` by default
+STORAGE_PERSISTENCE_STORAGE_CLASS               | StorangeClass of `storage`; default storangeclass is used by default
 MONITOR_GRAFANA_PERSISTENCE_SIZE                | The size of the persistence space allocated to `monitor.grafana`, which is `5Gi` by default
 MONITOR_GRAFANA_PERSISTENCE_STORAGE_CLASS       | StorangeClass of `monitor` grafana; default storangeclass is used by default
 LOGGER_REPLICAS                                 | Number of logger replicas to deploy

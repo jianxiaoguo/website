@@ -284,6 +284,27 @@ function install_k3s_agent {
   curl -sfL "${k3s_install_url}" |INSTALL_K3S_EXEC="$INSTALL_K3S_EXEC" sh -s -
 }
 
+function install_longhorn {
+  helm repo add longhorn https://drycc-mirrors.drycc.cc/longhorn-charts
+  helm repo update
+  if [[ -z "${LONGHORN_CONFIG_FILE}" ]] ; then
+    echo -e "\\033[32m---> Longhorn using the default configuration.\\033[0m"
+    helm upgrade --install longhorn longhorn/longhorn \
+      --set csi.attacherReplicaCount=1 \
+      --set csi.provisionerReplicaCount=1 \
+      --set csi.resizerReplicaCount=1 \
+      --set csi.snapshotterReplicaCount=1 \
+      --set persistence.defaultClass=false \
+      --set longhornUI.replicas=1 \
+      --set persistence.defaultClassReplicaCount=1 \
+      --namespace longhorn-system \
+      --create-namespace --wait
+  else
+    helm upgrade --install longhorn longhorn/longhorn -f "${LONGHORN_CONFIG_FILE}" --wait
+  fi
+  echo -e "\\033[32m---> Longhorn install completed!\\033[0m"
+}
+
 function check_metallb {
   if [[ "${METALLB_CONFIG_FILE}" && ! -f "${METALLB_CONFIG_FILE}" ]] ; then
     echo -e "\\033[33m---> The path ${METALLB_CONFIG_FILE} does not exist...\\033[0m"
@@ -301,11 +322,10 @@ function check_metallb {
 #
 # The following is a general configuration without optimization.
 function install_network() {
-  command=${1:-"install"}
-  options=${2:-""}
-  echo -e "\\033[32m---> Start $command network...\\033[0m"
+  options=${1:-""}
+  echo -e "\\033[32m---> Start install network...\\033[0m"
   kubernetes_service_host=(`ip -o route get to 8.8.8.8 | sed -n 's/.*src \([0-9.]\+\).*/\1/p'`)
-  helm $command cilium $CHARTS_URL/cilium \
+  helm upgrade --install cilium $CHARTS_URL/cilium \
     --set endpointHealthChecking.enabled=false \
     --set healthChecking=false \
     --set operator.replicas=1 \
@@ -322,15 +342,14 @@ function install_network() {
     --set operator.prometheus.enabled=true \
     --set envoy.enabled=false \
     --namespace kube-system $options --wait
-  echo -e "\\033[32m---> Network $command completed!\\033[0m"
+  echo -e "\\033[32m---> Network install completed!\\033[0m"
 }
 
 function install_metallb() {
   check_metallb
-  command=${1:-"install"}
-  options=${2:-""}
-  echo -e "\\033[32m---> Start $command metallb...\\033[0m"
-  helm $command metallb $CHARTS_URL/metallb \
+  options=${1:-""}
+  echo -e "\\033[32m---> Start install metallb...\\033[0m"
+  helm upgrade --install metallb $CHARTS_URL/metallb \
     --set speaker.frr.enabled=true \
     --namespace metallb \
     --create-namespace $options --wait
@@ -373,13 +392,12 @@ EOF
   else
     kubectl apply -n metallb -f ${METALLB_CONFIG_FILE}
   fi
-  echo -e "\\033[32m---> Metallb $command completed!\\033[0m"
+  echo -e "\\033[32m---> Metallb install completed!\\033[0m"
 }
 
 function install_gateway() {
-  command=${1:-"install"}
-  options=${2:-""}
-  echo -e "\\033[32m---> Start $command gateway...\\033[0m"
+  options=${1:-""}
+  echo -e "\\033[32m---> Start install gateway...\\033[0m"
   if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]] ; then
     gateway_api_url=https://drycc-mirrors.drycc.cc/kubernetes-sigs/gateway-api
   else
@@ -390,38 +408,36 @@ function install_gateway() {
   helm repo add istio https://drycc-mirrors.drycc.cc/istio-charts
   helm repo update
   kubectl apply -f $gateway_api_url/releases/download/${version}/experimental-install.yaml
-  helm $command istio-base istio/base -n istio-system --set defaultRevision=default --create-namespace --wait $options
-  helm $command istio-istiod istio/istiod -n istio-system \
+  helm upgrade --install istio-base istio/base -n istio-system --set defaultRevision=default --create-namespace --wait $options
+  helm upgrade --install istio-istiod istio/istiod -n istio-system \
     --set pilot.env.PILOT_ENABLE_ALPHA_GATEWAY_API=true \
     --set pilot.env.PILOT_ENABLE_QUIC_LISTENERS=true \
     --wait $options
-  helm $command istio-gateway istio/gateway -n istio-gateway --create-namespace --wait $options
-  echo -e "\\033[32m---> Gateway $command completed!\\033[0m"
+  helm upgrade --install istio-gateway istio/gateway -n istio-gateway --create-namespace --wait $options
+  echo -e "\\033[32m---> Gateway install completed!\\033[0m"
 }
 
 function install_cert_manager() {
-  command=${1:-"install"}
-  options=${2:-""}
-  echo -e "\\033[32m---> Start $command cert-manager...\\033[0m"
-  helm $command cert-manager $CHARTS_URL/cert-manager \
+  options=${1:-""}
+  echo -e "\\033[32m---> Start install cert-manager...\\033[0m"
+  helm upgrade --install cert-manager $CHARTS_URL/cert-manager \
     --namespace cert-manager \
     --create-namespace \
     --set clusterResourceNamespace=drycc \
     --set "extraArgs={--feature-gates=ExperimentalGatewayAPISupport=true}" \
     --set crds.enabled=true --wait $options
-  echo -e "\\033[32m---> Cert-manager $command completed!\\033[0m"
+  echo -e "\\033[32m---> Cert-manager install completed!\\033[0m"
 }
 
 function install_catalog() {
-  command=${1:-"install"}
-  options=${2:-""}
-  echo -e "\\033[32m---> Start $command catalog...\\033[0m"
-  helm $command catalog $CHARTS_URL/catalog \
+  options=${1:-""}
+  echo -e "\\033[32m---> Start install catalog...\\033[0m"
+  helm upgrade --install catalog $CHARTS_URL/catalog \
     --set asyncBindingOperationsEnabled=true \
     --set image=registry.drycc.cc/drycc-addons/service-catalog:canary \
     --namespace catalog \
     --create-namespace --wait $options
-  echo -e "\\033[32m---> Catalog $command completed!\\033[0m"
+  echo -e "\\033[32m---> Catalog install completed!\\033[0m"
 }
 
 function install_components {
@@ -456,9 +472,8 @@ function check_drycc {
 
 function install_drycc {
   check_drycc
-  command=${1:-"install"}
-  options=${2:-""}
-  echo -e "\\033[32m---> Start $command workflow...\\033[0m"
+  options=${1:-""}
+  echo -e "\\033[32m---> Start install workflow...\\033[0m"
   if [[ "$CHANNEL" == "stable" ]]; then
     if [[ "${INSTALL_DRYCC_MIRROR}" == "cn" ]] ; then
       FILER_VERSION=$(curl -Ls https://drycc-mirrors.drycc.cc/drycc/filer/releases|grep /drycc/filer/releases/tag/ | sed -E 's/.*\/drycc\/filer\/releases\/tag\/(v[0-9\.]{1,}(-rc.[0-9]{1,})?)".*/\1/g' | head -1)
@@ -501,7 +516,7 @@ controller:
   webhookReplicas: ${CONTROLLER_WEBHOOK_REPLICAS:-1}
   imageRegistry: ${DRYCC_REGISTRY}
   appRuntimeClass: ${CONTROLLER_APP_RUNTIME_CLASS:-""}
-  appStorageClass: ${CONTROLLER_APP_STORAGE_CLASS:-"drycc-storage"}
+  appStorageClass: ${CONTROLLER_APP_STORAGE_CLASS:-"longhorn"}
   filerImage: ${FILER_IMAGE}
   filerImagePullPolicy: ${FILER_IMAGE_PULL_POLICY}
 
@@ -513,45 +528,14 @@ valkey:
     storageClass: ${VALKEY_PERSISTENCE_STORAGE_CLASS:-""}
 
 storage:
-  csi:
-    statefulset:
-      replicas: ${STORAGE_CSI_STATEFULSET_REPLICAS:-1}
-  mainnode:
-    tipd:
-      replicas: ${STORAGE_MAINNODE_TIPD_REPLICAS:-1}
-      persistence:
-        enabled: true
-        size: ${STORAGE_MAINNODE_TIPD_PERSISTENCE_SIZE:-5Gi}
-        storageClass: "${STORAGE_MAINNODE_TIPD_PERSISTENCE_STORAGE_CLASS}"
-    weed:
-      replicas: ${STORAGE_MAINNODE_WEED_REPLICAS:-1}
-      volumePreallocate: ${STORAGE_MAINNODE_WEED_PREALLOCATE:-false}
-      volumeSizeLimitMB: ${STORAGE_MAINNODE_WEED_SIZE_LIMIT_MB:-512}
-      defaultReplication: "${STORAGE_MAINNODE_WEED_DEFAULT_REPLICATION:-000}"
-      persistence:
-        enabled: true
-        size: ${STORAGE_MAINNODE_WEED_PERSISTENCE_SIZE:-5Gi}
-        storageClass: "${STORAGE_MAINNODE_WEED_PERSISTENCE_STORAGE_CLASS}"
-  metanode:
-    tikv:
-      replicas: ${STORAGE_METANODE_TIKV_REPLICAS:-1}
-      persistence:
-        enabled: true
-        size: ${STORAGE_METANODE_TIKV_PERSISTENCE_SIZE:-5Gi}
-        storageClass: "${STORAGE_METANODE_TIKV_PERSISTENCE_STORAGE_CLASS}"
-    weed:
-      replicas: ${STORAGE_METANODE_WEED_REPLICAS:-1}
-      persistence:
-        enabled: true
-        size: ${STORAGE_METANODE_WEED_PERSISTENCE_SIZE:-5Gi}
-        storageClass: "${STORAGE_METANODE_WEED_PERSISTENCE_STORAGE_CLASS}"
-  datanode:
-    weed:
-      replicas: ${STORAGE_DATANODE_WEED_REPLICAS:-1}
-      persistence:
-        enabled: true
-        size: ${STORAGE_DATANODE_WEED_PERSISTENCE_SIZE:-10Gi}
-        storageClass: "${STORAGE_DATANODE_WEED_PERSISTENCE_STORAGE_CLASS}"
+  zones: 1
+  drives: 1
+  replicas: 4
+  imageRegistry: ${DRYCC_REGISTRY}
+  persistence:
+    enabled: true
+    size: ${STORAGE_PERSISTENCE_SIZE:-5Gi}
+    storageClass: ${STORAGE_PERSISTENCE_STORAGE_CLASS:-""}
 
 imagebuilder:
   imageRegistry: ${DRYCC_REGISTRY}
@@ -618,12 +602,12 @@ imagebuilder:
 EOF
   fi
 
-  helm $command drycc $CHARTS_URL/workflow \
+  helm upgrade --install drycc $CHARTS_URL/workflow \
     --namespace drycc \
     --values /tmp/drycc-values.yaml \
     --values /tmp/drycc-mirror-values.yaml \
     --create-namespace --wait --timeout 30m0s $options
-  echo -e "\\033[32m---> Workflow $command completed!\\033[0m"
+  echo -e "\\033[32m---> Workflow install completed!\\033[0m"
 }
 
 function install_helmbroker {
@@ -632,22 +616,21 @@ function install_helmbroker {
   else
     addons_url="https://github.com/drycc-addons/addons/releases/download/latest/index.yaml"
   fi
-  command=${1:-"install"}
-  options=${2:-""}
+  options=${1:-""}
   local VALKEY_PASSWORD=$(kubectl get secrets -n drycc valkey-creds -o jsonpath="{.data.password}"| base64 -d)
   local HELMBROKER_USERNAME=${HELMBROKER_USERNAME:-$(cat /proc/sys/kernel/random/uuid)}
   local HELMBROKER_PASSWORD=${HELMBROKER_PASSWORD:-$(cat /proc/sys/kernel/random/uuid)}
 
-  echo -e "\\033[32m---> Start $command helmbroker...\\033[0m"
+  echo -e "\\033[32m---> Start install helmbroker...\\033[0m"
 
-  helm $command helmbroker $CHARTS_URL/helmbroker \
+  helm upgrade --install helmbroker $CHARTS_URL/helmbroker \
     --set global.valkeyLocation="off-cluster" \
     --set global.gatewayClass=${GATEWAY_CLASS} \
     --set global.clusterDomain=${CLUSTER_DOMAIN} \
     --set global.platformDomain=${PLATFORM_DOMAIN} \
     --set global.certManagerEnabled=${CERT_MANAGER_ENABLED} \
     --set persistence.size=${HELMBROKER_PERSISTENCE_SIZE:-5Gi} \
-    --set persistence.storageClass=${HELMBROKER_PERSISTENCE_STORAGE_CLASS:-"drycc-storage"} \
+    --set persistence.storageClass=${HELMBROKER_PERSISTENCE_STORAGE_CLASS:-"longhorn"} \
     --set username=${HELMBROKER_USERNAME} \
     --set password=${HELMBROKER_PASSWORD} \
     --set replicas=${HELMBROKER_REPLICAS} \
@@ -678,17 +661,18 @@ EOF
 
   echo -e "\\033[32m---> Helmbroker username: $HELMBROKER_USERNAME\\033[0m"
   echo -e "\\033[32m---> Helmbroker password: $HELMBROKER_PASSWORD\\033[0m"
-  echo -e "\\033[32m---> Helmbroker $command completed!\\033[0m"
+  echo -e "\\033[32m---> Helmbroker install completed!\\033[0m"
 }
 
 function upgrade {
-  install_network upgrade --reset-then-reuse-values
-  install_metallb upgrade --reset-then-reuse-values
-  install_gateway upgrade --reset-then-reuse-values
-  install_cert_manager upgrade --reset-then-reuse-values
-  install_catalog upgrade --reset-then-reuse-values
-  install_drycc upgrade --reset-then-reuse-values
-  install_helmbroker upgrade --reset-then-reuse-values
+  install_network --reset-then-reuse-values
+  install_metallb --reset-then-reuse-values
+  install_gateway --reset-then-reuse-values
+  install_cert_manager --reset-then-reuse-values
+  install_catalog --reset-then-reuse-values
+  install_longhorn --reset-then-reuse-values
+  install_drycc --reset-then-reuse-values
+  install_helmbroker --reset-then-reuse-values
   echo -e "\\033[32m---> Upgrade complete, enjoy life...\\033[0m"
 }
 
@@ -700,6 +684,7 @@ if [[ -z "$@" ]] ; then
   install_k3s_server
   install_helm
   install_components
+  install_longhorn
   install_drycc
   install_helmbroker
   echo -e "\\033[32m---> Installation complete, enjoy life...\\033[0m"
