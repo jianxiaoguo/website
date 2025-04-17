@@ -1,7 +1,7 @@
 FROM registry.drycc.cc/drycc/go-dev
 
 ENV HUGO_REPO=https://github.com/gohugoio/hugo \
-  HUGO_VERSION=0.146.5
+  HUGO_VERSION=0.133.1
 
 RUN apt update \
   && apt install -yq npm \
