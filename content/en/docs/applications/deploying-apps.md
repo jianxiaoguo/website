@@ -110,7 +110,7 @@ Behind the scenes your application deploy will be built up of a Deployment objec
 each having multiple ReplicaSets (one per release) which in turn manage the Pods running your application.
 
 Drycc Workflow will behave the same way with `DRYCC_KUBERNETES_DEPLOYMENTS` enabled or disabled (only applicable to versions prior to 2.4).
-The changes are behind the scenes. Where you will see differences while using the CLI is `drycc ps:list` will output Pod names differently.
+The changes are behind the scenes. Where you will see differences while using the CLI is `drycc ps list` will output Pod names differently.
 
 [slugbuilder cache]: ./managing-app-configuration.md#slugbuilder-cache
 [install client]: ../users/cli.md#installation
