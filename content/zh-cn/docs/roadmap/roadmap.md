@@ -22,7 +22,7 @@ Drycc Workflow 路线图是一个社区文档，作为开放 [规划过程](plan
 
 ## 日志流式传输
 
-通过 `drycc logs -f` 流式传输应用程序日志 <https://github.com/drycc/drycc/issues/465>
+通过 Drycc Grafana 查看流式传输应用日志。
 
 ## 团队和权限
 

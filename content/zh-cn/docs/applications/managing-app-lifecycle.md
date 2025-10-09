@@ -115,9 +115,8 @@ From drycc-controller.local:peachy-waxworks
 
 部署在 Drycc Workflow 上的应用 [将日志视为事件流][]。Drycc Workflow 聚合每个 [Container][] 的 `stdout` 和 `stderr`，使排除应用问题变得容易。
 
-使用 `drycc logs` 查看部署应用的日志输出。
+使用Drycc Grafana查看部署应用的日志输出。
 
-    $ drycc logs -f
     Dec  3 00:30:31 ip-10-250-15-201 peachy-waxworks[web.5]: INFO:oejsh.ContextHandler:started o.e.j.s.ServletContextHandler{/,null}
     Dec  3 00:30:31 ip-10-250-15-201 peachy-waxworks[web.8]: INFO:oejs.Server:jetty-7.6.0.v20120127
     Dec  3 00:30:31 ip-10-250-15-201 peachy-waxworks[web.5]: INFO:oejs.AbstractConnector:Started SelectChannelConnector@0.0.0.0:10005

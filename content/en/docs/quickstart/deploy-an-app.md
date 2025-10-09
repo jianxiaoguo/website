@@ -114,7 +114,7 @@ There is a lot more you can do with Drycc Workflow, play around with the CLI:
 {{% /alert %}}
 
 * Roll back to a previous release with `drycc rollback -a proper-barbecue`
-* See application logs with `drycc logs -a proper-barbecue`
+* See application logs with drycc grafana.
 * Try one of our other example applications like:
     * [drycc/ruby-getting-started](https://github.com/drycc/ruby-getting-started)
     * [drycc/python-getting-started](https://github.com/drycc/python-getting-started)

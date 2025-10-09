@@ -65,7 +65,7 @@ certificates, and developer-provided configuration.
 
 ## Build, Release, Run
 
-![Git Push Workflow](../../diagrams/Git_Push_Flow.png)
+![Git Push Workflow](/docs/diagrams/Git_Push_Flow.png)
 
 ### Build Stage
 

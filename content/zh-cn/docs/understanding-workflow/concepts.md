@@ -44,7 +44,7 @@ Workflow 围绕 [应用程序][] 或应用的理念设计。
 
 ## 构建、发布、运行
 
-![Git Push Workflow](../../diagrams/Git_Push_Flow.png)
+![Git Push Workflow](/docs/diagrams/Git_Push_Flow.png)
 
 ### 构建阶段
 

@@ -12,7 +12,8 @@ Now that Helm is installed and the repository has been added, install Workflow w
 ```
 $ helm install drycc oci://registry.drycc.cc/charts/workflow \
     --namespace drycc \
-    --set global.gatewayClass=istio \
+    --set gateway.gatewayClass=istio \
+    --set controller.appGatewayClass=istio \
     --set global.platformDomain=drycc.cc \
     --set builder.service.type=LoadBalancer
 ```
@@ -21,7 +22,8 @@ Of course, if you deploy it on a bare machine, you probably do not have Load Bal
 ```
 $ helm install drycc oci://registry.drycc.cc/charts/workflow \
     --namespace drycc \
-    --set global.gatewayClass=istio \
+    --set gateway.gatewayClass=istio \
+    --set controller.appGatewayClass=istio \
     --set global.platformDomain=drycc.cc \
     --set builder.service.type=NodePort \
     --set builder.service.nodePort=32222
@@ -41,7 +43,7 @@ $ kubectl --namespace=drycc get pods
 You should also notice that several Kubernetes gatewayclass has been installed on your cluster. You can view it by running:
 
 ```
-$ kubectl get gatewayclass --namespace drycc
+$ kubectl get gatewayclass
 ```
 
 Depending on the order in which the Workflow components initialize, some pods may restart. This is common during the
@@ -65,7 +67,7 @@ drycc-registry-asozo           1/1       Running   1          5m
 
 ## Install a Kubernetes Gateway
 
-Now that Workflow has been deployed with the `global.gatewayClass` , we will need a Kubernetes gateway in place to begin routing traffic.
+Now that Workflow has been deployed with the `gatewayClass` , we will need a Kubernetes gateway in place to begin routing traffic.
 
 Here is an example of how to use [istio](https://istio.io/) as an gateway for Workflow. Of course, you are welcome to use any controller you wish.
 

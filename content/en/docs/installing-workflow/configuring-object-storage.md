@@ -11,14 +11,14 @@ Drycc Workflow ships with [Storage][storage] by default, which provides in-clust
 
 Every component that relies on object storage uses two inputs for configuration:
 
-1. You must use object storage services that are compatible with S3 API
-2. Access credentials stored as a Kubernetes secret named `storage-creds`
+1. Access credentials stored as a Kubernetes secret.
+2. You must use object storage services that are compatible with S3 API.
 
 The helm chart for Drycc Workflow can be easily configured to connect Workflow components to off-cluster object storage. Drycc Workflow currently supports Google Compute Storage, Amazon S3, [Azure Blob Storage][] and OpenStack Swift Storage.
 
 ### Step 1: Create storage buckets
 
-Create storage buckets for each of the Workflow subsystems: `builder`, `registry`, and `database`.
+Create storage buckets for each of the Workflow subsystems: `builder` and `registry`.
 
 Depending on your chosen object storage you may need to provide globally unique bucket names. If you are using S3, use hyphens instead of periods in the bucket names. Using periods in the bucket name will cause an [ssl certificate validation issue with S3](https://forums.aws.amazon.com/thread.jspa?threadID=105357).
 
@@ -35,17 +35,26 @@ If you are using AWS S3 and your Kubernetes nodes are configured with appropriat
 Operators should configure object storage by editing the Helm values file before running `helm install`. To do so:
 
 * Fetch the Helm values by running `helm inspect values oci://registry.drycc.cc/charts/workflow > values.yaml`
-* Update the `global/storage` parameter to reference the platform you are using, e.g. `s3`, `azure`, `gcs`, or `swift`
+* Update the `builder/storage` and `registry/storage` parameter to reference the platform you are using.
 * Find the corresponding section for your storage type and provide appropriate values including region, bucket names, and access credentials.
 * Save your changes.
 
 {{% alert title="Note" color="info" %}}
-All values will be automatically (base64) encoded _except_ the `key_json` values under `gcs`/`gcr`.  These must be base64-encoded.  This is to support cleanly passing said encoded text via `helm --set` cli functionality rather than attempting to pass the raw JSON data.  For example:
+Assume we are using MinIO's play for storage, noting that it is only a test server and should not be used in production environments:
 
 	$ helm install drycc oci://registry.drycc.cc/charts/workflow \
 		--namespace drycc \
-		--set global.platformDomain=youdomain.com
-		--set global.storage=gcs,gcs.key_json="$(cat /path/to/gcs_creds.json | base64 -w 0)"
+		--set global.platformDomain=youdomain.com \
+		--set builder.storageBucket=registry \
+		--set builder.storageEndpoint=https://play.min.io \
+		--set builder.storageAccesskey=Q3AM3UQ867SPQQA43P2F \
+		--set builder.storageSecretkey=zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG \
+		--set builder.storagePathStyle=auto \
+		--set registry.storageBucket=registry \
+		--set registry.storageEndpoint=https://play.min.io \
+		--set registry.storageAccesskey=Q3AM3UQ867SPQQA43P2F \
+		--set registry.storageSecretkey=zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG \
+		--set registry.storagePathStyle=auto
 {{% /alert %}}
 
 You are now ready to run `helm install drycc oci://registry.drycc.cc/charts/workflow --namespace drycc -f values.yaml` using your desired object storage.

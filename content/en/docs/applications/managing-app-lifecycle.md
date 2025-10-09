@@ -123,9 +123,8 @@ From drycc-controller.local:peachy-waxworks
 Applications deployed on Drycc Workflow [treat logs as event streams][]. Drycc Workflow aggregates `stdout` and `stderr`
 from every [Container][] making it easy to troubleshoot problems with your application.
 
-Use `drycc logs` to view the log output from your deployed application.
+Use drycc grafana to view the log output from your deployed application.
 
-    $ drycc logs -f
     Dec  3 00:30:31 ip-10-250-15-201 peachy-waxworks[web.5]: INFO:oejsh.ContextHandler:started o.e.j.s.ServletContextHandler{/,null}
     Dec  3 00:30:31 ip-10-250-15-201 peachy-waxworks[web.8]: INFO:oejs.Server:jetty-7.6.0.v20120127
     Dec  3 00:30:31 ip-10-250-15-201 peachy-waxworks[web.5]: INFO:oejs.AbstractConnector:Started SelectChannelConnector@0.0.0.0:10005

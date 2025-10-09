@@ -12,7 +12,8 @@ weight: 2
 ```
 $ helm install drycc oci://registry.drycc.cc/charts/workflow \
     --namespace drycc \
-    --set global.gatewayClass=istio \
+    --set gateway.gatewayClass=istio \
+    --set controller.appGatewayClass=istio \
     --set global.platformDomain=drycc.cc \
     --set builder.service.type=LoadBalancer
 ```
@@ -21,7 +22,8 @@ $ helm install drycc oci://registry.drycc.cc/charts/workflow \
 ```
 $ helm install drycc oci://registry.drycc.cc/charts/workflow \
     --namespace drycc \
-    --set global.gatewayClass=istio \
+    --set gateway.gatewayClass=istio \
+    --set controller.appGatewayClass=istio \
     --set global.platformDomain=drycc.cc \
     --set builder.service.type=NodePort \
     --set builder.service.nodePort=32222
@@ -41,7 +43,7 @@ $ kubectl --namespace=drycc get pods
 您还应该注意到您的集群上已安装了几个 Kubernetes gatewayclass。您可以通过运行以下命令查看它：
 
 ```
-$ kubectl get gatewayclass --namespace drycc
+$ kubectl get gatewayclass
 ```
 
 根据 Workflow 组件初始化的顺序，一些 pod 可能会重新启动。这在安装期间很常见：如果组件的依赖项尚不可用，该组件将退出，Kubernetes 将自动重新启动它。
@@ -63,7 +65,7 @@ drycc-registry-asozo           1/1       Running   1          5m
 
 ## 安装 Kubernetes 网关
 
-现在 Workflow 已使用 `global.gatewayClass` 部署，我们需要安装 Kubernetes 网关来开始路由流量。
+现在 Workflow 已使用 `gatewayClass` 部署，我们需要安装 Kubernetes 网关来开始路由流量。
 
 以下是如何使用 [istio](https://istio.io/) 作为 Workflow 网关的示例。当然，您可以随意使用任何您希望的控制器。
 

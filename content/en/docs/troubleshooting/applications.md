@@ -17,7 +17,7 @@ attempts to deploy using the Buildpack workflow, check the following steps:
 
 ## Application was Deployed, but is Failing to Start
 
-If you deployed your application but it is failing to start, you can use `drycc logs` to check
+If you deployed your application but it is failing to start, you can use Drycc Grafana to check
 why the application fails to boot. Sometimes, the application container may fail to boot without
 logging any information about the error. This typically occurs when the healthcheck configured for
 the application fails. In this case, you can start by

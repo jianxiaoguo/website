@@ -26,7 +26,7 @@ Related issues:
 
 ## Log Streaming
 
-Stream application logs via `drycc logs -f` <https://github.com/drycc/drycc/issues/465>
+View streaming application logs via Drycc Grafana.
 
 ## Teams and Permissions
 

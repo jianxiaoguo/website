@@ -99,8 +99,8 @@ Drycc Workflow 可以做更多事情，试试 CLI：
 有关更多信息，请查看 [用户和 SSH 密钥](../users/ssh-keys/) 和 [故障排除 Workflow](../troubleshooting/)。
 {{% /alert %}}
 
-* 使用 `drycc rollback -a proper-barbecue` 回滚到以前的发布
-* 使用 `drycc logs -a proper-barbecue` 查看应用程序日志
+* 使用 `drycc rollback -a proper-barbecue` 回滚到以前的发布。
+* 使用Drycc Grafana查看应用程序日志。
 * 尝试我们的其他示例应用程序，如：
     * [drycc/ruby-getting-started](https://github.com/drycc/ruby-getting-started)
     * [drycc/python-getting-started](https://github.com/drycc/python-getting-started)

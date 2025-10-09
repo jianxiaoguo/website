@@ -89,6 +89,15 @@ markup:
 outputs:
   section: ["HTML", "print", "RSS"]
 
+# Compatible with GitHub Pages, use `-print` instead of `_print`.
+outputFormats:
+  PRINT:
+    baseName: "index"
+    isHTML: true
+    mediaType: "text/html"
+    path: "-print"
+    permalinkable: false
+
 params:
   privacy_policy: "https://legal.doopai.com/#/doopai-privacy-policy"
   

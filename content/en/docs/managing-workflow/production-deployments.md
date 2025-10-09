@@ -45,18 +45,6 @@ Please see the following documentation to learn about disabling Grafana signups:
 
  - [Customizing Monitor][]
 
-## Running Workflow with RBAC
-
-If your cluster has [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/) amongst your [authorization](https://kubernetes.io/docs/admin/authorization/) modes (`$ kubectl api-versions` should contains `rbac.authorization.k8s.io`) it may be necessary to enable RBAC in Workflow.
-This can be achieved by setting `use_rbac` in the `global` section of `values.yaml` to `true`, or by adding `--set=global.use_rbac=true` to the `$ helm install/upgrade` command.
-RBAC support was announced in Kubernetes-1.5 and is enabled by default if:
-- your Kubernetes cluster is in GKE
-- your Kubernetes cluster built with [kubeadm](https://kubernetes.io/docs/getting-started-guides/kubeadm/)
-
-**Note**: helm may need to be given [specific permissions][helm specific permissions] under RBAC if not already done.
-
-**Attention**: Azure ACS Kubernetes clusters are not RBAC-enabled for today due to lack in authentication strategy. Feel free to watch this [PR](https://github.com/kubernetes/kubernetes/pull/43987) for more details.
-
 [configuring object storage]: ../installing-workflow/configuring-object-storage.md
 [customizing controller]: tuning-component-settings.md#customizing-the-controller
 [customizing monitor]: tuning-component-settings.md#customizing-the-monitor
@@ -64,4 +52,3 @@ RBAC support was announced in Kubernetes-1.5 and is enabled by default if:
 [storage]: ../understanding-workflow/components.md#storage
 [platform ssl]: platform-ssl.md
 [registry]: ../understanding-workflow/components.md#registry
-[helm specific permissions]: ../installing-workflow/index.md#check-your-authorization
