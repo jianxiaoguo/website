@@ -14,12 +14,12 @@ transmitted securely.
 
 To enable SSL on a custom domain, e.g., `www.example.com`, use the SSL endpoint.
 
-!!! note
-    `drycc certs` is only useful for custom domains. Default application domains are
-    SSL-enabled already and can be accessed simply by using https,
-    e.g. `https://foo.dryccapp.com` (provided that you have [installed your wildcard
-    certificate][platform-ssl] on the routers or on the load balancer).
-
+{{% alert title="Note" color="info" %}}
+`drycc certs` is only useful for custom domains. Default application domains are
+SSL-enabled already and can be accessed simply by using https,
+e.g. `https://foo.dryccapp.com` (provided that you have [installed your wildcard
+certificate][platform-ssl] on the routers or on the load balancer).
+{{% /alert %}}
 
 ## Overview
 
@@ -56,8 +56,9 @@ Add your certificate, any intermediate certificates, and private key to the endp
     Adding SSL endpoint... done
     www.example.com
 
-!!! note
-    The name given to the certificate can only contain a-z (lowercase), 0-9 and hyphens
+{{% alert title="Note" color="info" %}}
+The name given to the certificate can only contain a-z (lowercase), 0-9 and hyphens
+{{% /alert %}}
 
 The Drycc platform will investigate the certificate and extract any relevant information from it
 such as the Common Name, Subject Alt Names (SAN), fingerprint and more.
@@ -124,8 +125,9 @@ or by looking at at each certificates detailed information
 Use a command line utility like `curl` to test that everything is configured correctly for your
 secure domain.
 
-!!! note
-    The -k option flag tells curl to ignore untrusted certificates.
+{{% alert title="Note" color="info" %}}
+The -k option flag tells curl to ignore untrusted certificates.
+{{% /alert %}}
 
 Pay attention to the output. It should print `SSL certificate verify ok`. If it prints something
 like `common name: www.example.com (does not match 'www.somedomain.com')` then something is not

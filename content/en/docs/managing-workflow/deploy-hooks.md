@@ -48,10 +48,11 @@ hmac.new("my_secret_key", "http://drycc.rocks?app=secure-woodland&release=v4&rel
 If the value of the computed HMAC hex digest and the value in the `Authorization` header are
 identical, then the request came from Workflow.
 
-!!! important
-	When computing the signature, ensure that the URL parameters are in alphabetic order. This is
-	critical when computing the cryptographic signature as most web applications don't care about
-	the order of the HTTP parameters, but the cryptographic signature will not be the same.
+{{% alert title="Note" color="danger" %}}
+When computing the signature, ensure that the URL parameters are in alphabetic order. This is
+critical when computing the cryptographic signature as most web applications don't care about
+the order of the HTTP parameters, but the cryptographic signature will not be the same.
+{{% /alert %}}
 
 
 [controller-settings]: tuning-component-settings.md#customizing-the-controller

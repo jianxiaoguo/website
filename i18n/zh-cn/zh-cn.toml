@@ -1,0 +1,11 @@
+[feedback_title]
+other = "反馈"
+
+[feedback_question]
+other = "这个页面有帮助吗？"
+
+[feedback_positive]
+other = "确定"
+
+[feedback_negative]
+other = "取消"

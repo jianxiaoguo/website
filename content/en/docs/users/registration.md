@@ -34,7 +34,8 @@ You can verify your client configuration by running `drycc whoami`.
     $ drycc whoami
     You are drycc at http://drycc.example.com
 
-!!! note
-    Session and client configuration is stored in the `~/.drycc/client.json` file.
+{{% alert title="Note" color="info" %}}
+Session and client configuration is stored in the `~/.drycc/client.json` file.
+{{% /alert %}}
 
 [controller]: ../understanding-workflow/components.md#controller

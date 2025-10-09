@@ -101,12 +101,13 @@ Then you can use the installation script available at https://www.drycc.cc/insta
 $ curl -sfL https://www.drycc.cc/install.sh | bash -
 ```
 
-!!! important
-    If you are in China, you need to use mirror acceleration:
+{{% alert title="Note" color="danger" %}}
+If you are in China, you need to use mirror acceleration:
 
-    ```
-    $ curl -sfL https://www.drycc.cc/install.sh | INSTALL_DRYCC_MIRROR=cn bash -
-    ```
+```
+$ curl -sfL https://www.drycc.cc/install.sh | INSTALL_DRYCC_MIRROR=cn bash -
+```
+{{% /alert %}}
 
 ### Install Node
 
@@ -129,12 +130,13 @@ $ export K3S_URL=https://192.168.6.240:6443
 $ export K3S_TOKEN="K1078e7213ca32bdaabb44536f14b9ce7926bb201f41c3f3edd39975c16ff4901ea::server:33bde27f-ac49-4483-b6ac-f4eec2c6dbfa"
 ```
 
-!!! important
-    If you are in China, you need to use mirror acceleration:
+{{% alert title="Note" color="danger" %}}
+If you are in China, you need to use mirror acceleration:
 
-    ```
-    $ export INSTALL_DRYCC_MIRROR=cn
-    ```
+```
+$ export INSTALL_DRYCC_MIRROR=cn
+```
+{{% /alert %}}
 
 * Join the cluster as server:
 

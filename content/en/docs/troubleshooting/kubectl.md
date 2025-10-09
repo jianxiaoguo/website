@@ -24,9 +24,10 @@ running, run:
 	drycc-grafana-9ccur            0/1       Pending             0          3s
 	drycc-registry-5bor6           0/1       Pending             0          3s
 
-!!! tip
-	To save precious keystrokes, alias `kubectl --namespace=drycc` to `kd` so it is easier to type
-	in the future.
+{{% alert title="Note" color="primary" %}} tip
+To save precious keystrokes, alias `kubectl --namespace=drycc` to `kd` so it is easier to type
+in the future.
+{{% /alert %}}
 
 To fetch the logs of a specific component, use `kubectl logs`:
 

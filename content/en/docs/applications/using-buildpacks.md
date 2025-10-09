@@ -119,10 +119,10 @@ For convenience, a number of buildpacks come bundled with Drycc:
 Drycc will cycle through the `bin/detect` script of each buildpack to match the code you
 are pushing.
 
-!!! note
-    If you're testing against the [Scala Buildpack][], the [Builder][] requires at least
-    512MB of free memory to execute the Scala Build Tool.
-
+{{% alert title="Note" color="info" %}}
+If you're testing against the [Scala Buildpack][], the [Builder][] requires at least
+512MB of free memory to execute the Scala Build Tool.
+{{% /alert %}}
 
 ## Using a Custom Buildpack
 

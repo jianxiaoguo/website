@@ -9,8 +9,9 @@ In this guide, we walk you through the process of setting up a development envir
 
 We try to make it simple to hack on Drycc components. However, there are necessarily several moving pieces and some setup required. We welcome any suggestions for automating or simplifying this process.
 
-!!! note
-    The Drycc team is actively engaged in containerizing Go and Python based development environments tailored specifically for Drycc development in order to minimize the setup required.  This work is ongoing.  Refer to the [drycc/router][router] project for a working example of a fully containerized development environment.
+{{% alert title="Note" color="info" %}}
+The Drycc team is actively engaged in containerizing Go and Python based development environments tailored specifically for Drycc development in order to minimize the setup required.  This work is ongoing.  Refer to the [drycc/router][router] project for a working example of a fully containerized development environment.
+{{% /alert %}}
 
 If you're just getting into the Drycc codebase, look for GitHub issues with the label [easy-fix][]. These are more straightforward or low-risk issues and are a great way to become more familiar with Drycc.
 
@@ -68,8 +69,9 @@ $ git clone git@github.com:<username>/<component>.git
 $ cd <component>
 ```
 
-!!! note
-    By checking out the forked copy into the namespace `github.com/drycc/<component>`, we are tricking the Go toolchain into seeing our fork as the "official" source tree.
+{{% alert title="Note" color="info" %}}
+By checking out the forked copy into the namespace `github.com/drycc/<component>`, we are tricking the Go toolchain into seeing our fork as the "official" source tree.
+{{% /alert %}}
 
 If you are going to be issuing pull requests to the upstream repository from which you forked, we suggest configuring Git such that you can easily rebase your code to the upstream repository's main branch. There are various strategies for doing this, but the [most common](https://help.github.com/articles/fork-a-repo/) is to add an `upstream` remote:
 

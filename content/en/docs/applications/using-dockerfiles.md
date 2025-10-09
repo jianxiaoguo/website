@@ -41,8 +41,9 @@ In order to deploy Dockerfile applications, they must conform to the following r
 * The Dockerfile must use the `CMD` directive to define the default process that will run within the container.
 * The Container image must contain [bash](https://www.gnu.org/software/bash/) to run processes.
 
-!!! note
-    Note that if you are using a private registry of any kind (`gcr` or other) the application environment must include a `$PORT` config variable that matches the `EXPOSE`'d port, example: `drycc config set PORT=5000`. See [Configuring Registry](../installing-workflow/configuring-registry/#configuring-off-cluster-private-registry) for more info.
+{{% alert title="Note" color="info" %}}
+Note that if you are using a private registry of any kind (`gcr` or other) the application environment must include a `$PORT` config variable that matches the `EXPOSE`'d port, example: `drycc config set PORT=5000`. See [Configuring Registry](../installing-workflow/configuring-registry/#configuring-off-cluster-private-registry) for more info.
+{{% /alert %}}
 
 
 ## Create an Application

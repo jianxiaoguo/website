@@ -29,8 +29,9 @@ dev      succeed    v1         2023-11-30T17:54:57Z    dev created initial relea
 Drycc Workflow also supports rolling back go previous releases. If buggy code or an errant configuration change is pushed
 to your application, you may rollback to a previously known, good release.
 
-!!! note
-    All rollbacks create a new, numbered release. But will reference the build/code and configuration from the desired rollback point.
+{{% alert title="Note" color="info" %}}
+All rollbacks create a new, numbered release. But will reference the build/code and configuration from the desired rollback point.
+{{% /alert %}}
 
 
 In this example, the application is currently running release v4. Using `drycc rollback v2` tells Workflow to deploy the
@@ -100,8 +101,9 @@ Adding user otheruser as a collaborator for view,change,delete peachy-waxwork...
 
 Use `drycc perms` to see who an application is currently shared with, and `drycc perms remove` to remove a collaborator.
 
-!!! note
-    Collaborators can do anything with an application that its owner can do, except delete the application.
+{{% alert title="Note" color="info" %}}
+Collaborators can do anything with an application that its owner can do, except delete the application.
+{{% /alert %}}
 
 When working with an application that has been shared with you, clone the original repository and add Drycc' git remote
 entry before attempting to `git push` any changes to Drycc.

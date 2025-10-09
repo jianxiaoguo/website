@@ -20,8 +20,9 @@ Fortunately, most modern applications feature a stateless application tier that 
 
 ## Login to the Controller
 
-!!! important
-	if you haven't yet, now is a good time to [install the client][install client] and [register](../users/registration.md).
+{{% alert title="Note" color="danger" %}}
+  if you haven't yet, now is a good time to [install the client][install client] and [register](../users/registration.md).
+{{% /alert %}}
 
 Before deploying an application, users must first authenticate against the Drycc [Controller][]
 using the URL supplied by their Drycc administrator.

@@ -57,8 +57,9 @@ $ curl http://proper-barbecue.$hostname
 Powered by Drycc
 ```
 
-!!! note
-        If you see a 404 error, make sure you specified your application name with `-a <appname>`!
+{{% alert title="Note" color="info" %}}
+If you see a 404 error, make sure you specified your application name with `-a <appname>`!
+{{% /alert %}}
 
 Workflow's edge router knows all about application names and automatically
 sends traffic to the right application. The router sends traffic for
@@ -106,9 +107,11 @@ Congratulations! You have deployed, configured, and scaled your first applicatio
 ## Going Further
 There is a lot more you can do with Drycc Workflow, play around with the CLI:
 
-!!! important
-    In order to have permission to push an app you must add a SSH key to your user on the Drycc Workflow.
-    For more information, please check [Users and SSH Keys](../users/ssh-keys/) and [Troubleshooting Workflow](../troubleshooting/).
+{{% alert title="Note" color="danger" %}}
+  In order to have permission to push an app you must add a SSH key to your user on the Drycc Workflow.
+
+  For more information, please check [Users and SSH Keys](../users/ssh-keys/) and [Troubleshooting Workflow](../troubleshooting/).
+{{% /alert %}}
 
 * Roll back to a previous release with `drycc rollback -a proper-barbecue`
 * See application logs with `drycc logs -a proper-barbecue`

@@ -93,8 +93,9 @@ set the `http_proxy` or `https_proxy` environment variable to enable proxy suppo
     $ export http_proxy="http://proxyip:port"
     $ export https_proxy="http://proxyip:port"
 
-!!! note
-    Configuring a proxy is generally not necessary for local Minikube clusters.
+{{% alert title="Note" color="info" %}}
+Configuring a proxy is generally not necessary for local Minikube clusters.
+{{% /alert %}}
 
 ## CLI Plugins
 

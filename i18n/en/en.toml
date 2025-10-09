@@ -1,0 +1,11 @@
+[feedback_title]
+other = "Feedback"
+
+[feedback_question]
+other = "Was this page helpful?"
+
+[feedback_positive]
+other = "Yes"
+
+[feedback_negative]
+other = "No"

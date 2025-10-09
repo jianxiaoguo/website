@@ -260,9 +260,10 @@ drycc autorollback enable
 
 Workflow supports isolating applications onto a set of nodes using `drycc tags`.
 
-!!! note
-    In order to use tags, you must first launch your cluster with the proper node labels. If you do
-    not, tag commands will fail. Learn more by reading ["Assigning Pods to Nodes"][pods-to-nodes].
+{{% alert title="Note" color="info" %}}
+In order to use tags, you must first launch your cluster with the proper node labels. If you do
+not, tag commands will fail. Learn more by reading ["Assigning Pods to Nodes"][pods-to-nodes].
+{{% /alert %}}
 
 Once your nodes are configured with appropriate label selectors, use `drycc tags set` to restrict
 the application ptype to those nodes:

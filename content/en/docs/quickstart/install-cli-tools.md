@@ -16,12 +16,13 @@ Install the `drycc` client for Linux or Mac OS X with:
 $ curl -sfL https://www.drycc.cc/install-cli.sh | bash -
 ```
 
-!!! important
-    Users in Chinese mainland can use the following methods to speed up installation:
+{{% alert title="Note" color="danger" %}}
+Users in Chinese mainland can use the following methods to speed up installation:
 
-    ```
-    $ curl -sfL https://www.drycc.cc/install-cli.sh | INSTALL_DRYCC_MIRROR=cn bash -
-    ```
+```
+$ curl -sfL https://www.drycc.cc/install-cli.sh | INSTALL_DRYCC_MIRROR=cn bash -
+```
+{{% /alert %}}
 
 Others please visit: https://github.com/drycc/workflow-cli/releases
 
@@ -50,5 +51,6 @@ Update workflow cli to latest release.
 drycc update
 ```
 
-!!! note
-    Note that version numbers may vary as new releases become available
+{{% alert title="Note" color="info" %}}
+Note that version numbers may vary as new releases become available
+{{% /alert %}}

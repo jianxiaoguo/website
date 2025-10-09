@@ -39,13 +39,14 @@ Operators should configure object storage by editing the Helm values file before
 * Find the corresponding section for your storage type and provide appropriate values including region, bucket names, and access credentials.
 * Save your changes.
 
-!!! note
-	All values will be automatically (base64) encoded _except_ the `key_json` values under `gcs`/`gcr`.  These must be base64-encoded.  This is to support cleanly passing said encoded text via `helm --set` cli functionality rather than attempting to pass the raw JSON data.  For example:
+{{% alert title="Note" color="info" %}}
+All values will be automatically (base64) encoded _except_ the `key_json` values under `gcs`/`gcr`.  These must be base64-encoded.  This is to support cleanly passing said encoded text via `helm --set` cli functionality rather than attempting to pass the raw JSON data.  For example:
 
-		$ helm install drycc oci://registry.drycc.cc/charts/workflow \
-		    --namespace drycc \
-			--set global.platformDomain=youdomain.com
-			--set global.storage=gcs,gcs.key_json="$(cat /path/to/gcs_creds.json | base64 -w 0)"
+	$ helm install drycc oci://registry.drycc.cc/charts/workflow \
+		--namespace drycc \
+		--set global.platformDomain=youdomain.com
+		--set global.storage=gcs,gcs.key_json="$(cat /path/to/gcs_creds.json | base64 -w 0)"
+{{% /alert %}}
 
 You are now ready to run `helm install drycc oci://registry.drycc.cc/charts/workflow --namespace drycc -f values.yaml` using your desired object storage.
 

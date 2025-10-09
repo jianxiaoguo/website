@@ -19,12 +19,13 @@ appname to the old one:
     hello.bacongobbler.com.         1759    IN    CNAME    finest-woodshed.dryccapp.com.
     finest-woodshed.dryccapp.com.    270     IN    A        172.17.8.100
 
-!!! note
-    Setting a CNAME for a root domain can cause issues. Setting an @ record
-    to be a CNAME causes all traffic to go to the other domain, including mail and the SOA
-    ("start-of-authority") records. It is highly recommended that you bind a subdomain to
-    an application, however you can work around this by pointing the @ record to the
-    address of the load balancer (if any).
+{{% alert title="Note" color="info" %}}
+  Setting a CNAME for a root domain can cause issues. Setting an @ record
+  to be a CNAME causes all traffic to go to the other domain, including mail and the SOA
+  ("start-of-authority") records. It is highly recommended that you bind a subdomain to
+  an application, however you can work around this by pointing the @ record to the
+  address of the load balancer (if any).
+{{% /alert %}}
 
 To add or remove the application from the routing mesh, use `drycc routing`:
 

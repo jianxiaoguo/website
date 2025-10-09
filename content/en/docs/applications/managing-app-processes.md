@@ -39,9 +39,10 @@ For the above Dockerfile-based application, the `web` process type would run the
 Applications utilizing [remote Container images][container image], a `web` process type is also implied, and runs the `CMD`
 specified in the Container image.
 
-!!! note
-    The `web` process type is special as they’is the default process type that will
-    receive HTTP traffic from Workflow’s routers. Other process types can be named arbitrarily.
+{{% alert title="Note" color="info" %}}
+The `web` process type is special as they’is the default process type that will
+receive HTTP traffic from Workflow’s routers. Other process types can be named arbitrarily.
+{{% /alert %}}
 
 ## Declaring Process Types
 
@@ -101,9 +102,10 @@ steely-mainsail-sleeper-76c45b967c-4qm6w    v3         up       sleeper    1/1  
 steely-mainsail-web-c4f44c4b4-7p7dh         v3         up       web        1/1      0            2023-12-08T02:25:00UTC
 ```
 
-!!! note
-    Only process types of `web` will be scaled to 1 automatically. If you have additional process types
-    remember to scale the process counts after creation.
+{{% alert title="Note" color="info" %}}
+Only process types of `web` will be scaled to 1 automatically. If you have additional process types
+remember to scale the process counts after creation.
+{{% /alert %}}
 
 To remove a process type simply scale it to 0:
 
@@ -179,8 +181,9 @@ Autoscale allows adding a minimum and maximum number of pods on a per process ty
 
 This feature is built on top of [Horizontal Pod Autoscaling][HPA] in Kubernetes or [HPA][] for short.
 
-!!! note
-	This is an alpha feature. It is recommended to be on the latest Kubernetes when using this feature.
+{{% alert title="Note" color="info" %}}
+This is an alpha feature. It is recommended to be on the latest Kubernetes when using this feature.
+{{% /alert %}}
 
 ```
 $ drycc autoscale set web --min=3 --max=8 --cpu-percent=75

@@ -12,8 +12,9 @@ This upgrade process requires:
 
 ## Upgrade Process
 
-!!! note
-    If upgrading from a [Helm Classic](https://github.com/helm/helm-classic) install, you'll need to 'migrate' the cluster to a [Kubernetes Helm](https://github.com/kubernetes/helm) installation.  See [Workflow-Migration][] for steps.
+{{% alert title="Note" color="info" %}}
+If upgrading from a [Helm Classic](https://github.com/helm/helm-classic) install, you'll need to 'migrate' the cluster to a [Kubernetes Helm](https://github.com/kubernetes/helm) installation.  See [Workflow-Migration][] for steps.
+{{% /alert %}}
 
 ### Step 1: Apply the Workflow upgrade
 

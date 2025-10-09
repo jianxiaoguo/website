@@ -32,8 +32,9 @@ In order to deploy Docker images, they must conform to the following requirement
 * The Dockerfile must use the `CMD` directive to define the default process that will run within the container.
 * The Docker image must contain [bash](https://www.gnu.org/software/bash/) to run processes.
 
-!!! note
-    Note that if you are using a private registry of any kind (`gcr` or other) the application environment must include a `$PORT` config variable that matches the `EXPOSE`'d port, example: `drycc config set PORT=5000`. See [Configuring Registry](../installing-workflow/configuring-registry/#configuring-off-cluster-private-registry) for more info.
+{{% alert title="Note" color="info" %}}
+Note that if you are using a private registry of any kind (`gcr` or other) the application environment must include a `$PORT` config variable that matches the `EXPOSE`'d port, example: `drycc config set PORT=5000`. See [Configuring Registry](../installing-workflow/configuring-registry/#configuring-off-cluster-private-registry) for more info.
+{{% /alert %}}
 
 ## Create an Application
 
@@ -43,9 +44,10 @@ Use `drycc create` to create an application on the [controller][].
     $ drycc create example-dockerfile-http --no-remote
     Creating application... done, created example-dockerfile-http
 
-!!! note
-    For all commands except for `drycc create`, the `drycc` client uses the name of the current directory
-    as the app name if you don't specify it explicitly with `--app`.
+{{% alert title="Note" color="info" %}}
+For all commands except for `drycc create`, the `drycc` client uses the name of the current directory
+as the app name if you don't specify it explicitly with `--app`.
+{{% /alert %}}
 
 
 ## Deploy the Application
@@ -90,8 +92,9 @@ the Drycc Workflow Controller but rather is managed by Kubernetes. This will inc
 however the application `port` information can no longer be discovered. Instead the application `port` information can be set via
 `drycc config set PORT=80` prior to setting the registry information.
 
-!!! note
-    Currently [GCR.io][] and [ECR][] in short lived auth token mode are not supported.
+{{% alert title="Note" color="info" %}}
+Currently [GCR.io][] and [ECR][] in short lived auth token mode are not supported.
+{{% /alert %}}
 
 [container]: ../reference-guide/terms.md#container
 [controller]: ../understanding-workflow/components.md#controller
