@@ -5,22 +5,22 @@ description: A variety of Drycc Workflow components rely on an object storage sy
 weight: 4
 ---
 
-Drycc Workflow ships with [Storage][storage] by default, which provides in-cluster.
+Drycc Workflow ships with [Storage][storage] by default, which provides in-cluster storage.
 
 ## Configuring off-cluster Object Storage
 
 Every component that relies on object storage uses two inputs for configuration:
 
 1. Access credentials stored as a Kubernetes secret.
-2. You must use object storage services that are compatible with S3 API.
+2. You must use object storage services that are compatible with the S3 API.
 
-The helm chart for Drycc Workflow can be easily configured to connect Workflow components to off-cluster object storage. Drycc Workflow currently supports Google Compute Storage, Amazon S3, [Azure Blob Storage][] and OpenStack Swift Storage.
+The Helm chart for Drycc Workflow can be easily configured to connect Workflow components to off-cluster object storage. Drycc Workflow currently supports Google Cloud Storage, Amazon S3, [Azure Blob Storage][], and OpenStack Swift Storage.
 
 ### Step 1: Create storage buckets
 
 Create storage buckets for each of the Workflow subsystems: `builder` and `registry`.
 
-Depending on your chosen object storage you may need to provide globally unique bucket names. If you are using S3, use hyphens instead of periods in the bucket names. Using periods in the bucket name will cause an [ssl certificate validation issue with S3](https://forums.aws.amazon.com/thread.jspa?threadID=105357).
+Depending on your chosen object storage, you may need to provide globally unique bucket names. If you are using S3, use hyphens instead of periods in the bucket names. Using periods in the bucket name will cause an [SSL certificate validation issue with S3](https://forums.aws.amazon.com/thread.jspa?threadID=105357).
 
 If you provide credentials with sufficient access to the underlying storage, Workflow components will create the buckets if they do not exist.
 
@@ -28,14 +28,14 @@ If you provide credentials with sufficient access to the underlying storage, Wor
 
 If applicable, generate credentials that have create and write access to the storage buckets created in Step 1.
 
-If you are using AWS S3 and your Kubernetes nodes are configured with appropriate [IAM][aws-iam] API keys via InstanceRoles, you do not need to create API credentials. Do, however, validate that the InstanceRole has appropriate permissions to the configured buckets!
+If you are using AWS S3 and your Kubernetes nodes are configured with appropriate [IAM][aws-iam] API keys via Instance Roles, you do not need to create API credentials. However, validate that the Instance Role has appropriate permissions to the configured buckets!
 
 ### Step 3: Configure Workflow Chart
 
 Operators should configure object storage by editing the Helm values file before running `helm install`. To do so:
 
 * Fetch the Helm values by running `helm inspect values oci://registry.drycc.cc/charts/workflow > values.yaml`
-* Update the `builder/storage` and `registry/storage` parameter to reference the platform you are using.
+* Update the `builder/storage` and `registry/storage` parameters to reference the platform you are using.
 * Find the corresponding section for your storage type and provide appropriate values including region, bucket names, and access credentials.
 * Save your changes.
 

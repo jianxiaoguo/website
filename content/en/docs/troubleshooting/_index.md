@@ -1,6 +1,6 @@
 ---
 title: Troubleshooting
 description: >
-   Troubleshooting is systematic approach to problem-solving.
+   Find solutions to common issues and problems with Drycc Workflow.
 weight: 7
 ---

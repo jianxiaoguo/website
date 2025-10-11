@@ -1,17 +1,16 @@
 ---
 title: Domains and Routing
 linkTitle: Domains and Routing
-description: Make your apps accessible via custom domain names.
+description: Make applications accessible via custom domain names and manage routing.
 weight: 13
 ---
 
-You can use `drycc domains` to add or remove custom domains to the application:
+Add or remove custom domains for your application using `drycc domains`:
 
     $ drycc domains add hello.bacongobbler.com --ptype=web
     Adding hello.bacongobbler.com to finest-woodshed... done
 
-Once that's done, you can go into a DNS registrar and set up a CNAME from the new
-appname to the old one:
+After adding the domain, configure DNS by setting up a CNAME record from your custom domain to the Drycc domain:
 
     $ dig hello.dryccapp.com
     [...]
@@ -20,24 +19,22 @@ appname to the old one:
     finest-woodshed.dryccapp.com.    270     IN    A        172.17.8.100
 
 {{% alert title="Note" color="info" %}}
-  Setting a CNAME for a root domain can cause issues. Setting an @ record
-  to be a CNAME causes all traffic to go to the other domain, including mail and the SOA
-  ("start-of-authority") records. It is highly recommended that you bind a subdomain to
-  an application, however you can work around this by pointing the @ record to the
-  address of the load balancer (if any).
+Setting a CNAME for a root domain can cause issues. An @ record as a CNAME redirects all traffic to another domain, including mail and SOA records. We recommend using subdomains, but you can work around this by pointing the @ record to the load balancer's IP address.
 {{% /alert %}}
 
-To add or remove the application from the routing mesh, use `drycc routing`:
+## Manage Routing
+
+Control application accessibility through the routing mesh using `drycc routing`:
+
+Disable routing to make the application unreachable externally (but still accessible internally via Kubernetes Service):
 
     $ drycc routing disable
     Disabling routing for finest-woodshed... done
 
-This will make the application unreachable through the [Router][], but the application is still
-reachable internally through its [Kubernetes Service][service]. To re-enable routing:
+Re-enable routing to restore external access:
 
     $ drycc routing enable
     Enabling routing for finest-woodshed... done
-
 
 [router]: ../understanding-workflow/components.md#router
 [service]: ../reference-guide/terms.md#service

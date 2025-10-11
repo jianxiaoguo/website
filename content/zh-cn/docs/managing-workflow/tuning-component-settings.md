@@ -146,29 +146,7 @@ allow_sign_up | "true" | 允许用户注册账户。
 
 ## 自定义注册表
 
-[Registry][] 组件可以通过遵循 [drycc/distribution config doc](https://github.com/drycc/distribution/blob/main/docs/configuration.md) 来调整。
-
-## 自定义路由器
-
-大多数路由器设置可以通过注解进行调整，这允许在安装后零停机重新配置路由器。您可以在[此处](https://github.com/drycc/router#annotations)找到要调整的注解列表。
-
-[Router][] 组件可以调整以下环境变量：
-
-设置 | 描述
------------------ | ---------------------------------
-POD_NAMESPACE     | 路由器所在的 pod 命名空间。这是通过 [Kubernetes downward API][downward-api] 设置的。
-
-## 自定义 Workflow Manager
-
-[Workflow Manager][] 可以调整以下环境变量：
-
-设置 | 描述
----------------------------------- | ---------------------------------
-CHECK_VERSIONS    | 在 <https://versions.drycc.info/> 启用外部版本检查（默认："true"）
-POLL_INTERVAL_SEC | Workflow Manager 执行版本检查的时间间隔（秒）（默认：43200，即 12 小时）
-VERSIONS_API_URL  | 版本 API URL（默认："<https://versions-staging.drycc.info>"）
-DOCTOR_API_URL    | doctor API URL（默认："<https://doctor-staging.drycc.info>"）
-API_VERSION       | Workflow Manager 发送到版本 API 的版本号（默认："v2"）
+[Registry][] 组件可以通过遵循 [distribution config doc](https://distribution.github.io/distribution/about/configuration/) 来调整。
 
 [Deploying Apps]: ../applications/deploying-apps.md
 [builder]: ../understanding-workflow/components.md#builder

@@ -1,17 +1,17 @@
 ---
 title: Contributor Overview
 linkTitle: Overview
-description: Interested in contributing to a Drycc project?  There are lots of ways to help.
+description: Interested in contributing to a Drycc project? There are lots of ways to help.
 weight: 1
 ---
 
 ## File Bugs & Enhancements
 
-Find a bug? Want to see a new feature? Have a request for the maintainers? Open a Github issue in the applicable repository and we’ll get the conversation started.
+Find a bug? Want to see a new feature? Have a request for the maintainers? Open a GitHub issue in the applicable repository and we'll get the conversation started.
 
 Our official support channel is the [Drycc #community Slack channel][slack].
 
-Don't know what the applicable repository for an issue is? Open up in issue in [workflow][] or chat with a maintainer in the [Drycc #community Slack channel][slack] and we'll make sure it gets to the right place.
+Don't know what the applicable repository for an issue is? Open an issue in [workflow][] or chat with a maintainer in the [Drycc #community Slack channel][slack] and we'll make sure it gets to the right place.
 
 Additionally, take a look at the [troubleshooting][] documentation for common issues.
 
@@ -19,11 +19,11 @@ Before opening a new issue, it's helpful to search and see if anyone else has al
 
 ## Write Documentation
 
-We are always looking to improve and expand our documentation. Most docs reside in the [drycc/workflow][workflow] repository. Simply fork the project, update docs and send us a pull request.
+We are always looking to improve and expand our documentation. Most docs reside in the [drycc/workflow][workflow] repository. Simply fork the project, update docs, and send us a pull request.
 
 ## Contribute Code
 
-We are always looking for help improving the core platform, other workloads, tooling, and test coverage. Interested in contributing code? Let’s chat in the [Drycc #community Slack channel][slack]. Make sure to check out issues tagged [easy fix][] or [help wanted][].
+We are always looking for help improving the core platform, other workloads, tooling, and test coverage. Interested in contributing code? Let's chat in the [Drycc #community Slack channel][slack]. Make sure to check out issues tagged [easy fix][] or [help wanted][].
 
 When you're ready to begin writing code, review [Design Documents][dd] and get your [Development Environment][dev-environment] set up.
 

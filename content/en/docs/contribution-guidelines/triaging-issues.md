@@ -7,7 +7,7 @@ weight: 7
 
 Triage helps ensure issues resolve quickly by:
 
-- Describing the issue's intent and purpose is conveyed precisely. This is necessary because it can be difficult for an issue to explain how an end user experiences an problem and what actions they took.
+- Describing the issue's intent and purpose is conveyed precisely. This is necessary because it can be difficult for an issue to explain how an end user experiences a problem and what actions they took.
 - Giving a contributor the information they need before they commit to resolving an issue.
 - Lowering the issue count by preventing duplicate issues.
 - Streamlining the development process by preventing duplicate discussions.
@@ -16,7 +16,7 @@ If you don't have time to code, consider helping with triage. The community will
 
 ## Ensure the Issue Contains Basic Information
 
-Before triaging an issue very far, make sure that the issue's author provided the standard issue information. This will help you make an educated recommendation on how this to categorize the issue. Standard information that should be included in most issues are things such as:
+Before triaging an issue very far, make sure that the issue's author provided the standard issue information. This will help you make an educated recommendation on how to categorize the issue. Standard information that should be included in most issues are things such as:
 
 -   the version(s) of Drycc this issue affects
 -   a reproducible case if this is a bug
@@ -26,7 +26,7 @@ Depending on the issue, you might not feel all this information is needed. Use y
 
 If the author provides the recommended information but you are still unable to triage the issue, request additional information. Do this kindly and politely because you are asking for more of the author's time.
 
-If the author does not respond requested information within the timespan of a week, close the issue with a kind note stating that the author can request for the issue to be reopened when the necessary information is provided.
+If the author does not respond with requested information within the timespan of a week, close the issue with a kind note stating that the author can request for the issue to be reopened when the necessary information is provided.
 
 ## Classifying the Issue
 
@@ -59,7 +59,7 @@ security     | Security-related issues such as TLS encryption, network segregati
 
 ## Easy Fix
 
-"Easy Fix" issues are a way for a new contributor to find issues that are fit for their experience level. These issues are typically for users who are new to Drycc, and possibly Go, and is looking to help while learning the basics.
+"Easy Fix" issues are a way for a new contributor to find issues that are fit for their experience level. These issues are typically for users who are new to Drycc, and possibly Go, and are looking to help while learning the basics.
 
 ## Prioritizing issues
 
@@ -70,4 +70,4 @@ Priority   | Description
 priority&nbsp;0 | Urgent: Security, critical bugs, blocking issues. Drop everything and fix this today, then consider creating a patch release.
 priority&nbsp;1 | Serious: Impedes user actions or is a regression. Fix this before the next planned release.
 
-And that's it. That should be all the information required for a new or existing contributor to come in an resolve an issue.
+And that's it. That should be all the information required for a new or existing contributor to come in and resolve an issue.

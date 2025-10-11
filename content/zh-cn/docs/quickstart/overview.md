@@ -11,7 +11,7 @@ weight: 1
 2. 启动 Kubernetes 并安装 Drycc Workflow
 3. 部署您的第一个应用
 
-本指南将帮助您设置适合评估、开发和测试的集群。当您准备好进行暂存和生产时，请查看我们的[生产清单](../managing-workflow/production-deployments.md)。
+本指南将帮助您设置适合评估、开发和测试的集群。当您准备好进行预发和生产环境部署时，请查看我们的[生产清单](../managing-workflow/production-deployments.md)。
 
 ## 步骤 1：安装 Workflow
 

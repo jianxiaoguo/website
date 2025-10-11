@@ -5,7 +5,7 @@ description: 立即开始使用 Drycc
 weight: 2
 ---
 
-Workflow 使用 passport 组件来创建和授权用户，它可以配置 LDAP 认证选项或浏览 passport 网站来注册用户。
+Workflow 使用 passport 组件来创建和授权用户，它可以配置 LDAP 认证选项或通过 passport 网站来注册用户。
 
 ## 登录到 Workflow
 

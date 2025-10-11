@@ -9,13 +9,13 @@ weight: 2
 
 ## 概述
 
-![系统概述](/docs/diagrams/Ecosystem_Basic.jpg)
+![系统概述](/images/diagrams/Ecosystem_Basic.jpg)
 
-操作员使用 [Helm][] 配置和安装 Workflow 组件，这些组件直接与底层 Kubernetes 集群接口。服务发现、容器可用性和网络都委托给 Kubernetes，而 Workflow 提供干净简单的开发者体验。
+操作员使用 [Helm][] 配置和安装 Workflow 组件，这些组件直接与底层 Kubernetes 集群对接。服务发现、容器可用性和网络都委托给 Kubernetes，而 Workflow 提供干净简单的开发者体验。
 
 ## 平台服务
 
-![Workflow 概述](/docs/diagrams/Workflow_Overview.jpg)
+![Workflow 概述](/images/diagrams/Workflow_Overview.jpg)
 
 Drycc Workflow 为您的 Kubernetes 集群提供额外功能，包括：
 
@@ -28,13 +28,13 @@ Drycc Workflow 为您的 Kubernetes 集群提供额外功能，包括：
 
 所有平台组件和通过 Workflow 部署的应用程序都期望在现有的 Kubernetes 集群上运行。这意味着您可以愉快地在通过 Drycc Workflow 管理的应用程序旁边运行您的 Kubernetes 原生工作负载。
 
-![Workflow 和 Kubernetes](/docs/diagrams/Workflow_Detail.png)
+![Workflow 和 Kubernetes](/images/diagrams/Workflow_Detail.png)
 
 ## 应用程序布局和边缘路由
 
 默认情况下，Workflow 为每个应用程序创建命名空间和服务，因此您可以通过标准 Kubernetes 机制轻松将您的应用程序连接到集群上的其他服务。
 
-![应用程序配置](/docs/diagrams/Application_Layout.png)
+![应用程序配置](/images/diagrams/Application_Layout.png)
 
 路由器组件负责将 HTTP/s 流量路由到您的应用程序，以及代理 `git push` 和平台 API 流量。
 

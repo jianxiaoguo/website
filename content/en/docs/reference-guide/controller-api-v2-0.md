@@ -119,7 +119,7 @@ Optional Parameters:
 
 ```
 {
-    "username" : "test"
+    "username" : "test",
     "all" : "true"
 }
 ```
@@ -455,7 +455,7 @@ Content-Type: application/json
 Authorization: token abc123
 
 {
-    "name": "foo"
+    "name": "foo",
     "certificate": "-----BEGIN CERTIFICATE-----",
     "key": "-----BEGIN RSA PRIVATE KEY-----"
 }
@@ -1294,7 +1294,7 @@ Content-Type: application/json
 
 {
     "count": 2,
-    "next": null
+    "next": null,
     "previous": null,
     "results": [
         {

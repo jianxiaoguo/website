@@ -1,6 +1,6 @@
 ---
 title: Understanding Workflow
 description: >
-   Understanding the architecture design of workflow.
+   Learn about Drycc Workflow architecture, components, and core concepts.
 weight: 2
 ---

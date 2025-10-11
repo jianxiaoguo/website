@@ -21,14 +21,13 @@ Your work will be used by other people, and you in turn will depend on the work 
 
 3. **Be respectful.**
 
-Not all of us will agree all the time, but disagreement is no excuse for poor behavior and bad manners. We might all experience some frustration now and then, but we cannot allow that frustration to turn into a personal attack. It’s important to remember that a community where people feel uncomfortable or threatened is not a productive one.
+Not all of us will agree all the time, but disagreement is no excuse for poor behavior and bad manners. We might all experience some frustration now and then, but we cannot allow that frustration to turn into a personal attack. It's important to remember that a community where people feel uncomfortable or threatened is not a productive one.
 
 4. **Be careful in the words that you choose.**
 
 Be kind to others. Do not insult or put down other participants. Behave professionally. Remember that harassment and sexist, racist, or exclusionary jokes are never appropriate for the community.
 
-(Thanks to the [Debian][] and [Django][] communities for their text and
-their inspiration.)
+(Thanks to the [Debian][] and [Django][] communities for their text and inspiration.)
 
 [debian]: http://www.debian.org/intro/diversity
 [django]: https://www.djangoproject.com/conduct/

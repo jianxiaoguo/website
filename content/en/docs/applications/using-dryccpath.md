@@ -1,52 +1,50 @@
 ---
 title: Using drycc path
 linkTitle: Deploying with drycc path
-description: Drycc Container Registry allows you to deploy your Docker-based app to Drycc. Both Common Runtime and Private Spaces are supported.
+description: Deploy applications using Drycc path configuration for advanced Docker-based deployments.
 weight: 15
 ---
 
-The Drycc stack is intended for advanced use cases only. Unless you have a specific need for custom Docker images, we recommend using Drycc’s default buildpack-powered build system. It offers automatic base image security updates and language-specific optimizations. It also avoids the need to maintain a container Dockerfile.
+The Drycc stack supports advanced use cases with custom Docker images. For most applications, we recommend using Drycc's default buildpack system, which provides automatic security updates, language-specific optimizations, and eliminates the need to maintain Dockerfiles.
 
-## Drycc config path overview
+## Drycc Config Path Overview
 
-A drycc repository comes in two different flavours:
+A Drycc repository supports two configurations:
 
- * a `.drycc` directory at the root of the working tree;
+* A `.drycc` directory at the root of the working tree
+* A root directory as a 'bare' repository (without working tree), typically used for `drycc pull`
 
- * a root directory that is a 'bare' repository(i.e. without its own working tree).
-   that is typically used for `drycc pull`.
-
-These things may exist in a drycc repository.
+Repository contents include:
 
 ```
 config/[a-z0-9]+(\.[a-z0-9]+)*::
-        Configure file name, file name is group name.
-        Format is environment variable format.
+        Configuration files named by group.
+        Format follows environment variable syntax.
 
 [a-z0-9]+(\-[a-z0-9]+)*.(yaml|yml)::
-        Pipeline configure file.
+        Pipeline configuration files.
 ```
 
-### Config format
+### Config Format
 
-Environment variables follow <NAME>=<VALUE> formatting. By convention, but not rule, environment variable names are always capitalized.
+Environment variables use `<NAME>=<VALUE>` format. By convention, variable names are capitalized:
 
 ```
 DEBUG=true
 JVM_OPTIONS=-XX:+UseG1GC
 ```
 
-### Pipeline format
+### Pipeline Format
 
-A manifest has three top-level sections.
+A manifest contains these top-level sections:
 
-- build – Specifies the to build Dockerfile.
-- env – Specifies environment variables in container.
-- run – Specifies the release phase tasks to execute.
-- config – Specifies config group, global group automatic reference.
-- deploy – Specifies the commands and args to deploy.
+- `build` – Specifies Dockerfile for building
+- `env` – Defines container environment variables
+- `run` – Specifies release phase tasks
+- `config` – References config groups (global groups referenced automatically)
+- `deploy` – Defines deployment commands and arguments
 
-Here’s an example that illustrates using a manifest to build Docker images.
+Example manifest for building Docker images:
 
 ```
 kind: pipeline
@@ -72,4 +70,4 @@ deploy:
   - bundle exec puma -C config/puma.rb
 ```
 
-For more deployment information, please refer to the drycc [examples](https://github.com/drycc/samples).
+For more deployment examples, see the Drycc [samples](https://github.com/drycc/samples).

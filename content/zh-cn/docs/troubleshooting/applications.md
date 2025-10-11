@@ -16,7 +16,7 @@ weight: 3
 
 ## 应用已部署，但无法启动
 
-如果您部署了应用但它无法启动，您可以使用Drycc Grafana来检查应用无法启动的原因。有时，应用容器可能在没有记录任何错误信息的情况下启动失败。这通常发生在为应用配置的健康检查失败时。在这种情况下，您可以首先[使用 kubectl 进行故障排除][troubleshooting-kubectl]。您可以通过检查部署在应用命名空间中的 pod 来检查应用当前状态。为此，请运行
+如果您部署了应用但它无法启动，您可以使用 Drycc Grafana 来检查应用无法启动的原因。有时，应用容器可能在没有记录任何错误信息的情况下启动失败。这通常发生在为应用配置的健康检查失败时。在这种情况下，您可以首先[使用 kubectl 进行故障排除][troubleshooting-kubectl]。您可以通过检查部署在应用命名空间中的 pod 来查看应用当前状态。为此，请运行
 
 	$ kubectl --namespace=myapp get pods
 	NAME                          READY     STATUS                RESTARTS   AGE

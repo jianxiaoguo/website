@@ -1,108 +1,85 @@
 ---
-title: Application SSL Certificates
+title: SSL Certificates
 linkTitle: SSL Certificates
-description: SSL is a cryptographic protocol that provides end-to-end encryption and integrity for all web requests. 
+description: Configure SSL certificates for secure HTTPS connections on custom domains in Drycc applications.
 weight: 14
 ---
 
+SSL is a cryptographic protocol that provides end-to-end encryption and integrity for all web requests. Applications that transmit sensitive data should enable SSL to ensure all information is transmitted securely.
 
-# Application SSL Certificates
-
-SSL is a cryptographic protocol that provides end-to-end encryption and integrity for all web
-requests. Apps that transmit sensitive data should enable SSL to ensure all information is
-transmitted securely.
-
-To enable SSL on a custom domain, e.g., `www.example.com`, use the SSL endpoint.
+To enable SSL on a custom domain, such as `www.example.com`, use the SSL certificate endpoint.
 
 {{% alert title="Note" color="info" %}}
-`drycc certs` is only useful for custom domains. Default application domains are
-SSL-enabled already and can be accessed simply by using https,
-e.g. `https://foo.dryccapp.com` (provided that you have [installed your wildcard
-certificate][platform-ssl] on the routers or on the load balancer).
+The `drycc certs` command is only useful for custom domains. Default application domains are SSL-enabled by default and can be accessed using HTTPS, for example `https://foo.dryccapp.com` (provided that you have [installed your wildcard certificate][platform-ssl] on the routers or load balancer).
 {{% /alert %}}
 
 ## Overview
 
-Because of the unique nature of SSL validation, provisioning SSL for your domain is a multi-step
-process that involves several third-parties. You will need to:
+Due to the unique nature of SSL validation, provisioning SSL for your domain is a multi-step process that involves several third parties. You will need to:
 
 1. Purchase an SSL certificate from your SSL provider
-2. Upload the cert to Drycc
+2. Upload the certificate to Drycc
 
+## Acquire an SSL Certificate
 
-## Acquire SSL Certificate
-
-Purchasing an SSL cert varies in cost and process depending on the vendor. [RapidSSL][] offers a
-simple way to purchase a certificate and is a recommended solution. If you’re able to use this
-provider, see [buy an SSL certificate with RapidSSL][] for instructions.
-
+Purchasing an SSL certificate varies in cost and process depending on the vendor. [RapidSSL][] offers a simple way to purchase a certificate and is a recommended solution. If you can use this provider, see [buy an SSL certificate with RapidSSL][] for instructions.
 
 ## DNS and Domain Configuration
 
-Once the SSL certificate is provisioned and your cert is confirmed, you must route requests for
-your domain through Drycc. Unless you've already done so, add the domain specified when generating
-the CSR to your app with:
+Once the SSL certificate is provisioned and confirmed, you must route requests for your domain through Drycc. Unless you've already done so, add the domain specified when generating the CSR to your application with:
 
-    $ drycc domains add www.example.com --ptype==web -a foo
+    $ drycc domains add www.example.com --ptype=web -a foo
     Adding www.example.com to foo... done
-
 
 ## Add a Certificate
 
-Add your certificate, any intermediate certificates, and private key to the endpoint with the
-`certs:add` command.
+Add your certificate, any intermediate certificates, and private key to the endpoint using the `certs:add` command.
 
     $ drycc certs add example-com server.crt server.key -a foo
     Adding SSL endpoint... done
     www.example.com
 
 {{% alert title="Note" color="info" %}}
-The name given to the certificate can only contain a-z (lowercase), 0-9 and hyphens
+The certificate name can only contain lowercase letters (a-z), numbers (0-9), and hyphens.
 {{% /alert %}}
 
-The Drycc platform will investigate the certificate and extract any relevant information from it
-such as the Common Name, Subject Alt Names (SAN), fingerprint and more.
+The Drycc platform will examine the certificate and extract relevant information such as the Common Name, Subject Alternative Names (SAN), fingerprint, and more.
 
 This allows for wildcard certificates and multiple domains in the SAN without uploading duplicates.
 
-
 ### Add a Certificate Chain
 
-Sometimes, your certificates (such as a self-signed or a cheap certificate) need additional
-certificates to establish the chain of trust. What you need to do is bundle all the certificates
-into one file and give that to Drycc. Importantly, your site’s certificate must be the first one:
+Sometimes certificates (such as self-signed or inexpensive certificates) require additional certificates to establish the chain of trust. Bundle all certificates into one file with your site's certificate first:
 
     $ cat server.crt server.ca > server.bundle
 
-After that, you can add them to Drycc with the `certs add` command:
+Then add them to Drycc using the `certs add` command:
 
     $ drycc certs add example-com server.bundle server.key -a foo
     Adding SSL endpoint... done
     www.example.com
 
-## Attach SSL certificate to a domain
+## Attach SSL Certificate to a Domain
 
-Certificates are not automagically connected up to domains, instead you will have to attach a
-certificate to a domain
+Certificates are not automatically connected to domains. You must manually attach a certificate to a domain:
 
     $ drycc certs attach example-com example.com -a foo
 
-Each certificate can be connected to many domains. There is no need to upload duplicates.
+Each certificate can be connected to multiple domains. There is no need to upload duplicates.
 
-To remove an association
+To remove an association:
 
     $ drycc certs detach example-com example.com -a foo
 
-## Endpoint overview
+## Certificate Overview
 
-You can verify the details of your domain's SSL configuration with `drycc certs`.
+You can verify the details of your domain's SSL configuration with `drycc certs`:
 
     $ drycc certs
-    NAME           COMMON-NAME    EXPIRES        SAN                 DOMAINS           
+    NAME           COMMON-NAME    EXPIRES        SAN                 DOMAINS
     example-com    example.com    14 Jan 2017    blog.example.com    example.com
 
-
-or by looking at at each certificates detailed information
+Or view detailed information for each certificate:
 
     $ drycc certs info example-com -a foo
 
@@ -122,89 +99,78 @@ or by looking at at each certificates detailed information
 
 ## Testing SSL
 
-Use a command line utility like `curl` to test that everything is configured correctly for your
-secure domain.
+Use a command-line utility like `curl` to test that everything is configured correctly for your secure domain.
 
 {{% alert title="Note" color="info" %}}
-The -k option flag tells curl to ignore untrusted certificates.
+The `-k` option tells curl to ignore untrusted certificates.
 {{% /alert %}}
 
-Pay attention to the output. It should print `SSL certificate verify ok`. If it prints something
-like `common name: www.example.com (does not match 'www.somedomain.com')` then something is not
-configured correctly.
+Pay attention to the output. It should print `SSL certificate verify ok`. If it prints something like `common name: www.example.com (does not match 'www.somedomain.com')`, then something is not configured correctly.
 
-## Enforcing SSL at the Router
+## Enforce SSL at the Router
 
-To enforce all HTTP requests be redirected to HTTPS, TLS can be enforced at the router level by
-running
+To enforce that all HTTP requests are redirected to HTTPS, enable TLS enforcement at the router level:
 
     $ drycc tls force enable -a foo
     Enabling https-only requests for foo... done
 
-Users hitting the HTTP endpoint for the application will now receive a 301 redirect to the HTTPS
-endpoint.
+Users hitting the HTTP endpoint for the application will now receive a 301 redirect to the HTTPS endpoint.
 
-To disable enforced TLS, run
+To disable enforced TLS:
 
     $ drycc tls force disable -a foo
     Disabling https-only requests for foo... done
 
 ## Automated Certificate Management
 
-With Automated Certificate Management (ACM), Drycc automatically manages TLS certificates for apps with Hobby and Professional dynos on the Common Runtime, and for apps in Private Spaces that enable the feature.
-Certificates handled by ACM automatically renew one month before they expire, and new certificates are created automatically whenever you add or remove a custom domain. All applications with paid dynos include ACM for free.
-Automated Certificate Management uses Let’s Encrypt, the free, automated, and open certificate authority for managing your application’s TLS certificates. Let’s Encrypt is run for the public benefit by the Internet Security Research Group (ISRG).
+With Automated Certificate Management (ACM), Drycc automatically manages TLS certificates for applications with Hobby and Professional dynos on the Common Runtime, and for applications in Private Spaces that enable the feature.
 
-To enable ACM with the following command:
+Certificates handled by ACM automatically renew one month before they expire, and new certificates are created automatically whenever you add or remove a custom domain. All applications with paid dynos include ACM for free.
+
+Automated Certificate Management uses Let's Encrypt, the free, automated, and open certificate authority for managing your application's TLS certificates. Let's Encrypt is run for the public benefit by the Internet Security Research Group (ISRG).
+
+To enable ACM:
+
     $ drycc tls auto enable -a foo
 
-To disable ACM with the following command:
+To disable ACM:
+
     $ drycc tls auto disable -a foo
 
-
-## Remove Certificate
+## Remove a Certificate
 
 You can remove a certificate using the `certs:remove` command:
 
     $ drycc certs remove my-cert -a foo
     Removing www.example.com... Done.
 
-## Swapping out certificates
+## Swapping Certificates
 
-Over the lifetime of an application an operator will have to acquire certificates with new expire
-dates and apply it to all relevant applications, below is the recommended way to swap out certificates.
+Over the lifetime of an application, you will need to acquire certificates with new expiration dates and apply them to all relevant applications. The recommended way to swap certificates is:
 
-Be intentional with certificate names, name them `example-com-2017` when possible, where the year
-signifies the expiry year. This allows for `example-com-2018` when a new certificate is purchased.
+Be intentional with certificate names, such as `example-com-2017`, where the year signifies the expiry year. This allows for `example-com-2018` when a new certificate is purchased.
 
-Assuming all applications are already using `example-com-2017` the following commands can be ran,
-chained together or otherwise:
+Assuming all applications are already using `example-com-2017`, run the following commands (they can be chained together):
 
     $ drycc certs detach example-com-2017 example.com -a foo
     $ drycc certs attach example-com-2018 example.com -a foo
 
-This will take care of a singular domain which allows the operator to verify everything went
-as planned and slowly roll it out to any other application using the same method.
+This handles a single domain, allowing you to verify everything worked as planned and slowly roll it out to other applications using the same method.
 
 ## Troubleshooting
 
-Here are some steps you can follow if your SSL endpoint is not working as you'd expect.
-
+Here are some steps you can follow if your SSL endpoint is not working as expected.
 
 ### Untrusted Certificate
 
 In some cases when accessing the SSL endpoint, it may list your certificate as untrusted.
 
-If this occurs, it may be because it is not trusted by Mozilla’s list of [root CAs][]. If this is
-the case, your certificate may be considered untrusted for many browsers.
+If this occurs, it may be because it is not trusted by Mozilla's list of [root CAs][]. If this is the case, your certificate may be considered untrusted for many browsers.
 
-If you have uploaded a certificate that was signed by a root authority but you get the message that
-it is not trusted, then something is wrong with the certificate. For example, it may be missing
-[intermediary certificates][]. If so, download the intermediary certificates from your SSL provider,
-remove the certificate from Drycc and re-run the `certs add` command.
+If you have uploaded a certificate that was signed by a root authority but you get the message that it is not trusted, then something is wrong with the certificate. For example, it may be missing [intermediate certificates][]. If so, download the intermediate certificates from your SSL provider, remove the certificate from Drycc, and re-run the `certs add` command.
 
 [RapidSSL]: https://www.rapidssl.com/
 [buy an SSL certificate with RapidSSL]: https://www.rapidssl.com/buy-ssl/
 [platform-ssl]: https://gateway-api.sigs.k8s.io/guides/tls/
 [root CAs]: https://www.mozilla.org/en-US/about/governance/policies/security-group/certs/included/
-[intermediary certificates]: http://en.wikipedia.org/wiki/Intermediate_certificate_authorities
+[intermediate certificates]: http://en.wikipedia.org/wiki/Intermediate_certificate_authorities

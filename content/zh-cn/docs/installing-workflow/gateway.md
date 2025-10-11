@@ -31,7 +31,7 @@ $ helm install drycc oci://registry.drycc.cc/charts/workflow \
 
 如果您想在裸机上使用负载均衡器，您可以查看 [metallb](https://github.com/metallb/metallb)
 
-其中 `global.platformDomain` 是一个**必需**参数，对于 Workflow 传统上不是必需的，这在下一节中解释。在此示例中，我们使用 `drycc.cc` 作为 `$hostname`。
+其中 `global.platformDomain` 是一个**必需**参数，对于 Workflow 传统上不是必需的，这在下一节中会解释。在此示例中，我们使用 `drycc.cc` 作为 `$hostname`。
 
 Helm 将在 `drycc` 命名空间中安装各种 Kubernetes 资源。
 等待 Helm 启动的 pod 准备就绪。通过运行以下命令监控其状态：

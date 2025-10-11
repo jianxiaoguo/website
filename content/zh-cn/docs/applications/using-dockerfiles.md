@@ -6,7 +6,7 @@ weight: 3
 ---
 
 Drycc 支持通过 Dockerfiles 部署应用程序。[Dockerfile][] 自动化了制作 [容器镜像][] 的步骤。
-Dockerfiles 非常强大，但需要额外工作来定义您的确切应用程序运行时环境。
+Dockerfiles 非常强大，但需要额外的工作来定义您的确切应用程序运行时环境。
 
 ## 添加 SSH 密钥
 

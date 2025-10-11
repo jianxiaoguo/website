@@ -17,7 +17,7 @@ title: Drycc
 {{% blocks/lead color="primary" %}}
 原生 Kubernetes，Drycc 是容器即服务 (CaaS) 套件，可在每个公共云、每个 Kubernetes 发行版、私有云和边缘上使用。
 
-（一个易于使用、可扩展的 CaaS 平台，可在 Metal、AWS、Azure 和 Google Cloud 等上使用，还有更多）
+（一个易于使用、可扩展的 CaaS 平台，可在 Metal、AWS、Azure 和 Google Cloud 等环境中使用，还有更多）
 {{% /blocks/lead %}}
 
 

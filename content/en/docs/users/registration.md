@@ -1,11 +1,11 @@
 ---
 title: Users and Registration
 linkTitle: Users and Registration
-description: Get started on Drycc today
+description: Learn how to register users and authenticate with Drycc Workflow
 weight: 2
 ---
 
-Workflow use the passport component to create and authorize users, it can config options for LDAP authentication or browse passport web site to register users.
+Workflow uses the passport component to create and authorize users. It can be configured for LDAP authentication or you can browse the passport website to register users.
 
 ## Login to Workflow
 
@@ -16,7 +16,8 @@ If you already have an account, use `drycc login` to authenticate against the Dr
     Waiting for login... .o.Logged in as drycc
     Configuration file written to /root/.drycc/client.json
 
-Or you can login with username and password
+You can also login with username and password:
+
     $ drycc login http://drycc.example.com --username=demo --password=demo
     Configuration file written to /root/.drycc/client.json
 

@@ -5,11 +5,11 @@ description: 为生产工作负载准备 Workflow 部署时，有一些额外的
 weight: 6
 ---
 
-## 在生产环境中运行 Workflow 而无需 drycc 存储
+## 在生产环境中运行 Workflow 而不使用 drycc 存储
 
-在生产环境中，可以通过运行外部对象存储来实现持久存储。对于 AWS、GCE/GKE 或 Azure 上的用户，Amazon S3、Google GCS 或 Microsoft Azure Storage 的便利性使得运行无存储的 Workflow 集群的前景相当合理。对于对使用外部对象存储有限制的用户，使用 swift 对象存储可能是一个选项。
+在生产环境中，可以通过运行外部对象存储来实现持久存储。对于 AWS、GCE/GKE 或 Azure 上的用户，Amazon S3、Google GCS 或 Microsoft Azure Storage 的便利性使得运行不使用存储的 Workflow 集群成为相当合理的选择。对于对使用外部对象存储有限制的用户，使用 swift 对象存储可能是一个选项。
 
-运行无存储的 Workflow 集群提供了几个优势：
+运行不使用存储的 Workflow 集群提供了几个优势：
 
  - 从工作节点移除状态
  - 减少资源使用

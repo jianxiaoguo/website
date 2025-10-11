@@ -16,9 +16,9 @@ weight: 1
 
 ## 权限被拒绝 (publickey)
 
-此问题最常见的原因是用户忘记运行 `drycc keys:add` 或将他们的私钥添加到 SSH 代理。要这样做，请运行 `ssh-add ~/.ssh/id_rsa`，然后再次尝试运行 `git push drycc master`。
+此问题最常见的原因是用户忘记运行 `drycc keys:add` 或将他们的私钥添加到 SSH 代理。要解决此问题，请运行 `ssh-add ~/.ssh/id_rsa`，然后再次尝试运行 `git push drycc master`。
 
-如果在尝试运行上述 `ssh-add` 命令后收到 `Could not open a connection to your authentication agent` 错误，您可能需要在运行 `ssh-add` 之前通过发出 `eval "$(ssh-agent)"` 命令来加载 SSH 代理环境变量。
+如果在尝试运行上述 `ssh-add` 命令后收到 `Could not open a connection to your authentication agent` 错误，您可能需要在运行 `ssh-add` 之前通过执行 `eval "$(ssh-agent)"` 命令来加载 SSH 代理环境变量。
 
 ## 其他问题
 

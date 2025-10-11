@@ -25,5 +25,5 @@ We’re working with Quickwit to bring you an application log cluster and search
 
 ## Default Configuration
 
-Fluent Bit is based in a pluggable architecture where different plugins plays a major role in the data pipeline, more than 70 built-in plugins available.
-Please refer to charts [values.yaml](https://github.com/drycc/fluentbit/blob/main/charts/fluentbit/values.yaml) for specific configurations.
+Fluent Bit is based on a pluggable architecture where different plugins play a major role in the data pipeline, with more than 70 built-in plugins available.
+Please refer to the charts [values.yaml](https://github.com/drycc/fluentbit/blob/main/charts/fluentbit/values.yaml) for specific configurations.

@@ -10,7 +10,7 @@ compliant Kubernetes cluster.
 
 ## Overview
 
-![System Overview](/docs/diagrams/Ecosystem_Basic.jpg)
+![System Overview](/images/diagrams/Ecosystem_Basic.jpg)
 
 Operators use [Helm][] to configure and install the Workflow components which
 interface directly with the underlying Kubernetes cluster. Service discovery,
@@ -19,7 +19,7 @@ Workflow provides a clean and simple developer experience.
 
 ## Platform Services
 
-![Workflow Overview](/docs/diagrams/Workflow_Overview.jpg)
+![Workflow Overview](/images/diagrams/Workflow_Overview.jpg)
 
 Drycc Workflow provides additional functionality to your Kubernetes cluster, including:
 
@@ -35,7 +35,7 @@ running on an existing Kubernetes cluster. This means that you can happily run
 your Kubernetes-native workloads next to applications that are managed through
 Drycc Workflow.
 
-![Workflow and Kubernetes](/docs/diagrams/Workflow_Detail.png)
+![Workflow and Kubernetes](/images/diagrams/Workflow_Detail.png)
 
 ## Application Layout and Edge Routing
 
@@ -43,7 +43,7 @@ By default Workflow creates per-application Namespaces and Services so you can
 easily connect your applications to other on-cluster services through standard
 Kubernetes mechanisms.
 
-![Application Configuration](/docs/diagrams/Application_Layout.png)
+![Application Configuration](/images/diagrams/Application_Layout.png)
 
 The router component is responsible for routing HTTP/s traffic to your
 Applications as well as proxying `git push` and platform API traffic.

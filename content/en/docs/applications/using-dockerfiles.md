@@ -1,63 +1,59 @@
 ---
 title: Using Dockerfiles
 linkTitle: Deploying with Dockerfiles
-description: Drycc Container Registry allows you to deploy your Docker-based app to Drycc. Both Common Runtime and Private Spaces are supported.
+description: Deploy Docker-based applications to Drycc using Dockerfiles. Supports both Common Runtime and Private Spaces.
 weight: 3
 ---
 
-Drycc supports deploying applications via Dockerfiles.  A [Dockerfile][] automates the steps for crafting a [Container Image][].
-Dockerfiles are incredibly powerful but require some extra work to define your exact application runtime environment.
+Drycc supports deploying applications using Dockerfiles. A [Dockerfile][] automates the process of building a [Container Image][] that defines your application's runtime environment. While Dockerfiles offer powerful customization, they require careful configuration to work with Drycc.
 
 ## Add SSH Key
 
-For **Dockerfile** based application deploys via `git push`, Drycc Workflow identifies users via SSH keys. SSH keys are pushed to the platform and must be unique to each user.
+For Dockerfile-based deployments via `git push`, Drycc Workflow authenticates users using SSH keys. Each user must upload a unique SSH key to the platform.
 
-- See [this document](../users/ssh-keys.md#generate-an-ssh-key) for instructions on how to generate an SSH key.
-
-- Run `drycc keys add` to upload your SSH key to Drycc Workflow.
+- Generate an SSH key by following [these instructions](../users/ssh-keys.md#generate-an-ssh-key).
+- Upload your SSH key using `drycc keys add`:
 
 ```
 $ drycc keys add ~/.ssh/id_drycc.pub
 Uploading id_drycc.pub to drycc... done
 ```
 
-Read more about adding/removing SSH Keys [here](../users/ssh-keys.md#adding-and-removing-ssh-keys).
+For more information about managing SSH keys, see [this guide](../users/ssh-keys.md#adding-and-removing-ssh-keys).
 
 
 ## Prepare an Application
 
-If you do not have an existing application, you can clone an example application that demonstrates the Dockerfile workflow.
+If you don't have an existing application, clone this example application to explore the Dockerfile workflow:
 
     $ git clone https://github.com/drycc/helloworld.git
     $ cd helloworld
 
-
 ### Dockerfile Requirements
 
-In order to deploy Dockerfile applications, they must conform to the following requirements:
+Your Dockerfile must meet these requirements for successful deployment:
 
-* The Dockerfile must use the `EXPOSE` directive to expose exactly one port.
-* That port must be listening for an HTTP connection.
-* The Dockerfile must use the `CMD` directive to define the default process that will run within the container.
-* The Container image must contain [bash](https://www.gnu.org/software/bash/) to run processes.
+* Use the `EXPOSE` directive to expose exactly one port for HTTP traffic.
+* Ensure your application listens for HTTP connections on that port.
+* Define the default process using the `CMD` directive.
+* Include [bash](https://www.gnu.org/software/bash/) in your container image.
 
 {{% alert title="Note" color="info" %}}
-Note that if you are using a private registry of any kind (`gcr` or other) the application environment must include a `$PORT` config variable that matches the `EXPOSE`'d port, example: `drycc config set PORT=5000`. See [Configuring Registry](../installing-workflow/configuring-registry/#configuring-off-cluster-private-registry) for more info.
+If you use a private registry (such as GCR or others), set a `$PORT` environment variable that matches your `EXPOSE`d port. For example: `drycc config set PORT=5000`. See [Configuring Registry](../installing-workflow/configuring-registry/#configuring-off-cluster-private-registry) for details.
 {{% /alert %}}
 
 
 ## Create an Application
 
-Use `drycc create` to create an application on the [Controller][].
+Create an application on the [Controller][]:
 
     $ drycc create
     Creating application... done, created folksy-offshoot
     Git remote drycc added
 
-
 ## Push to Deploy
 
-Use `git push drycc master` to deploy your application.
+Deploy your application using `git push drycc master`:
 
     $ git push drycc master
     Counting objects: 13, done.
@@ -122,26 +118,20 @@ Use `git push drycc master` to deploy your application.
     Welcome to Drycc!
     See the documentation at http://docs.drycc.cc/ for more information.
 
-Because a Dockerfile application is detected, the `web` process type is automatically scaled to 1 on first deploy.
+Drycc automatically detects Dockerfile applications and scales the `web` process type to 1 on first deployment.
 
-Use `drycc scale web=3` to increase `web` processes to 3, for example. Scaling a
-process type directly changes the number of [containers][container]
-running that process.
+Scale your application by adjusting the number of containers. For example, use `drycc scale web=3` to run 3 web containers.
 
 
 ## Container Build Arguments
 
-As of Workflow v2.13.0, users can inject their application config into the Container image using
-[Container build arguments][build-args]. To opt into this, users must add a new environment variable
-to their application:
+Starting with Workflow v2.13.0, you can inject application configuration into your container image using [Docker build arguments][build-args]. Enable this feature by setting an environment variable:
 
 ```
 $ drycc config set DRYCC_DOCKER_BUILD_ARGS_ENABLED=1
 ```
 
-Every environment variable set with `drycc config set` will then be available for use inside the
-user's Dockerfile. For example, if a user runs `drycc config set POWERED_BY=Workflow`,
-the user can utilize that build argument in their Dockerfile:
+Once enabled, all environment variables set with `drycc config set` become available in your Dockerfile. For example, after running `drycc config set POWERED_BY=Workflow`, you can use this build argument in your Dockerfile:
 
 ```
 ARG POWERED_BY

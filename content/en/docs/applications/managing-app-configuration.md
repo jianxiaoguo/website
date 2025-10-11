@@ -1,19 +1,17 @@
 ---
 title: Configuring an Application
 linkTitle: Managing App Configuration
-description: How to store configuration of a Drycc app in the environment, keeping config out of code, making it easy to maintain app or deployment specific configs.
+description: Store application configuration in environment variables to keep config separate from code.
 weight: 6
 ---
 
-
 # Configuring an Application
 
-A Drycc application [stores config in environment variables][].
-
+Drycc applications [store configuration in environment variables][] to separate config from code and simplify environment-specific settings.
 
 ## Setting Environment Variables
 
-Use `drycc config` to modify environment variables for a deployed application.
+Use `drycc config` to manage environment variables for deployed applications.
 
     $ drycc help config
     Manage environment variables that define app config
@@ -43,10 +41,9 @@ Use `drycc config` to modify environment variables for a deployed application.
 
     Use "drycc config [command] --help" for more information about a command.
 
-When config is changed, a new release is created and deployed automatically.
+Configuration changes trigger automatic deployment of a new release.
 
-You can set multiple environment variables with one `drycc config set` command,
-or with `drycc config push` and a local .env file.
+Set multiple environment variables in one command or use `drycc config push` with a local .env file:
 
     $ drycc config set FOO=1 BAR=baz && drycc config pull
     $ cat .env
@@ -62,96 +59,76 @@ or with `drycc config push` and a local .env file.
     BAR: baz
     TIDE: high
 
-It can modify environment variables for a process type of application.
+Set environment variables for specific process types:
 
     $ drycc config set FOO=1 BAR=baz --ptype=web
 
-It can also modify environment variables for a environment group.
+Or manage environment variable groups:
 
     $ drycc config set FOO1=1 BAR1=baz --group=web.env
 
-Then bind this environment variable group to the web.
+Attach the group to the web process type:
 
     $ drycc config attach web web.env
 
-Of course, you can also detach it.
+Detach the group:
 
     $ drycc config detach web web.env
 
 ## Attach to Backing Services
 
-Drycc treats backing services like databases, caches and queues as [attached resources][].
-Attachments are performed using environment variables.
+Drycc treats backing services like databases, caches, and queues as [attached resources][]. Configure connections using environment variables.
 
-For example, use `drycc config` to set a `DATABASE_URL` that attaches
-the application to an external PostgreSQL database.
+For example, attach an application to an external PostgreSQL database:
 
     $ drycc config set DATABASE_URL=postgres://user:pass@example.com:5432/db
     === peachy-waxworks
     DATABASE_URL: postgres://user:pass@example.com:5432/db
 
-Detachments can be performed with `drycc config unset`.
+Remove attachments using `drycc config unset`.
 
 
 ## Buildpacks Cache
 
-By default, apps using the [Imagebuilder][] will reuse the latest image data.
-When deploying applications that depend on third-party libraries that have to be fetched,
-this could speed up deployments a lot. In order to make use of this, the buildpack must implement
-the cache by writing to the cache directory. Most buildpacks already implement this, but when using
-custom buildpacks, it might need to be changed to make full use of the cache.
+Applications using [Imagebuilder][] reuse the latest image data by default. This speeds up deployments for applications that fetch third-party libraries. Buildpacks must implement caching by writing to the cache directory.
 
-### Disabling and re-enabling the cache
+### Disable and Re-enable Cache
 
-In some cases, cache might not speed up your application. To disable caching, you can set the
-`DRYCC_DISABLE_CACHE` variable with `drycc config set DRYCC_DISABLE_CACHE=1`. When you disable the
-cache, Drycc will clear up files it created to store the cache. After having it turned off, run
-`drycc config unset DRYCC_DISABLE_CACHE` to re-enable the cache.
+Disable caching by setting `DRYCC_DISABLE_CACHE=1`. Drycc clears cache files when disabled. Re-enable by unsetting the variable.
 
-### Clearing the cache
+### Clear Cache
 
-Use the following procedure to clear the cache:
+Clear the cache using this procedure:
 
     $ drycc config set DRYCC_DISABLE_CACHE=1
     $ git commit --allow-empty -m "Clearing Drycc cache"
-    $ git push drycc # (if you use a different remote, you should use your remote name)
+    $ git push drycc # (use your remote name if different)
     $ drycc config unset DRYCC_DISABLE_CACHE
 
 
 ## Custom Health Checks
 
-By default, Workflow only checks that the application starts in their Container. A health
-check may be added by configuring a health check probe for the application. The health
-checks are implemented as Kubernetes Container Probes. A 'startupProbe' 'livenessProbe' 
-and a 'readinessProbe' can be configured, and each probe can be of type 'httpGet', 'exec' 
-or 'tcpSocket' depending on the type of probe the Container requires.
+By default, Workflow verifies that applications start in their containers. Add health checks by configuring probes for the application. Health checks use Kubernetes Container Probes with three types: `startupProbe`, `livenessProbe`, and `readinessProbe`. Each probe supports `httpGet`, `exec`, or `tcpSocket` checks.
 
-A 'startupProbe' indicates whether the application within the container is started.
-All other probes are disabled if a startup probe is provided, until it succeeds.
-If the startup probe fails, the container is subjected to its restart policy.
+### Probe Types
 
-A 'livenessProbe' is useful for applications running for long periods of time, eventually
-transitioning to broken states and cannot recover except by restarting them.
+- **startupProbe**: Indicates whether the application has started. Disables other probes until successful. Failure triggers restart policy.
 
-Other times, a 'readinessProbe' is useful when the Container is only temporarily unable
-to serve, and will recover on its own. In this case, if a Container fails its 'readinessProbe'
-, the Container will not be shut down, but rather the Container will stop receiving
-incoming requests.
+- **livenessProbe**: Useful for long-running applications that may break and need restarting.
 
-'httpGet' probes are just as it sounds: it performs a HTTP GET operation on the Container.
-A response code inside the 200-399 range is considered a pass. 'httpGet' probes accept a
-port number to perform the HTTP GET operation on the Container.
+- **readinessProbe**: Useful when containers temporarily cannot serve requests but will recover. Failed containers stop receiving traffic but don't restart.
 
-'exec' probes run a command inside the Container to determine its health. An exit code of
-zero is considered a pass, while a non-zero status code is considered a fail. 'exec'
-probes accept a string of arguments to be run inside the Container.
+### Check Types
 
-'tcpSocket' probes attempt to open a socket in the Container. The Container is only
-considered healthy if the check can establish a connection. 'tcpSocket' probes accept a
-port number to perform the socket connection on the Container.
+- **httpGet**: Performs HTTP GET on the container. Response codes 200-399 pass. Specify port number.
 
-Health checks can be configured on a per-proctype basis for each application using `drycc healthchecks set`. If no type is mentioned then the health checks are applied to default proc type web, whichever is present. To
-configure a `httpGet` liveness probe:
+- **exec**: Runs a command in the container. Exit code 0 passes, non-zero fails. Provide command arguments.
+
+- **tcpSocket**: Attempts to open a socket connection. Container is healthy if connection succeeds. Specify port number.
+
+Configure health checks per process type using `drycc healthchecks set`. Defaults to `web` process type if not specified.
+
+Configure an HTTP GET liveness probe:
 
 ```
 $ drycc healthchecks set livenessProbe httpGet 80 --ptype web
@@ -166,8 +143,7 @@ Healthchecks:
                  livenessProbe web http-get headers=[] path=/ port=80 delay=50s timeout=50s period=10s #success=1 #failure=3
 ```
 
-If the application relies on certain headers being set (such as the `Host` header) or a specific
-URL path relative to the root, you can also send specific HTTP headers:
+Include specific headers or paths:
 
 ```
 $ drycc healthchecks set livenessProbe httpGet 80 \
@@ -184,7 +160,7 @@ Healthchecks:
                  livenessProbe web http-get headers=[X-Client-Version=v1.0] path=/welcome/index.html port=80 delay=50s timeout=50s period=10s #success=1 #failure=3
 ```
 
-To configure an `exec` readiness probe:
+Configure an exec readiness probe:
 
 ```
 $ drycc healthchecks set readinessProbe exec -- /bin/echo -n hello --ptype web
@@ -199,74 +175,58 @@ Healthchecks:
                  readinessProbe web exec /bin/echo -n hello delay=50s timeout=50s period=10s #success=1 #failure=3
 ```
 
-You can overwrite a probe by running `drycc healthchecks set` again:
-
-```
-$ drycc healthchecks set readinessProbe httpGet 80 --ptype web
-Applying livenessProbe healthcheck... done
-
-App:             peachy-waxworks
-UUID:            afd84067-29e9-4a5f-9f3a-60d91e938812
-Owner:           dev
-Created:         2023-12-08T10:25:00Z
-Updated:         2023-12-08T10:25:00Z
-Healthchecks:
-                 livenessProbe web http-get headers=[] path=/ port=80 delay=50s timeout=50s period=10s #success=1 #failure=3
-```
-
-Configured health checks also modify the default application deploy behavior. When starting a new
-Pod, Workflow will wait for the health check to pass before moving onto the next Pod.
+Overwrite probes by running `drycc healthchecks set` again. Health checks modify deployment behavior - Workflow waits for checks to pass before proceeding to the next pod.
 
 
 ## Autodeploy
-By default, Changes the config, limits or healthchecks and so on will trigger deploy.
-If you don't want deploy, you can disable.
+
+By default, configuration, limits, and health check changes trigger automatic deployment. Disable autodeploy to prevent automatic deployments:
 
 ```
 $ drycc autodeploy disable
 ```
 
-To re-enable autodeploy.
-```
-drycc autodeploy enable
-```
-
-you can deploy by executing the following command.
-deploy all ptypes
-```
-drycc releases deploy
+Re-enable autodeploy:
 
 ```
-deploy web process type, and support `--force` option to force deploy.
+$ drycc autodeploy enable
 ```
-drycc releases deploy web --force
+
+Manually deploy all process types:
+
+```
+$ drycc releases deploy
+```
+
+Deploy specific process types with optional force flag:
+
+```
+$ drycc releases deploy web --force
 ```
 
 ## Autorollback
-By default, deployment failures will roll back to the previous successful version.
-If you don't want this to happen, you can disable.
+
+By default, deployment failures automatically rollback to the previous successful version. Disable autorollback:
 
 ```
 $ drycc autorollback disable
 ```
 
-To re-enable autorollback.
+Re-enable autorollback:
+
 ```
-drycc autorollback enable
+$ drycc autorollback enable
 ```
 
+## Isolate Applications
 
-## Isolate the Application
-
-Workflow supports isolating applications onto a set of nodes using `drycc tags`.
+Isolate applications to specific nodes using `drycc tags`.
 
 {{% alert title="Note" color="info" %}}
-In order to use tags, you must first launch your cluster with the proper node labels. If you do
-not, tag commands will fail. Learn more by reading ["Assigning Pods to Nodes"][pods-to-nodes].
+Configure your cluster with proper node labels before using tags. Commands will fail without labels. Learn more: ["Assigning Pods to Nodes"][pods-to-nodes].
 {{% /alert %}}
 
-Once your nodes are configured with appropriate label selectors, use `drycc tags set` to restrict
-the application ptype to those nodes:
+Once nodes have appropriate labels, restrict application process types to those nodes:
 
 ```
 $ drycc tags set web environ=prod

@@ -1,7 +1,7 @@
 ---
 title:  Platform Monitoring
 linkTitle: Platform Monitoring
-description: Platform monitoring to your apps to spot issues in advance and respond to incidents quickly.
+description: Add platform monitoring to your apps to spot issues in advance and respond to incidents quickly.
 
 weight: 5
 ---
@@ -53,7 +53,7 @@ A production install of Grafana should have the following configuration values c
 
 
 ### On Cluster Persistence
-Enabling persistence will allow your custom configuration to persist across pod restarts. This means that the default sqllite database (which stores things like sessions and user data) will not disappear if you upgrade the Workflow installation.
+Enabling persistence will allow your custom configuration to persist across pod restarts. This means that the default SQLite database (which stores things like sessions and user data) will not disappear if you upgrade the Workflow installation.
 
 If you wish to have persistence for Grafana you can set `enabled` to `true` in the `values.yaml` file before running `helm install`.
 
@@ -75,7 +75,7 @@ VictoriaMetrics is a fast and scalable open source time series database and moni
 
 ### On Cluster Persistence
 You can set `node-exporter` and `kube-state-metrics` to `true` or `false` in the `values.yaml`.
--If you wish to have persistence for VictoriaMetrics you can set `enabled` to `true` in the `values.yaml` file before running `helm install`.
+- If you wish to have persistence for VictoriaMetrics you can set `enabled` to `true` in the `values.yaml` file before running `helm install`.
 
 ```
 victoriametrics:

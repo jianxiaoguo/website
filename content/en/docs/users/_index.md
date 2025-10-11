@@ -1,6 +1,6 @@
 ---
 title: Users
 description: >
-   In this tutorial, you'll learn how to manage users.
+   Learn how to manage users, registration, and authentication in Drycc Workflow.
 weight: 4
 ---

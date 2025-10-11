@@ -10,7 +10,7 @@ In this guide, we walk you through the process of setting up a development envir
 We try to make it simple to hack on Drycc components. However, there are necessarily several moving pieces and some setup required. We welcome any suggestions for automating or simplifying this process.
 
 {{% alert title="Note" color="info" %}}
-The Drycc team is actively engaged in containerizing Go and Python based development environments tailored specifically for Drycc development in order to minimize the setup required.  This work is ongoing.  Refer to the [drycc/router][router] project for a working example of a fully containerized development environment.
+The Drycc team is actively engaged in containerizing Go and Python based development environments tailored specifically for Drycc development in order to minimize the setup required. This work is ongoing. Refer to the [drycc/router][router] project for a working example of a fully containerized development environment.
 {{% /alert %}}
 
 If you're just getting into the Drycc codebase, look for GitHub issues with the label [easy-fix][]. These are more straightforward or low-risk issues and are a great way to become more familiar with Drycc.
@@ -60,7 +60,7 @@ Once you can compile to `linux/amd64`, you should be able to compile Drycc compo
 
 Once the prerequisites have been met, we can begin to work with Drycc components.
 
-Begin at Github by forking whichever Drycc project you would like to contribute to, then clone that fork locally.  Since Drycc is predominantly written in Go, the best place to put it is under `$GOPATH/src/github.com/drycc/`.
+Begin at GitHub by forking whichever Drycc project you would like to contribute to, then clone that fork locally. Since Drycc is predominantly written in Go, the best place to put it is under `$GOPATH/src/github.com/drycc/`.
 
 ```
 $ mkdir -p  $GOPATH/src/github.com/drycc

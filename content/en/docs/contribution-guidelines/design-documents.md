@@ -5,7 +5,7 @@ description: Before submitting a pull request which will significantly alter the
 weight: 2
 ---
 
-Before submitting a pull request which will significantly alter the behavior of any Drycc component, such as a new feature or major refactoring, contributors should first open an issue representing a design document.
+Before submitting a pull request that will significantly alter the behavior of any Drycc component, such as a new feature or major refactoring, contributors should first open an issue representing a design document.
 
 ## Goals
 

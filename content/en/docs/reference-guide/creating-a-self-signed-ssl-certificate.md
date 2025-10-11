@@ -6,26 +6,26 @@ weight: 1
 ---
 
 
-When [using the app ssl][app ssl] feature for non-production applications or when [installing SSL for the platform][platform ssl], you can avoid the costs associated with the SSL certificate by using a self-signed SSL certificate. Though the certificate implements full encryption, visitors to your site will see a browser warning indicating that the certificate should not be trusted.
+When [using the app SSL feature][app ssl] for non-production applications or when [installing SSL for the platform][platform ssl], you can avoid the costs associated with SSL certificates by using a self-signed SSL certificate. Although the certificate provides full encryption, visitors to your site will see a browser warning indicating that the certificate should not be trusted.
 
 ## Prerequisites
 
-The openssl library is required to generate your own certificate. Run the following command in your local environment to see if you already have openssl installed.
+The OpenSSL library is required to generate your own certificate. Run the following command in your local environment to check if OpenSSL is already installed:
 
     $ which openssl
     /usr/bin/openssl
 
-If the which command does not return a path then you will need to install openssl yourself:
+If the `which` command does not return a path, you will need to install OpenSSL:
 
-If you have... | Install with...
----------------|------------------------
-Mac OS X       | Homebrew: `brew install openssl`
-Windows        | complete package .exe installed
-Ubuntu Linux   | `apt-get install openssl`
+| Operating System | Installation Command |
+|------------------|---------------------|
+| Mac OS X | Homebrew: `brew install openssl` |
+| Windows | Download complete package .exe installer |
+| Ubuntu Linux | `apt-get install openssl` |
 
 ## Generate Private Key and Certificate Signing Request
 
-A private key and certificate signing request are required to create an SSL certificate. These can be generated with a few simple commands. When the openssl req command asks for a “challenge password”, just press return, leaving the password empty.
+A private key and certificate signing request are required to create an SSL certificate. Generate these with the following commands. When the `openssl req` command asks for a "challenge password", just press return, leaving the password empty.
 
     $ openssl genrsa -des3 -passout pass:x -out server.pass.key 2048
     ...
@@ -42,11 +42,11 @@ A private key and certificate signing request are required to create an SSL cert
 
 ## Generate SSL Certificate
 
-The self-signed SSL certificate is generated from the server.key private key and server.csr files.
+Generate the self-signed SSL certificate from the `server.key` private key and `server.csr` files:
 
     $ openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
 
-The server.crt file is your site certificate suitable for use with [Drycc's SSL endpoint][app ssl] along with the server.key private key.
+The `server.crt` file is your site certificate, suitable for use with [Drycc's SSL endpoint][app ssl] along with the `server.key` private key.
 
 [app ssl]: ../applications/ssl-certificates.md
 [platform ssl]: https://gateway-api.sigs.k8s.io/guides/tls/

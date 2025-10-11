@@ -2,6 +2,6 @@
 title: Reference Guide
 linkTitle: Reference Guide
 description: >
-   Reference gxwuide definition and meaning.
+   Reference guide for Drycc Workflow APIs and configuration.
 weight: 10
 ---

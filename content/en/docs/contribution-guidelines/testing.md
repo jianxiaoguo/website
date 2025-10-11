@@ -1,5 +1,5 @@
 ---
-title:  Testing Drycc
+title: Testing Drycc
 linkTitle: Testing
 description: Each Drycc component is one among an ecosystem of such components - many of which integrate with one another - which makes testing each component thoroughly a matter of paramount importance.
 weight: 4

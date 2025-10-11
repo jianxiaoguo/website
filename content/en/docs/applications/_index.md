@@ -1,6 +1,6 @@
 ---
 title: Applications
 description: >
-  A simple and scalable cloud platform for all developer needs.
+  Learn how to deploy, configure, and manage applications on Drycc Workflow.
 weight: 5
 ---

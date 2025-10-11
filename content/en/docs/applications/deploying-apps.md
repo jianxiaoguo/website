@@ -1,31 +1,25 @@
 ---
 title: Deploying an Application
 linkTitle: Deploying Apps
-description: Learn how to deploy the application to drycc.
+description: Learn how to deploy applications to Drycc using git push or the drycc client.
 weight: 1
 ---
 
-An [Application][] is deployed to Drycc using `git push` or the `drycc` client.
+Deploy applications to Drycc using `git push` or the `drycc` client. An [Application][] runs inside containers and can scale horizontally if it follows the [Twelve-Factor App][] methodology.
 
 ## Supported Applications
 
-Drycc Workflow can deploy any application or service that can run inside a container.  In order to be scaled
-horizontally, applications must follow the [Twelve-Factor App][] methodology and store any application state in external
-backing services.
+Drycc Workflow deploys any application or service that runs in a container. To scale horizontally, applications must store state in external backing services rather than the local filesystem.
 
-For example, if your application persists state to the local filesystem -- common with content management systems like
-Wordpress and Drupal -- it cannot be scaled horizontally using `drycc scale`.
-
-Fortunately, most modern applications feature a stateless application tier that can scale horizontally inside Drycc.
+For example, content management systems like WordPress and Drupal that persist data to the local filesystem cannot scale horizontally using `drycc scale`. However, most modern applications feature stateless application tiers that scale well on Drycc.
 
 ## Login to the Controller
 
 {{% alert title="Note" color="danger" %}}
-  if you haven't yet, now is a good time to [install the client][install client] and [register](../users/registration.md).
+Install the client and register before deploying applications. See [client installation][install client] and [user registration](../users/registration.md).
 {{% /alert %}}
 
-Before deploying an application, users must first authenticate against the Drycc [Controller][]
-using the URL supplied by their Drycc administrator.
+Authenticate against the Drycc [Controller][] using the URL provided by your administrator:
 
 ```
 $ drycc login http://drycc.example.com
@@ -34,7 +28,8 @@ Waiting for login... .o.Logged in as admin
 Configuration file written to /root/.drycc/client.json
 ```
 
-Or you can login with username and password
+Alternatively, log in with username and password:
+
 ```
 $ drycc login http://drycc.example.com --username=demo --password=demo
 Configuration file written to /root/.drycc/client.json
@@ -42,76 +37,72 @@ Configuration file written to /root/.drycc/client.json
 
 ## Select a Build Process
 
-Drycc Workflow supports three different ways of building applications:
+Drycc Workflow supports three build methods:
 
 ### Buildpacks
 
-Cloud Native Buildpacks are useful if you want to follow [cnb's docs](https://buildpacks.io/docs/) for building applications.
+Use Cloud Native Buildpacks to build applications following [CNB documentation](https://buildpacks.io/docs/).
 
-Learn how to deploy applications [using Buildpacks](../applications/using-buildpacks.md).
-
+Learn more: [Deploying with Buildpacks](../applications/using-buildpacks.md)
 
 ### Dockerfiles
 
-Dockerfiles are a powerful way to define a portable execution environment built on a base OS of your choosing.
+Define portable execution environments using Dockerfiles built on your chosen base OS.
 
-Learn how to deploy applications [using Dockerfiles](../applications/using-dockerfiles.md).
+Learn more: [Deploying with Dockerfiles](../applications/using-dockerfiles.md)
 
+### Container Images
 
-### Container Image
+Deploy container images from public or private registries, ensuring identical images across development, CI, and production.
 
-Deploying a Container image onto Drycc allows you to take a Container image from either a public
-or a private registry and copy it over bit-for-bit, ensuring that you are running the same
-image in development or in your CI pipeline as you are in production.
+Learn more: [Deploying with Container Images](../applications/using-container-images.md)
 
-Learn how to deploy applications [using Container images](../applications/using-container-images.md).
+## Tune Application Settings
 
-## Tuning Application Settings
+Configure application-specific settings using `drycc config:set`. These override global defaults:
 
-It is possible to configure a few of the [globally tunable](../applications/managing-app-configuration.md) settings on per application basis using `config:set`.
-
-Setting                                         | Description
------------------------------------------------ | ---------------------------------
-DRYCC_DISABLE_CACHE                             | if set, this will disable the [imagebuilder cache][] (default: not set)
-DRYCC_DEPLOY_BATCHES                            | the number of pods to bring up and take down sequentially during a scale (default: number of available nodes)
-DRYCC_DEPLOY_TIMEOUT                            | deploy timeout in seconds per deploy batch (default: 120)
-IMAGE_PULL_POLICY                               | the kubernetes [image pull policy][pull-policy] for application images (default: "IfNotPresent") (allowed values: "Always", "IfNotPresent")
-KUBERNETES_DEPLOYMENTS_REVISION_HISTORY_LIMIT   | how many [revisions][kubernetes-deployment-revision] Kubernetes keeps around of a given Deployment (default: all revisions)
-KUBERNETES_POD_TERMINATION_GRACE_PERIOD_SECONDS | how many seconds kubernetes waits for a pod to finish work after a SIGTERM before sending SIGKILL (default: 30)
+| Setting | Description |
+|---------|-------------|
+| `DRYCC_DISABLE_CACHE` | Disable the [imagebuilder cache][] (default: not set) |
+| `DRYCC_DEPLOY_BATCHES` | Number of pods to bring up/down sequentially during scaling (default: number of available nodes) |
+| `DRYCC_DEPLOY_TIMEOUT` | Deploy timeout in seconds per batch (default: 120) |
+| `IMAGE_PULL_POLICY` | Kubernetes [image pull policy][pull-policy] (default: "IfNotPresent"; allowed: "Always", "IfNotPresent") |
+| `KUBERNETES_DEPLOYMENTS_REVISION_HISTORY_LIMIT` | Number of [deployment revisions][kubernetes-deployment-revision] Kubernetes retains (default: all) |
+| `KUBERNETES_POD_TERMINATION_GRACE_PERIOD_SECONDS` | Seconds Kubernetes waits for pod termination after SIGTERM (default: 30) |
 
 ### Deploy Timeout
 
-Deploy timeout in seconds - There are 2 deploy methods, Deployments (see below) and RC (versions prior to 2.4) and this setting affects those a bit differently.
+The deploy timeout setting behaves differently depending on the deployment method.
 
-#### Deployments
+#### Deployments (Current Method)
 
-Deployments behave a little bit differently from the RC based deployment strategy.
+Kubernetes handles rolling updates server-side. The base timeout multiplies with `DRYCC_DEPLOY_BATCHES` for the total timeout. For example: 240 seconds × 4 batches = 960 seconds total.
 
-Kubernetes takes care of the entire deploy, doing rolling updates in the background. As a result, there is only an overall deployment timeout instead of a configurable per-batch timeout.
+#### ReplicationController Deploy (Legacy)
 
-The base timeout is multiplied with `DRYCC_DEPLOY_BATCHES` to create an overall timeout. This would be 240 (timeout) * 4 (batches) = 960 second overall timeout.
+This timeout defines how long to wait for each batch to complete within `DRYCC_DEPLOY_BATCHES`.
 
-#### RC deploy
+#### Timeout Extensions
 
-This deploy timeout defines how long to wait for each batch to complete in `DRYCC_DEPLOY_BATCHES`.
-
-#### Additions to the base timeout
-
-The base timeout is extended as well with healthchecks using `initialDelaySeconds` on `liveness` and `readiness` where the bigger of those two is applied.
-Additionally the timeout system accounts for slow image pulls by adding an additional 10 minutes when it has seen an image pull take over 1 minute. This allows the timeout values to be reasonable without having to account for image pull slowness in the base deploy timeout.
+The base timeout extends for:
+- Health checks using `initialDelaySeconds` on liveness/readiness probes (uses the larger value)
+- Slow image pulls (adds 10 minutes when pulls exceed 1 minute)
 
 ### Deployments
 
-Workflow uses [Deployments][] for deploys. In prior versions [ReplicationControllers][] were used with the ability to turn on Deployments via `DRYCC_KUBERNETES_DEPLOYMENTS=1`.
+Drycc Workflow uses [Kubernetes Deployments][] for deployments. Previous versions used ReplicationControllers (enable with `DRYCC_KUBERNETES_DEPLOYMENTS=1`).
 
-The advantage of [Deployments][] is that rolling-updates will happen server-side in Kubernetes instead of in Drycc Workflow Controller,
-along with a few other Pod management related functionality. This allows a deploy to continue even when the CLI connection is interrupted.
+Benefits of Deployments include:
+- Server-side rolling updates in Kubernetes
+- Continued deployments even if CLI connection interrupts
+- Better pod management
 
-Behind the scenes your application deploy will be built up of a Deployment object per process type,
-each having multiple ReplicaSets (one per release) which in turn manage the Pods running your application.
+Each deployment creates:
+- One Deployment object per process type
+- Multiple ReplicaSets (one per release)
+- ReplicaSets manage running pods
 
-Drycc Workflow will behave the same way with `DRYCC_KUBERNETES_DEPLOYMENTS` enabled or disabled (only applicable to versions prior to 2.4).
-The changes are behind the scenes. Where you will see differences while using the CLI is `drycc ps:list` will output Pod names differently.
+The CLI behavior remains the same. The only visible difference is in `drycc ps` output showing different pod names.
 
 [slugbuilder cache]: ./managing-app-configuration.md#slugbuilder-cache
 [install client]: ../users/cli.md#installation

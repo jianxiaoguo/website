@@ -15,7 +15,7 @@ Drycc uses the timeless, highly efficient, and totally unfair system known as "B
 
 ## Open Source Bounties
 
-Drycc projects are bounty-friendly.  We believe open source bounty sites can be constructive tools in the development of open source software. Community members are encouraged to a) offer bounties and b) receive bounties for open source contributions that benefit everyone. The Drycc maintainers, however, will not accept bounties on this project but are more than happy to help community members attempting bounties.
+Drycc projects are bounty-friendly. We believe open source bounty sites can be constructive tools in the development of open source software. Community members are encouraged to a) offer bounties and b) receive bounties for open source contributions that benefit everyone. The Drycc maintainers, however, will not accept bounties on this project but are more than happy to help community members attempting bounties.
 
 
 [github]: https://github.com/drycc

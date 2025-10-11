@@ -5,7 +5,7 @@ description: Buildpacks 概述，负责将部署的代码转换为 slug，然后
 weight: 2
 ---
 
-Drycc 支持通过 [Cloud Native Buildpacks](https://buildpacks.io/) 部署应用程序。如果您想遵循 [cnb 的文档](https://buildpacks.io/docs/) 来构建应用程序，Cloud Native Buildpacks 很有用。
+Drycc 支持通过 [Cloud Native Buildpacks](https://buildpacks.io/) 部署应用程序。如果您想遵循 [cnb 的文档](https://buildpacks.io/docs/) 来构建应用程序，Cloud Native Buildpacks 会很有用。
 
 ## 添加 SSH 密钥
 

@@ -1,59 +1,52 @@
 ---
 title: Using Docker Images
 linkTitle: Container Images
-description: Deploy an application using a container image stored in your Drycc Container Registry.
+description: Deploy applications using container images from Drycc Container Registry or external registries.
 weight: 4
 ---
 
-Drycc supports deploying applications via an existing [Docker Image][].
-This is useful for integrating Drycc into Docker-based CI/CD pipelines.
-
+Drycc supports deploying applications using existing [Docker Images][]. This approach integrates well with Docker-based CI/CD pipelines.
 
 ## Prepare an Application
 
-Start by cloning an example application:
+Clone this example application to get started:
 
     $ git clone https://github.com/drycc/example-dockerfile-http.git
     $ cd example-dockerfile-http
 
-Next use your local `docker` client to build the image and push
-it to [DockerHub][].
+Build the image and push it to [DockerHub][] using your local Docker client:
 
     $ docker build -t <username>/example-dockerfile-http .
     $ docker push <username>/example-dockerfile-http
 
-
 ### Docker Image Requirements
 
-In order to deploy Docker images, they must conform to the following requirements:
+Container images must meet these requirements for successful deployment:
 
-* The Dockerfile must use the `EXPOSE` directive to expose exactly one port.
-* That port must be listening for an HTTP connection.
-* The Dockerfile must use the `CMD` directive to define the default process that will run within the container.
-* The Docker image must contain [bash](https://www.gnu.org/software/bash/) to run processes.
+* Use the `EXPOSE` directive to expose exactly one port for HTTP traffic.
+* Ensure your application listens for HTTP connections on that port.
+* Define the default process using the `CMD` directive.
+* Include [bash](https://www.gnu.org/software/bash/) in the container image.
 
 {{% alert title="Note" color="info" %}}
-Note that if you are using a private registry of any kind (`gcr` or other) the application environment must include a `$PORT` config variable that matches the `EXPOSE`'d port, example: `drycc config set PORT=5000`. See [Configuring Registry](../installing-workflow/configuring-registry/#configuring-off-cluster-private-registry) for more info.
+For private registries (such as GCR), set a `$PORT` environment variable that matches your `EXPOSE`d port. For example: `drycc config set PORT=5000`. See [Configuring Registry](../installing-workflow/configuring-registry/#configuring-off-cluster-private-registry) for details.
 {{% /alert %}}
 
 ## Create an Application
 
-Use `drycc create` to create an application on the [controller][].
+Create an application on the [controller][]:
 
     $ mkdir -p /tmp/example-dockerfile-http && cd /tmp/example-dockerfile-http
     $ drycc create example-dockerfile-http --no-remote
     Creating application... done, created example-dockerfile-http
 
 {{% alert title="Note" color="info" %}}
-For all commands except for `drycc create`, the `drycc` client uses the name of the current directory
-as the app name if you don't specify it explicitly with `--app`.
+For commands other than `drycc create`, the client uses the current directory name as the app name if not specified with `--app`.
 {{% /alert %}}
-
 
 ## Deploy the Application
 
-Use `drycc pull` to deploy your application from [DockerHub][] or
-a public registry.
+Deploy from [DockerHub][] or a public registry using `drycc pull`:
 
     $ drycc pull <username>/example-dockerfile-http:latest
     Creating build...  done, v2
@@ -61,39 +54,30 @@ a public registry.
     $ curl -s http://example-dockerfile-http.local3.dryccapp.com
     Powered by Drycc
 
-Because you are deploying a Docker image, the `web` process type is automatically scaled to 1 on first deploy.
+Drycc automatically detects container images and scales the `web` process type to 1 on first deployment.
 
-Use `drycc scale web=3` to increase `web` processes to 3, for example. Scaling a
-process type directly changes the number of [Containers][container]
-running that process.
+Scale your application by adjusting the number of containers. For example, use `drycc scale web=3` to run 3 web containers.
 
 ## Private Registry
 
-To deploy Docker images from a private registry or from a private repository, use `drycc registry`
-to attach credentials to your application. These credentials are the same as you'd use when running
-`docker login` at your private registry.
+Deploy images from private registries by attaching credentials using `drycc registry`. Use the same credentials as `docker login`.
 
-To deploy private Docker images, take the following steps:
+Follow these steps for private Docker images:
 
-* Gather the username and password for the registry, such as a [Quay.io Robot Account][] or a [GCR.io Long Lived Token][]
-* Run `drycc registry set <the-user> <secret> -a <application-name>`
-* Now perform `drycc pull` as normal, against an image in the private registry
+1. Obtain registry credentials (such as [Quay.io Robot Account][] or [GCR.io Long Lived Token][])
+2. Run `drycc registry set <username> <password> -a <application-name>`
+3. Use `drycc pull` normally against private registry images
 
-When using a [GCR.io Long Lived Token][], the JSON blob will have to be compacted first using a
-tool like [jq][] and then used in the password field in `drycc registry set`. For the username, use
-`_json_key`. For example:
+For [GCR.io Long Lived Token][], compact the JSON blob using [jq][] and use `_json_key` as the username:
 
 ```
 drycc registry set _json_key "$(cat google_cloud_cred.json | jq -c .)"
 ```
 
-When using a private registry the docker images are no longer pulled into the Drycc Internal Registry via
-the Drycc Workflow Controller but rather is managed by Kubernetes. This will increase security and overall speed,
-however the application `port` information can no longer be discovered. Instead the application `port` information can be set via
-`drycc config set PORT=80` prior to setting the registry information.
+When using private registries, Kubernetes manages image pulls directly. This improves security and speed, but requires setting the application port manually with `drycc config set PORT=80` before configuring registry credentials.
 
 {{% alert title="Note" color="info" %}}
-Currently [GCR.io][] and [ECR][] in short lived auth token mode are not supported.
+[GCR.io][] and [ECR][] with short-lived authentication tokens are not currently supported.
 {{% /alert %}}
 
 [container]: ../reference-guide/terms.md#container

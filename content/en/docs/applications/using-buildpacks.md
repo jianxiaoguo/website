@@ -1,47 +1,44 @@
 ---
 title: Using Buildpacks
 linkTitle: Buildpacks
-description: An overview of buildpacks, which are responsible for transforming deployed code into a slug, which can then be executed on a container.
+description: Deploy applications using Cloud Native Buildpacks, which transform code into executable containers.
 weight: 2
 ---
 
-Drycc supports deploying applications via [Cloud Native Buildpacks](https://buildpacks.io/). Cloud Native Buildpacks are useful if you want to follow [cnb's docs](https://buildpacks.io/docs/) for building applications.
+Drycc supports deploying applications using [Cloud Native Buildpacks](https://buildpacks.io/). Buildpacks transform deployed code into executable containers following [CNB documentation](https://buildpacks.io/docs/).
 
 ## Add SSH Key
 
-For **Buildpack** based application deploys via `git push`, Drycc Workflow identifies users via SSH keys. SSH keys are pushed to the platform and must be unique to each user.
+For buildpack-based deployments via `git push`, Drycc Workflow authenticates users using SSH keys. Each user must upload a unique SSH key.
 
-- See [this document](../users/ssh-keys.md#generate-an-ssh-key) for instructions on how to generate an SSH key.
-
-- Run `drycc keys add` to upload your SSH key to Drycc Workflow.
+- Generate an SSH key by following [these instructions](../users/ssh-keys.md#generate-an-ssh-key).
+- Upload your SSH key using `drycc keys add`:
 
 ```
 $ drycc keys add ~/.ssh/id_drycc.pub
 Uploading id_drycc.pub to drycc... done
 ```
 
-Read more about adding/removing SSH Keys [here](../users/ssh-keys.md#adding-and-removing-ssh-keys).
+For more information about managing SSH keys, see [this guide](../users/ssh-keys.md#adding-and-removing-ssh-keys).
 
 ## Prepare an Application
 
-If you do not have an existing application, you can clone an example application that demonstrates the Heroku Buildpack workflow.
+Clone this example application to explore the buildpack workflow if you don't have an existing application:
 
     $ git clone https://github.com/drycc/example-go.git
     $ cd example-go
 
-
 ## Create an Application
 
-Use `drycc create` to create an application on the [Controller][].
+Create an application on the [Controller][]:
 
     $ drycc create
     Creating application... done, created skiing-keypunch
     Git remote drycc added
 
-
 ## Push to Deploy
 
-Use `git push drycc master` to deploy your application.
+Deploy your application using `git push drycc master`:
 
     $ git push drycc master
     Counting objects: 75, done.
@@ -98,71 +95,65 @@ Use `git push drycc master` to deploy your application.
     Powered by Drycc
     Release v2 on skiing-keypunch-v2-web-02zb9
 
-Because a Buildpacks-style application is detected, the `web` process type is automatically scaled to 1 on first deploy.
+Drycc automatically detects buildpack applications and scales the `web` process type to 1 on first deployment.
 
-Use `drycc scale web=3` to increase `web` processes to 3, for example. Scaling a
-process type directly changes the number of [pods] running that process.
+Scale your application by adjusting the number of containers. For example, use `drycc scale web=3` to run 3 web containers.
 
 
 ## Included Buildpacks
 
-For convenience, a number of buildpacks come bundled with Drycc:
+Drycc includes these buildpacks for convenience:
 
- * [Go Buildpack][]
- * [Java Buildpack][]
- * [Nodejs Buildpack][]
- * [PHP Buildpack][]
- * [Python Buildpack][]
- * [Ruby Buildpack][]
- * [Rust Buildpack][]
+* [Go Buildpack][]
+* [Java Buildpack][]
+* [Node.js Buildpack][]
+* [PHP Buildpack][]
+* [Python Buildpack][]
+* [Ruby Buildpack][]
+* [Rust Buildpack][]
 
-Drycc will cycle through the `bin/detect` script of each buildpack to match the code you
-are pushing.
+Drycc runs the `bin/detect` script from each buildpack to match your code.
 
 {{% alert title="Note" color="info" %}}
-If you're testing against the [Scala Buildpack][], the [Builder][] requires at least
-512MB of free memory to execute the Scala Build Tool.
+The [Scala Buildpack][] requires at least 512MB of free memory for the Scala Build Tool.
 {{% /alert %}}
 
 ## Using a Custom Buildpack
 
-To use a custom buildpack, you need create a `.pack_builder` file in your root path app.
+Use a custom buildpack by creating a `.pack-builder` file in your project root:
 
-    $  tee > .pack-builder << EOF
-       > registry.drycc.cc/drycc/buildpacks:bookworm
-       > EOF
+    $ tee .pack-builder << EOF
+    registry.drycc.cc/drycc/buildpacks:bookworm
+    EOF
 
-On your next `git push`, the custom buildpack will be used.
+The custom buildpack will be used on your next `git push`.
 
 ## Using Private Repositories
 
-To pull code from private repositories, set the `SSH_KEY` environment variable to a private key
-which has access. Use either the path of a private key file or the raw key material:
+Pull code from private repositories by setting the `SSH_KEY` environment variable to a private key with access. Use either a file path or raw key material:
 
     $ drycc config set SSH_KEY=/home/user/.ssh/id_rsa
     $ drycc config set SSH_KEY="""-----BEGIN RSA PRIVATE KEY-----
     (...)
     -----END RSA PRIVATE KEY-----"""
 
-For example, to use a custom buildpack hosted at a private GitHub URL, ensure that an SSH public
-key exists in your [GitHub settings][]. Then set `SSH_KEY` to the corresponding SSH private key
-and set `.pack_builder` to the builder image:
+For example, use a custom buildpack from a private GitHub URL by adding an SSH public key to your [GitHub settings][], then set `SSH_KEY` to the corresponding private key and configure `.pack-builder`:
 
-    $  tee > .pack-builder << EOF
-       > registry.drycc.cc/drycc/buildpacks:bookworm
-       > EOF
-    $ git add .buildpack
+    $ tee .pack-builder << EOF
+    registry.drycc.cc/drycc/buildpacks:bookworm
+    EOF
+    $ git add .pack-builder
     $ git commit -m "chore(buildpack): modify the pack_builder"
     $ git push drycc master
 
-## Builder selector
+## Builder Selection
 
-Which way to build a project conforms to the following principles:
+Drycc selects the build method following these rules:
 
-- If Dockerfile exists in the project, the stack uses `container`
-- If Procfile exists in the project, the stack uses `buildpack`
-- If both exist, `container` is used by default
-- You can also set the `DRYCC_STACK` to `container` or `buildpack` determine which stack to use.
+- Uses `container` if Dockerfile exists
+- Uses `buildpack` if Procfile exists
+- Defaults to `container` if both exist
+- Override with `DRYCC_STACK=container` or `DRYCC_STACK=buildpack`
 
 
 [pods]: http://kubernetes.io/v1.1/docs/user-guide/pods.html

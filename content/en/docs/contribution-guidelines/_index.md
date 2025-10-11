@@ -2,6 +2,6 @@
 title: Contribution Guidelines
 linkTitle: Contributing
 description: >
-   This HowTo is for project maintainers who need a Contributing Guide for their project.
+   Learn how to contribute to the Drycc Workflow project.
 weight: 9
 ---

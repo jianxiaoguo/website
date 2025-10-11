@@ -18,7 +18,8 @@ $ helm install drycc oci://registry.drycc.cc/charts/workflow \
     --set builder.service.type=LoadBalancer
 ```
 
-Of course, if you deploy it on a bare machine, you probably do not have Load Balancer. You need to use NodePort:
+Of course, if you deploy it on a bare machine, you probably do not have a load balancer. You need to use NodePort:
+
 ```
 $ helm install drycc oci://registry.drycc.cc/charts/workflow \
     --namespace drycc \
@@ -29,9 +30,9 @@ $ helm install drycc oci://registry.drycc.cc/charts/workflow \
     --set builder.service.nodePort=32222
 ```
 
-If you want to use Load Balancer on a bare machine, you can look at [metallb](https://github.com/metallb/metallb)
+If you want to use a load balancer on a bare machine, you can look at [metallb](https://github.com/metallb/metallb)
 
-Where `global.platformDomain` is a **required** parameter that is traditionally not required for Workflow that is explained in the next section. In this example we are using `drycc.cc` for `$hostname`.
+Where `global.platformDomain` is a **required** parameter that is traditionally not required for Workflow, as explained in the next section. In this example we are using `drycc.cc` for `$hostname`.
 
 Helm will install a variety of Kubernetes resources in the `drycc` namespace.
 Wait for the pods that Helm launched to be ready. Monitor their status by running:
@@ -40,7 +41,7 @@ Wait for the pods that Helm launched to be ready. Monitor their status by runnin
 $ kubectl --namespace=drycc get pods
 ```
 
-You should also notice that several Kubernetes gatewayclass has been installed on your cluster. You can view it by running:
+You should also notice that several Kubernetes GatewayClasses have been installed on your cluster. You can view them by running:
 
 ```
 $ kubectl get gatewayclass
@@ -67,9 +68,9 @@ drycc-registry-asozo           1/1       Running   1          5m
 
 ## Install a Kubernetes Gateway
 
-Now that Workflow has been deployed with the `gatewayClass` , we will need a Kubernetes gateway in place to begin routing traffic.
+Now that Workflow has been deployed with the `gatewayClass`, we will need a Kubernetes gateway in place to begin routing traffic.
 
-Here is an example of how to use [istio](https://istio.io/) as an gateway for Workflow. Of course, you are welcome to use any controller you wish.
+Here is an example of how to use [istio](https://istio.io/) as a gateway for Workflow. Of course, you are welcome to use any controller you wish.
 
 ```
 $ helm repo add istio https://istio-release.storage.googleapis.com/charts
@@ -83,7 +84,7 @@ $ helm install istio-ingress istio/gateway -n istio-ingress --wait
 
 ## Configure DNS
 
-User must install [drycc](../quickstart/install-workflow.md) and then set up a hostname, and assumes the `*.$host` convention.
+Users must install [drycc](../quickstart/install-workflow.md) and then set up a hostname, and assume the `*.$host` convention.
 
 We need to point the `*.$host` record to the public IP address of your gateway. You can get the public IP using the following command. A wildcard entry is necessary here as apps will use the same rule after they are deployed.
 

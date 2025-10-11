@@ -5,10 +5,10 @@ description: Deploy hooks allow an external service to receive a notification wh
 weight: 3
 ---
 
-It’s useful to help keep the development team informed about deploys, while
+It's useful to help keep the development team informed about deploys, while
 it can also be used to integrate different systems together.
 
-After one or more hooks are setup, hook output and errors appear in your drycc grafana app logs:
+After one or more hooks are set up, hook output and errors appear in your drycc grafana app logs:
 
 ```
 2011-03-15T15:07:29-07:00 drycc[api]: Deploy hook sent to http://drycc.rocks

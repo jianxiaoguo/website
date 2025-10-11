@@ -27,7 +27,7 @@ Server: &version.Version{SemVer:"v2.5.0", GitCommit:"012cb0ac1a1b2f888144ef5a67b
 
 Drycc Workflow includes everything it needs to run out of the box. However, these defaults are aimed at simplicity rather than
 production readiness. Production and staging deployments of Workflow should, at a minimum, use off-cluster storage
-which is used by Workflow components to store and backup critical data. Should an operator need to completely re-install
+which is used by Workflow components to store and backup critical data. Should an operator need to completely reinstall
 Workflow, the required components can recover from off-cluster storage. See the documentation for [configuring object
 storage](configuring-object-storage.md) for more details.
 
@@ -39,11 +39,11 @@ More rigorous installations would benefit from using outside sources for the fol
 
 #### Gateway
 
-Now, workflow requires that gateway and cert-manager must be installed. Any compatible Kubernetes entry controller can be used.
+Now, workflow requires that gateway and cert-manager must be installed. Any compatible Kubernetes ingress controller can be used.
 
 ## Install Drycc Workflow
 
-If the version of helm is 3.0 +; you need to create the namespace in advance:
+If the version of helm is 3.0 and above, you need to create the namespace in advance:
 
 ```
 kubectl create ns drycc
@@ -111,7 +111,7 @@ After installing Workflow, [register a user and deploy an application](../quicks
 
 ## Configure DNS
 
-User must to set up a hostname, and assumes the `drycc-builder.$host` convention.
+Users must set up a hostname, and assume the `drycc-builder.$host` convention.
 
 We need to point the `drycc-builder.$host` record to the public IP address of your builder. You can get the public IP using the following command. A wildcard entry is necessary here as apps will use the same rule after they are deployed.
 
@@ -132,5 +132,4 @@ Once all of the pods are in the `READY` state, and `drycc-builder.$host` resolve
 
 After installing Workflow, [register a user and deploy an application](../quickstart/deploy-an-app.md).
 
-If your k8s does not provide public network loadblance, you need to install TCP proxy services such as haproxy on machines that can
-access both internal and external networks, and then expose `80` and `443`.
+If your Kubernetes does not provide a public network load balancer, you need to install TCP proxy services such as haproxy on machines that can access both internal and external networks, and then expose `80` and `443`.

@@ -6,47 +6,29 @@ weight: 1
 
 ## Twelve-Factor Applications
 
-The [Twelve-Factor App][] is a methodology for building modern
-applications that can be scaled across a distributed system.
+The [Twelve-Factor App][] is a methodology for building modern applications that can be scaled across a distributed system.
 
-Twelve-factor is a valuable synthesis of years of experience with
-software-as-a-service apps in the wild, particularly on the
-Heroku platform.
+Twelve-factor is a valuable synthesis of years of experience with software-as-a-service apps in the wild, particularly on the Heroku platform.
 
-Workflow is designed to run applications that adhere to the [Twelve-Factor App][]
-methodology and best practices.
+Workflow is designed to run applications that adhere to the [Twelve-Factor App][] methodology and best practices.
 
 ## Kubernetes
 
-[Kubernetes][] is an open-source cluster manager developed by Google and
-donated to the [Cloud Native Compute Foundation][cncf]. Kubernetes manages all
-the activity on your cluster, including: desired state convergence, stable
-service addresses, health monitoring, service discovery, and DNS resolution.
+[Kubernetes][] is an open-source cluster manager developed by Google and donated to the [Cloud Native Compute Foundation][cncf]. Kubernetes manages all activity on your cluster, including desired state convergence, stable service addresses, health monitoring, service discovery, and DNS resolution.
 
-Workflow builds upon Kubernetes abstractions like Services,
-Deployments and Pods to provide a developer-friendly experience.
-Building containers directly from application source code, aggregating logs,
-and managing deployment configurations and app releases are just some of the
-features Workflow adds.
+Workflow builds upon Kubernetes abstractions like Services, Deployments, and Pods to provide a developer-friendly experience. Building containers directly from application source code, aggregating logs, and managing deployment configurations and app releases are just some of the features Workflow adds.
 
-Drycc Workflow is a set of Kubernetes-native components, installable via
-[Helm][]. Systems engineers who are familiar with Kubernetes will feel right
-at home running Workflow.
+Drycc Workflow is a set of Kubernetes-native components, installable via [Helm][]. Systems engineers familiar with Kubernetes will feel right at home running Workflow.
 
 See the [components][components] overview for more detail.
 
 ## Container
 
-[Container][] is an open source project to build, ship and run any
-application as a lightweight, portable, self-sufficient container.
+[Container][] is an open source project to build, ship, and run any application as a lightweight, portable, self-sufficient container.
 
-If you have not yet converted your application to containers, Workflow provides
-a simple and straightforward "source to Container image" capability. Supporting
-multiple language runtimes via community [buildpacks][], building your application
-in a container can be as easy as `git push drycc master`.
+If you have not yet converted your application to containers, Workflow provides a simple and straightforward "source to Container image" capability. Supporting multiple language runtimes via community [buildpacks][], building your application in a container can be as easy as `git push drycc master`.
 
-Applications which use either a Dockerfile or reference external Container
-images are launched unmodified.
+Applications that use either a Dockerfile or reference external Container images are launched unmodified.
 
 ## Applications
 
@@ -54,53 +36,33 @@ Workflow is designed around the concept of an [application][], or app.
 
 Applications come in one of three forms:
 
-1. a collection of source files stored in a `git` repository
-2. a Dockerfile and associated source files stored in a `git` repository
-3. a reference to an existing image at a Container repository
+1. A collection of source files stored in a `git` repository
+2. A Dockerfile and associated source files stored in a `git` repository
+3. A reference to an existing image at a Container repository
 
-Applications are identified by a unique name for easy reference. If you do not
-specify a name when creating your application, Workflow generates one for you.
-Workflow also manages related information, including domain names, SSL
-certificates, and developer-provided configuration.
+Applications are identified by a unique name for easy reference. If you do not specify a name when creating your application, Workflow generates one for you. Workflow also manages related information, including domain names, SSL certificates, and developer-provided configuration.
 
 ## Build, Release, Run
 
-![Git Push Workflow](/docs/diagrams/Git_Push_Flow.png)
+![Git Push Workflow](/images/diagrams/Git_Push_Flow.png)
 
 ### Build Stage
 
-The [builder][] component processes incoming `git push drycc master` requests
-and manages your application packaging.
+The [builder][] component processes incoming `git push drycc master` requests and manages your application packaging.
 
-If your application is using a [buildpack][buildpacks], builder will launch an ephemeral
-job to extract and execute the packaging instructions. The resulting
-application artifact is stored by the platform for execution during the run
-stage.
+If your application is using a [buildpack][buildpacks], builder will launch an ephemeral job to extract and execute the packaging instructions. The resulting application artifact is stored by the platform for execution during the run stage.
 
-If instead builder finds a [Dockerfile][dockerfile], it follows those instructions to
-create a Container image. The resulting artifact is stored in a Drycc-managed registry which
-will be referenced during the run stage.
+If builder finds a [Dockerfile][dockerfile], it follows those instructions to create a Container image. The resulting artifact is stored in a Drycc-managed registry which will be referenced during the run stage.
 
-If another system already builds and packages your application, that container
-artifact can be used directly. When referencing an [external Container
-image][containerimage], the builder component doesn't attempt to repackage your
-app.
+If another system already builds and packages your application, that container artifact can be used directly. When referencing an [external Container image][containerimage], the builder component doesn't attempt to repackage your app.
 
 ### Release Stage
 
-During the release stage, a [build][] is combined with [application configuration][config]
-to create a new, numbered [release][]. New releases are created any time a new
-build is created or application configuration is changed. Tracking releases as a
-"write-only ledger" this way makes it easy to rollback to any previous release.
+During the release stage, a [build][] is combined with [application configuration][config] to create a new, numbered [release][]. New releases are created any time a new build is created or application configuration is changed. Tracking releases as a "write-only ledger" this way makes it easy to rollback to any previous release.
 
 ### Run Stage
 
-The run stage deploys the new release to the underlying Kubernetes cluster by
-changing the Deployment object which references the new release.
-By managing the desired replica count, Workflow
-orchestrates a zero-downtime, rolling update of your application. Once
-successfully updated, Workflow removes the last reference to the old release.
-Note that during the deploy, your application will be running in a mixed mode.
+The run stage deploys the new release to the underlying Kubernetes cluster by changing the Deployment object which references the new release. By managing the desired replica count, Workflow orchestrates a zero-downtime, rolling update of your application. Once successfully updated, Workflow removes the last reference to the old release. Note that during the deploy, your application will be running in a mixed mode.
 
 ## Backing Services
 

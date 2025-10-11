@@ -35,13 +35,11 @@ Become the best and most respected infrastructure software company in the world.
 Core values
 {.h1 .text-center}
 
-Native to Kubernetes, Drycc is the Container as a Service(CaaS) suite available on every public cloud, every Kubernetes distribution, the private cloud and the edge.
-
 ### We value each other
 
 We recognize we come from a variety of backgrounds and have a variety of beliefs and values. We embrace each other as people, respect our differences, and are committed to working together to achieve our shared objectives.
 
-### Work for Customer Success
+### We work for customer success
 
 We listen to our customers to understand their needs and think from their perspective. We identify current and potential challenges and optimize business value for our customers. Our goal is to be a trusted, reliable, and long-term partner providing leading technology to our users.
 

@@ -106,9 +106,9 @@ Setting                                         | Description
 ----------------------------------------------- | ---------------------------------
 DRYCC_DEPLOY_BATCHES                             | the number of pods to bring up and take down sequentially during a scale (default: number of available nodes)
 DRYCC_DEPLOY_TIMEOUT                             | deploy timeout in seconds per deploy batch (default: 120)
-IMAGE_PULL_POLICY                               | the kubernetes [image pull policy][pull-policy] for application images (default: "IfNotPresent") (allowed values: "Always", "IfNotPresent")
-KUBERNETES_DEPLOYMENTS_REVISION_HISTORY_LIMIT   | how many [revisions][kubernetes-deployment-revision] Kubernetes keeps around of a given Deployment (default: all revisions)
-KUBERNETES_POD_TERMINATION_GRACE_PERIOD_SECONDS | how many seconds kubernetes waits for a pod to finish work after a SIGTERM before sending SIGKILL (default: 30)
+IMAGE_PULL_POLICY                               | the Kubernetes [image pull policy][pull-policy] for application images (default: "IfNotPresent") (allowed values: "Always", "IfNotPresent")
+KUBERNETES_DEPLOYMENTS_REVISION_HISTORY_LIMIT   | how many [revisions][kubernetes-deployment-revision] Kubernetes keeps around for a given Deployment (default: all revisions)
+KUBERNETES_POD_TERMINATION_GRACE_PERIOD_SECONDS | how many seconds Kubernetes waits for a pod to finish work after a SIGTERM before sending SIGKILL (default: 30)
 
 See the [Deploying Apps][] guide for more detailed information on those.
 
@@ -130,7 +130,7 @@ Key               | Description
 config.service    | The service section defines the global properties of the service.
 config.inputs     | An input section defines a source (related to an input plugin).
 config.filters    | A filter section defines a filter (related to a filter plugin)
-config.outputs    | The outputs section specify a destination that certain records should follow after a Tag match.
+config.outputs    | The outputs section specifies a destination that certain records should follow after a Tag match.
 
 For more information about the various variables that can be set please see the [fluentbit](https://github.com/drycc/fluentbit).
 
@@ -146,7 +146,7 @@ user   | "admin" | The first user created in the database (this user has admin p
 password | "admin" | Password for the first user.
 allow_sign_up | "true" | Allows users to sign up for an account.
 
-For a list of other options you can set by using environment variables please see the [configuration file](https://github.com/drycc/monitor/blob/main/grafana/rootfs/usr/share/grafana/grafana.ini.tpl) in Github.
+For a list of other options you can set by using environment variables please see the [configuration file](https://github.com/drycc/monitor/blob/main/grafana/rootfs/usr/share/grafana/grafana.ini.tpl) in GitHub.
 
 
 ### [Victoriametrics](https://victoriametrics.com/)
@@ -155,31 +155,7 @@ You can find a list of values that can be set using environment variables [here]
 ## Customizing the Registry
 
 The [Registry][] component can be tuned by following the
-[drycc/distribution config doc](https://github.com/drycc/distribution/blob/main/docs/configuration.md).
-
-## Customizing the Router
-
-The majority of router settings are tunable through annotations, which allows the router to be
-re-configured with zero downtime post-installation. You can find the list of annotations to tune
-[here](https://github.com/drycc/router#annotations).
-
-The following environment variables are tunable for the [Router][] component:
-
-Setting           | Description
------------------ | ---------------------------------
-POD_NAMESPACE     | The pod namespace the router resides in. This is set by the [Kubernetes downward API][downward-api].
-
-## Customizing Workflow Manager
-
-The following environment variables are tunable for [Workflow Manager][]:
-
-Setting                            | Description
----------------------------------- | ---------------------------------
-CHECK_VERSIONS    | Enables the external version check at <https://versions.drycc.info/> (default: "true")
-POLL_INTERVAL_SEC | The interval when Workflow Manager performs a version check, in seconds (default: 43200, or 12 hours)
-VERSIONS_API_URL  | The versions API URL (default: "<https://versions-staging.drycc.info>")
-DOCTOR_API_URL    | The doctor API URL (default: "<https://doctor-staging.drycc.info>")
-API_VERSION       | The version number Workflow Manager sends to the versions API (default: "v2")
+[distribution config doc](https://distribution.github.io/distribution/about/configuration/).
 
 [Deploying Apps]: ../applications/deploying-apps.md
 [builder]: ../understanding-workflow/components.md#builder

@@ -17,13 +17,11 @@ Squash and rebase the commit or commits in your pull request into logical units 
 
 Most pull requests will reference a GitHub issue. In the PR description - not in the commit itself - include a line such as "closes #1234". The issue referenced will automatically be closed when your PR is merged.
 
-
 ## Include Tests
 
-If you significantly alter or add functionality to a component that impacts the broader Drycc Workflow PaaS, you should submit a complementary PR to modify or amend end-to-end integration tests.  These integration tests can be found in the [drycc/workflow-e2e][workflow-e2e] repository.
+If you significantly alter or add functionality to a component that impacts the broader Drycc Workflow PaaS, you should submit a complementary PR to modify or amend end-to-end integration tests. These integration tests can be found in the [drycc/workflow-e2e][workflow-e2e] repository.
 
 See [testing](testing.md) for more information.
-
 
 ## Include Docs
 
@@ -31,15 +29,16 @@ Changes to any Drycc Workflow component that could affect a user's experience al
 
 ## Cross-repo commits
 
-If a pull request is part of a larger piece of work involving one or more additional commits in other Workflow repositories, these commits can be referenced in the last PR to be submitted.  The downstream [e2e test job](https://ci.drycc.info/job/workflow-e2e-pr/) will then supply every referenced commit (derived from PR issue number supplied) to the test runner so it can source the necessary Container images for inclusion in the generated Workflow chart to be tested.
+If a pull request is part of a larger piece of work involving one or more additional commits in other Workflow repositories, these commits can be referenced in the last PR to be submitted. The downstream [e2e test job](https://ci.drycc.info/job/workflow-e2e-pr/) will then supply every referenced commit (derived from PR issue number supplied) to the test runner so it can source the necessary Container images for inclusion in the generated Workflow chart to be tested.
 
-For example, consider paired commits in [drycc/controller](https://github.com/drycc/controller) and [drycc/workflow-e2e](https://github.com/drycc/workflow-e2e).  The commit body for the first PR in `drycc/workflow-e2e` would look like:
+For example, consider paired commits in [drycc/controller](https://github.com/drycc/controller) and [drycc/workflow-e2e](https://github.com/drycc/workflow-e2e). The commit body for the first PR in `drycc/workflow-e2e` would look like:
 
 ```
 feat(foo_test): add e2e test for feature foo
 
 [skip e2e] test for controller#42
 ```
+
 Adding `[skip e2e]` forgoes the e2e tests on this commit. This and any other required PRs aside from the final PR should be submitted first, so that their respective build and image push jobs run.
 
 Lastly, the final PR in `drycc/controller` should be created with the required PR number(s) listed, in the form of `[Rr]equires <repoName>#<pullRequestNumber>`, for use by the downstream e2e run.

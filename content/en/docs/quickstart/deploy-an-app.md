@@ -1,19 +1,18 @@
 ---
 title: Deploy Your First App
-description: Deploy an application using drycc cli.
+description: Deploy an application using the Drycc CLI.
 weight: 4
 ---
 
 ## Determine Your Host and Hostname Values
 
-Drycc workflow requires a wildcard DNS record to dynamically map app names to the router.
+Drycc Workflow requires a wildcard DNS record to dynamically map application names to the router.
 
-User should already have DNS set up pointing to their known host. The `$hostname` value can be calculated by prepending `drycc.` to the value set in `global.platformDomain`.
+You should already have DNS set up pointing to your known host. The `$hostname` value can be calculated by prepending `drycc.` to the value set in `global.platformDomain`.
 
 ## Login to Workflow
 
-Workflow use the passport component to create and authorize users.
-If you already have an account, use `drycc login` to authenticate against the Drycc Workflow API.
+Workflow uses the passport component to create and authorize users. If you already have an account, use `drycc login` to authenticate against the Drycc Workflow API.
 
 ```
 $ drycc login http://drycc.example.com
@@ -22,7 +21,8 @@ Waiting for login... .o.Logged in as admin
 Configuration file written to /root/.drycc/client.json
 ```
 
-Or you can login with username and password
+Or you can login with username and password:
+
 ```
 $ drycc login http://drycc.example.com --username=demo --password=demo
 Configuration file written to /root/.drycc/client.json
@@ -30,13 +30,9 @@ Configuration file written to /root/.drycc/client.json
 
 ## Deploy an Application
 
-Drycc Workflow supports three different types of applications, Buildpacks,
-Dockerfiles and Container Images. Our first application will be a simple Container
-Image-based application, so you don't have to wrestle with checking out code.
+Drycc Workflow supports three different types of applications: Buildpacks, Dockerfiles, and Container Images. Our first application will be a simple container image-based application, so you don't have to wrestle with checking out code.
 
-Run `drycc create` to create a new application on Drycc Workflow. If you do not
-specify a name for your application, Workflow automatically generates a
-friendly (and sometimes funny) name.
+Run `drycc create` to create a new application on Drycc Workflow. If you do not specify a name for your application, Workflow automatically generates a friendly (and sometimes funny) name.
 
 ```
 $ drycc create --no-remote
@@ -44,9 +40,7 @@ Creating Application... done, created proper-barbecue
 If you want to add a git remote for this app later, use `drycc git remote -a proper-barbecue`
 ```
 
-Our application has been created and named `proper-barbecue`. As with the
-`drycc` hostname, any HTTP traffic to `proper-barbecue` will be automatically
-routed to your application pods by the edge router.
+Our application has been created and named `proper-barbecue`. As with the `drycc` hostname, any HTTP traffic to `proper-barbecue` will be automatically routed to your application pods by the edge router.
 
 Let's use the CLI to tell the platform to deploy an application and then use curl to send a request to the app:
 
@@ -61,24 +55,18 @@ Powered by Drycc
 If you see a 404 error, make sure you specified your application name with `-a <appname>`!
 {{% /alert %}}
 
-Workflow's edge router knows all about application names and automatically
-sends traffic to the right application. The router sends traffic for
-`proper-barbecue.104.197.125.75.nip.io` to your app, just like
-`drycc.104.197.125.75.nip.io` was sent to the Workflow API service.
+Workflow's edge router knows all about application names and automatically sends traffic to the right application. The router sends traffic for `proper-barbecue.104.197.125.75.nip.io` to your app, just like `drycc.104.197.125.75.nip.io` was sent to the Workflow API service.
 
 ## Change Application Configuration
 
-Next, let's change some configuration using the CLI. Our example app is built
-to read configuration from the environment. By using `drycc config set` we can
-change how the application behaves:
+Next, let's change some configuration using the CLI. Our example app is built to read configuration from the environment. By using `drycc config set` we can change how the application behaves:
 
 ```
 $ drycc config set POWERED_BY="Container Images + Kubernetes" -a proper-barbecue
 Creating config... done
 ```
 
-Behind the scenes, Workflow creates a new release for your application and uses
-Kubernetes to provide a zero-downtime rolling deploy to the new release!
+Behind the scenes, Workflow creates a new release for your application and uses Kubernetes to provide a zero-downtime rolling deploy to the new release!
 
 Validate that our configuration change has worked:
 
@@ -89,8 +77,7 @@ Powered by Container Images + Kubernetes
 
 ## Scale Your Application
 
-Last, let's scale our application by adding more application processes. Using the CLI you can easily add and remove
-additional processes to service requests:
+Last, let's scale our application by adding more application processes. Using the CLI you can easily add and remove additional processes to service requests:
 
 ```
 $ drycc scale web=2 -a proper-barbecue
@@ -105,16 +92,17 @@ proper-barbecue-v18-web-0ag04       v18        up       web         2023-12-08T0
 Congratulations! You have deployed, configured, and scaled your first application using Drycc Workflow.
 
 ## Going Further
-There is a lot more you can do with Drycc Workflow, play around with the CLI:
+
+There is a lot more you can do with Drycc Workflow. Play around with the CLI:
 
 {{% alert title="Note" color="danger" %}}
-  In order to have permission to push an app you must add a SSH key to your user on the Drycc Workflow.
+In order to have permission to push an app you must add an SSH key to your user on the Drycc Workflow.
 
-  For more information, please check [Users and SSH Keys](../users/ssh-keys/) and [Troubleshooting Workflow](../troubleshooting/).
+For more information, please check [Users and SSH Keys](../users/ssh-keys/) and [Troubleshooting Workflow](../troubleshooting/).
 {{% /alert %}}
 
 * Roll back to a previous release with `drycc rollback -a proper-barbecue`
-* See application logs with drycc grafana.
+* See application logs with `drycc grafana`
 * Try one of our other example applications like:
     * [drycc/ruby-getting-started](https://github.com/drycc/ruby-getting-started)
     * [drycc/python-getting-started](https://github.com/drycc/python-getting-started)
