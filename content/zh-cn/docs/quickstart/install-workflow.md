@@ -56,6 +56,20 @@ $ apt-get install curl
 $ yum install curl
 ```
 
+### 安装 zstd
+
+对于 Debian 和 Ubuntu，使用此命令：
+
+```
+$ apt-get install zstd
+```
+
+对于 RHEL、CentOS 和 EKS 与 AmazonLinux2 镜像的 EKS Kubernetes Worker AMI，使用此命令：
+
+```
+$ yum install zstd
+```
+
 ## 硬件
 
 硬件要求基于您的部署规模而扩展。最低推荐在这里概述。

@@ -55,6 +55,20 @@ For RHEL, CentOS, and EKS with EKS Kubernetes Worker AMI with AmazonLinux2 image
 $ yum install curl
 ```
 
+### Installing zstd
+
+For Debian and Ubuntu, use this command:
+
+```
+$ apt-get install zstd
+```
+
+For RHEL, CentOS, and EKS with EKS Kubernetes Worker AMI with AmazonLinux2 image, use this command:
+
+```
+$ yum install zstd
+```
+
 ## Hardware
 
 Hardware requirements scale based on the size of your deployments. Minimum recommendations are outlined here.
