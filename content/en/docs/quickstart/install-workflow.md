@@ -96,6 +96,13 @@ Then you can use the installation script available at https://www.drycc.cc/insta
 $ curl -sfL https://www.drycc.cc/install.sh | bash -
 ```
 
+To install the beta version, please use the following script for installation.
+
+```
+$ export CHANNEL=testing
+$ curl -sfL https://drycc-mirrors.drycc.cc/drycc/workflow/raw/refs/heads/main/install.sh | bash -
+```
+
 {{% alert title="Note" color="danger" %}}
 If you are in China, you need to use mirror acceleration:
 

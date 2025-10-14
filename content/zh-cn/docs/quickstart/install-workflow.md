@@ -101,6 +101,14 @@ $ export CERT_MANAGER_ENABLED=false
 $ curl -sfL https://www.drycc.cc/install.sh | bash -
 ```
 
+如果需要安装测试版，请使用如下脚本安装。
+
+
+```
+$ export CHANNEL=testing
+$ curl -sfL https://drycc-mirrors.drycc.cc/drycc/workflow/raw/refs/heads/main/install.sh | bash -
+```
+
 {{% alert title="Note" color="danger" %}}
 如果您在中国，需要使用镜像加速：
 
