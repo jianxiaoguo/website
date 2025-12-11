@@ -74,22 +74,24 @@ Drycc 创建卷支持 [ReadWriteMany](https://kubernetes.io/docs/concepts/storag
     $ drycc volumes remove myvolume
     Deleting myvolume from scenic-icehouse... done
 
-## 使用卷客户端管理卷文件。
-假设名为 myvolume 的卷已创建并挂载。
+### 通过 WebDAV 服务访问
 
-准备一个名为 testfile 的文件。
+启动 WebDAV 服务，然后通过 rclone 等 WebDAV 客户端访问。
 
-    $ echo "testtext" > testfile
+启动 WebDAV 服务：
 
-上传。
-    $ drycc volumes client cp testfile vol://myvolume/
-    [↑] testfile                       100% [==================================================] (5/ 5 B, 355 B/s)
+```bash
+$ drycc volumes serve myvolume
+Starting WebDAV file access service o..
 
-列出 myvolume 中的文件。
+Endpoint:    http://drycc.example.com/v2/apps/demo1/volumes/ss1/filer/webdav/
+Username:    gngqlaqvfeljwcimjjbxfcoqajpedtjh
+Password:    xhstamwcoavncidkfxmvxefuiikwkgmc
 
-    $ drycc volumes client ls vol://myvolume/
-    [2024-07-22T15:32:28+08:00]    5    testfile
+WebDAV service for volume ss1 is running. Press Ctrl+C to stop.
+```
 
-删除 myvolume 中的 testfile。
-
-    $ drycc volumes client rm vol://myvolume/testfile
+**说明：**
+- 服务启动后会提供 WebDAV 访问的端点（Endpoint）、用户名和密码
+- 可以使用 rclone、Cyberduck 或其他支持 WebDAV 的客户端连接
+- 按 Ctrl+C 可停止服务

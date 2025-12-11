@@ -71,24 +71,24 @@ If you no longer need the volume, use `drycc volumes unmount` to unmount the vol
     $ drycc volumes remove myvolume
     Deleting myvolume from scenic-icehouse... done
 
-## Use Volume Client to Manage Volume Files
+## Access via WebDAV Service
 
-Assuming the volume named "myvolume" is created and mounted.
+Start the WebDAV service and then access it using WebDAV clients such as rclone.
 
-Prepare a file named testfile:
+Start the WebDAV service:
 
-    $ echo "testtext" > testfile
+```bash
+$ drycc volumes serve myvolume
+Starting WebDAV file access service o..
 
-Upload the file:
+Endpoint:    http://drycc.example.com/v2/apps/demo1/volumes/ss1/filer/webdav/
+Username:    gngqlaqvfeljwcimjjbxfcoqajpedtjh
+Password:    xhstamwcoavncidkfxmvxefuiikwkgmc
 
-    $ drycc volumes client cp testfile vol://myvolume/
-    [↑] testfile                       100% [==================================================] (5/ 5 B, 355 B/s)
+WebDAV service for volume ss1 is running. Press Ctrl+C to stop.
+```
 
-List files in myvolume:
-
-    $ drycc volumes client ls vol://myvolume/
-    [2024-07-22T15:32:28+08:00]    5    testfile
-
-Delete testfile in myvolume:
-
-    $ drycc volumes client rm vol://myvolume/testfile
+**Notes:**
+- Once the service starts, it will provide the WebDAV access endpoint (Endpoint), username, and password.
+- You can connect using rclone, Cyberduck, or other WebDAV-supported clients.
+- Press Ctrl+C to stop the service.
